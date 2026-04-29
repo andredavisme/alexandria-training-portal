@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Alexandria — Discussion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --primary: #0F172A;
+    --accent: #6366F1;
+    --accent-light: #818CF8;
+    --surface: #ffffff;
+    --bg: #F1F5F9;
+    --border: #E2E8F0;
+    --text: #0F172A;
+    --text-muted: #64748B;
+    --success: #10B981;
+    --danger: #EF4444;
+    --font: 'Inter', sans-serif;
+    --radius: 10px;
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    --shadow-sm: 0 2px 6px rgba(0,0,0,0.07);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); color: var(--text); background: var(--bg); min-height: 100vh; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .hidden { display: none !important; }
+
+  /* Nav */
+  .nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; gap: 0.75rem; height: 56px; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand .logo { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; color: #fff; }
+  .brand-name { font-weight: 700; font-size: 0.95rem; }
+  .brand-sub  { font-size: 0.72rem; color: var(--text-muted); }
+  .nav-sep   { color: var(--border); }
+  .nav-label { font-weight: 600; font-size: 0.9rem; color: var(--text-muted); }
+  .nav-spacer { flex: 1; }
+  .btn-ghost { background: transparent; color: var(--text-muted); border: none; padding: 6px 10px; font-size: 0.85rem; cursor: pointer; font-family: var(--font); }
+  .btn-ghost:hover { color: var(--text); }
+  .btn-sm { font-size: 0.8rem; }
+
+  /* Layout */
+  .page { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* Thread header card */
+  .thread-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+  .thread-card.is-pinned { border-left: 4px solid var(--accent); }
+  .thread-card.is-closed { border-left: 4px solid var(--border); }
+  .thread-top { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.75rem; }
+  .thread-title { font-size: 1.35rem; font-weight: 700; flex: 1; line-height: 1.4; }
+  .badges { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; flex-shrink: 0; }
+  .badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: 0.71rem; font-weight: 600; white-space: nowrap; }
+  .badge-pinned { background: #EEF2FF; color: var(--accent); }
+  .badge-closed { background: #F1F5F9; color: var(--text-muted); }
+  .badge-staff  { background: #EEF2FF; color: var(--accent); }
+  .badge-source { background: #FEF3C7; color: #92400E; }
+  .badge-student { background: #F0FDF4; color: #166534; }
+  .thread-body { font-size: 0.92rem; line-height: 1.7; color: var(--text); white-space: pre-wrap; margin-bottom: 1rem; }
+  .thread-meta { font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+  /* Posts */
+  .posts-section { margin-bottom: 1.5rem; }
+  .posts-heading { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.75rem; }
+  .post-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .post-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1.4rem; }
+  .post-card.is-staff { border-left: 3px solid var(--accent); }
+  .post-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+  .post-author { font-weight: 600; font-size: 0.875rem; }
+  .post-date { font-size: 0.78rem; color: var(--text-muted); margin-left: auto; }
+  .post-content { font-size: 0.88rem; line-height: 1.65; color: var(--text); white-space: pre-wrap; }
+
+  /* Reply form */
+  .reply-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1.5rem; }
+  .reply-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1rem; }
+  label { font-size: 0.82rem; font-weight: 600; }
+  input[type=text], textarea { width: 100%; padding: 9px 13px; border: 1.5px solid var(--border); border-radius: 8px; font-family: var(--font); font-size: 0.875rem; color: var(--text); background: #fff; transition: border-color 0.2s; }
+  input[type=text]:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+  textarea { resize: vertical; min-height: 110px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 18px; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: 1.5px solid transparent; transition: all 0.2s; font-family: var(--font); }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-light); border-color: var(--accent-light); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Alert */
+  .alert { padding: 11px 14px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1rem; }
+  .alert-error   { background: #FEE2E2; border-left: 4px solid var(--danger);  color: #7F1D1D; }
+  .alert-success { background: #D1FAE5; border-left: 4px solid var(--success); color: #064E3B; }
+  .alert-info    { background: #EFF6FF; border-left: 4px solid var(--accent);  color: #1E3A5F; }
+
+  /* Closed notice */
+  .closed-notice { text-align: center; padding: 1.5rem; background: var(--bg); border-radius: var(--radius); border: 1.5px solid var(--border); font-size: 0.875rem; color: var(--text-muted); }
+
+  /* Spinner / empty */
+  .spinner { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.875rem; }
+  .no-posts { text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.875rem; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">
+    <div class="logo">A</div>
+    <div>
+      <div class="brand-name">Alexandria</div>
+      <div class="brand-sub">Training Portal</div>
+    </div>
+  </div>
+  <span class="nav-sep">›</span>
+  <a href="discussion.html" class="nav-label" style="text-decoration:none">Discussion Boards</a>
+  <span class="nav-sep">›</span>
+  <span class="nav-label" id="nav-thread-title" style="color:var(--text);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Thread</span>
+  <div class="nav-spacer"></div>
+  <a href="discussion.html" class="btn-ghost btn-sm">← Back</a>
+</nav>
+
+<div class="page">
+  <div id="thread-wrap"><div class="spinner">Loading…</div></div>
+  <div id="posts-wrap"></div>
+  <div id="reply-wrap"></div>
+</div>
+
+<script type="module">
+import { fetchThread, fetchPosts, fetchReplies, submitPost, formatDateTime, sourceLabel, replySourceLabel, escHtml } from './js/discussion.js'
+
+const threadId = new URLSearchParams(location.search).get('id')
+
+if (!threadId) {
+  document.getElementById('thread-wrap').innerHTML = '<div class="alert alert-error">No thread ID specified. <a href="discussion.html">Back to discussions</a></div>'
+}
+
+function setAlert(id, type, msg) {
+  document.getElementById(id).innerHTML = msg ? `<div class="alert alert-${type}">${msg}</div>` : ''
+}
+
+async function init() {
+  const [{ data: thread, error: tErr }, { data: posts }, { data: replies }] = await Promise.all([
+    fetchThread(threadId),
+    fetchPosts(threadId),
+    fetchReplies(threadId)
+  ])
+
+  if (tErr || !thread) {
+    document.getElementById('thread-wrap').innerHTML = '<div class="alert alert-error">Thread not found. <a href="discussion.html">Back to discussions</a></div>'
+    return
+  }
+
+  // Update page title and nav
+  document.title = `Alexandria — ${thread.title}`
+  document.getElementById('nav-thread-title').textContent = thread.title
+
+  renderThread(thread)
+  renderPosts(posts || [], replies || [], thread.status)
+  renderReplyForm(thread)
+}
+
+function renderThread(t) {
+  const src = sourceLabel(t.source)
+  document.getElementById('thread-wrap').innerHTML = `
+  <div class="thread-card${t.status === 'pinned' ? ' is-pinned' : ''}${t.status === 'closed' ? ' is-closed' : ''}">
+    <div class="thread-top">
+      <div class="thread-title">${escHtml(t.title)}</div>
+      <div class="badges">
+        ${t.status === 'pinned' ? '<span class="badge badge-pinned">📌 Pinned</span>' : ''}
+        ${t.status === 'closed' ? '<span class="badge badge-closed">🔒 Closed</span>' : ''}
+        ${t.author_type === 'staff' ? '<span class="badge badge-staff">Staff</span>' : ''}
+        ${src ? `<span class="badge badge-source">via ${escHtml(src)}</span>` : ''}
+      </div>
+    </div>
+    ${t.body ? `<div class="thread-body">${escHtml(t.body)}</div>` : ''}
+    <div class="thread-meta">
+      <span>Started by <strong>${escHtml(t.author_name || 'Anonymous')}</strong></span>
+      <span>${formatDateTime(t.created_at)}</span>
+    </div>
+  </div>`
+}
+
+function renderPosts(posts, replies, threadStatus) {
+  // Merge discussion_posts + thread_replies, tag each with its origin
+  const merged = [
+    ...posts.map(p => ({ ...p, _kind: 'post', _source: sourceLabel(p.source) })),
+    ...replies.map(r => ({ ...r, _kind: 'reply', _source: replySourceLabel(r) }))
+  ].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+
+  const wrap = document.getElementById('posts-wrap')
+  if (merged.length === 0) {
+    wrap.innerHTML = `<div class="no-posts">No replies yet. Be the first to respond.</div>`
+    return
+  }
+
+  wrap.innerHTML = `
+  <div class="posts-section">
+    <div class="posts-heading">${merged.length} ${merged.length === 1 ? 'Reply' : 'Replies'}</div>
+    <div class="post-list">
+      ${merged.map(p => {
+        const isStaff = p.author_type === 'staff'
+        return `
+        <div class="post-card${isStaff ? ' is-staff' : ''}">
+          <div class="post-header">
+            <span class="post-author">${escHtml(p.author_name || 'Anonymous')}</span>
+            ${isStaff ? '<span class="badge badge-staff">Staff</span>' : '<span class="badge badge-student">Student</span>'}
+            ${p._source ? `<span class="badge badge-source">via ${escHtml(p._source)}</span>` : ''}
+            <span class="post-date">${formatDateTime(p.created_at)}</span>
+          </div>
+          <div class="post-content">${escHtml(p.content)}</div>
+        </div>`
+      }).join('')}
+    </div>
+  </div>`
+}
+
+function renderReplyForm(thread) {
+  const wrap = document.getElementById('reply-wrap')
+  if (thread.status === 'closed') {
+    wrap.innerHTML = `<div class="closed-notice">🔒 This thread is closed. New replies are not accepted.</div>`
+    return
+  }
+
+  wrap.innerHTML = `
+  <div class="reply-card">
+    <h3>Leave a Reply</h3>
+    <div id="reply-alert"></div>
+    <div id="reply-form">
+      <div class="form-group">
+        <label>Your Name *</label>
+        <input type="text" id="reply-author" placeholder="Display name"/>
+      </div>
+      <div class="form-group">
+        <label>Reply *</label>
+        <textarea id="reply-content" placeholder="Write your reply…"></textarea>
+      </div>
+      <button class="btn btn-primary" id="btn-submit-reply">Submit Reply</button>
+      <p style="margin-top:0.75rem;font-size:0.78rem;color:var(--text-muted)">Replies are reviewed before being published.</p>
+    </div>
+    <div id="reply-confirmed" class="hidden">
+      <div class="alert alert-success">✅ Your reply has been submitted and is pending review. Thank you!</div>
+    </div>
+  </div>`
+
+  document.getElementById('btn-submit-reply').addEventListener('click', async () => {
+    const author  = document.getElementById('reply-author').value.trim()
+    const content = document.getElementById('reply-content').value.trim()
+    setAlert('reply-alert', '', '')
+
+    if (!author)  { setAlert('reply-alert', 'error', 'Your name is required.'); return }
+    if (!content) { setAlert('reply-alert', 'error', 'Reply content is required.'); return }
+
+    const btn = document.getElementById('btn-submit-reply')
+    btn.disabled = true; btn.textContent = 'Submitting…'
+
+    const { error } = await submitPost(threadId, author, content)
+    btn.disabled = false; btn.textContent = 'Submit Reply'
+
+    if (error) {
+      setAlert('reply-alert', 'error', 'Failed to submit reply. Please try again.')
+      return
+    }
+
+    document.getElementById('reply-form').classList.add('hidden')
+    document.getElementById('reply-confirmed').classList.remove('hidden')
+  })
+}
+
+if (threadId) await init()
+</script>
+</body>
+</html>

@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Alexandria Training Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --primary: #0F172A;
+    --accent:  #6366F1;
+    --accent-light: #818CF8;
+    --surface: #ffffff;
+    --bg: #F1F5F9;
+    --border: #E2E8F0;
+    --text: #0F172A;
+    --text-muted: #64748B;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger:  #EF4444;
+    --info:    #3B82F6;
+    --font: 'Inter', sans-serif;
+    --radius: 10px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.07);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); color: var(--text); background: var(--bg); min-height: 100vh; }
+  a { color: var(--accent); text-decoration: none; }
+
+  /* NAV */
+  nav { background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; position: sticky; top: 0; z-index: 100; }
+  .nav-brand { display: flex; align-items: center; gap: 10px; }
+  .nav-brand .logo-mark { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; color: #fff; }
+  .nav-brand span { font-size: 1rem; font-weight: 600; letter-spacing: 0.02em; }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-staff-badge { font-size: 0.78rem; padding: 4px 12px; border-radius: 20px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); }
+  .nav-btn { background: transparent; border: 1px solid rgba(255,255,255,0.25); color: #fff; padding: 6px 16px; border-radius: var(--radius); font-size: 0.875rem; cursor: pointer; transition: all 0.2s; }
+  .nav-btn:hover { background: var(--accent); border-color: var(--accent); }
+
+  /* LAYOUT */
+  .app-layout { display: grid; grid-template-columns: 240px 1fr; min-height: calc(100vh - 60px); }
+  .sidebar { background: var(--primary); color: #fff; padding: 1rem 0; }
+  .sidebar-section { padding: 0.75rem 1.25rem 0.25rem; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.35); margin-top: 0.5rem; }
+  .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 10px 1.5rem; cursor: pointer; color: rgba(255,255,255,0.7); font-size: 0.875rem; transition: all 0.15s; border-left: 3px solid transparent; }
+  .sidebar-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+  .sidebar-item.active { background: rgba(99,102,241,0.2); color: #fff; border-left-color: var(--accent); }
+  .sidebar-item .icon { font-size: 1rem; width: 20px; text-align: center; }
+  .main { padding: 2rem; overflow-y: auto; }
+
+  /* PANELS */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* LOGIN */
+  .login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--bg); padding: 2rem; }
+  .login-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 2.5rem; width: 100%; max-width: 420px; }
+  .login-card h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .login-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
+
+  /* TYPOGRAPHY */
+  .page-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .page-sub { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.75rem; }
+  .section-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.75rem; }
+
+  /* CARDS */
+  .card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }
+
+  /* COURSE CARDS */
+  .course-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; cursor: pointer; transition: box-shadow 0.2s, transform 0.15s; border: 2px solid transparent; }
+  .course-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+  .course-card-banner { height: 8px; }
+  .course-card-body { padding: 1.25rem; }
+  .course-card-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.35rem; }
+  .course-card-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1rem; }
+  .course-card-meta { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+
+  /* MODULE CARDS */
+  .module-row { display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border); transition: background 0.15s; cursor: pointer; }
+  .module-row:last-child { border-bottom: none; }
+  .module-row:hover { background: #F8FAFC; }
+  .module-order { width: 32px; height: 32px; border-radius: 8px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); flex-shrink: 0; }
+  .module-info { flex: 1; }
+  .module-info strong { font-size: 0.95rem; font-weight: 600; display: block; }
+  .module-info span { font-size: 0.8rem; color: var(--text-muted); }
+
+  /* BADGES */
+  .badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 600; }
+  .badge-published { background: #D1FAE5; color: #065F46; }
+  .badge-draft     { background: #FEF3C7; color: #92400E; }
+  .badge-archived  { background: #F1F5F9; color: #64748B; }
+  .badge-admin     { background: #EDE9FE; color: #5B21B6; }
+  .badge-instructor{ background: #DBEAFE; color: #1E40AF; }
+  .badge-super     { background: #FEE2E2; color: #991B1B; }
+  .badge-info      { background: #DBEAFE; color: #1E40AF; }
+  .badge-neutral   { background: #F1F5F9; color: #64748B; }
+  .badge-success   { background: #D1FAE5; color: #065F46; }
+  .badge-warning   { background: #FEF3C7; color: #92400E; }
+  .badge-shared    { background: #F0FDF4; color: #166534; border: 1px solid #BBF7D0; }
+
+  /* STAT CARDS */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .stat-card { background: var(--surface); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow); }
+  .stat-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
+  .stat-value { font-size: 2.25rem; font-weight: 700; margin: 4px 0 2px; }
+  .stat-sub { font-size: 0.78rem; color: var(--text-muted); }
+
+  /* TABLES */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  .data-table th { text-align: left; padding: 10px 14px; background: var(--bg); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); border-bottom: 2px solid var(--border); }
+  .data-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .data-table tr:hover td { background: #FAFBFF; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-full { grid-column: 1 / -1; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  label { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+  input, select, textarea { width: 100%; padding: 9px 13px; border: 1.5px solid var(--border); border-radius: 8px; font-family: var(--font); font-size: 0.9rem; color: var(--text); background: #fff; transition: border-color 0.2s; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+  textarea { resize: vertical; min-height: 80px; }
+
+  /* BUTTONS */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 20px; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: 1.5px solid transparent; transition: all 0.2s; font-family: var(--font); }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-light); border-color: var(--accent-light); }
+  .btn-outline { background: transparent; color: var(--text); border-color: var(--border); }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger  { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .btn-success { background: var(--success); color: #fff; border-color: var(--success); }
+  .btn-sm { padding: 6px 14px; font-size: 0.8rem; }
+  .btn-ghost { background: transparent; border-color: transparent; color: var(--text-muted); }
+  .btn-ghost:hover { color: var(--accent); }
+
+  /* ALERTS */
+  .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 1rem; font-size: 0.875rem; }
+  .alert-error   { background: #FEE2E2; border-left: 4px solid var(--danger);  color: #7F1D1D; }
+  .alert-success { background: #D1FAE5; border-left: 4px solid var(--success); color: #064E3B; }
+  .alert-info    { background: #DBEAFE; border-left: 4px solid var(--info);    color: #1E3A5F; }
+
+  /* MODALS */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 2rem; max-width: 540px; width: 92%; max-height: 88vh; overflow-y: auto; }
+  .modal-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; }
+  .modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem; }
+
+  /* COURSE DETAIL HEADER */
+  .course-hero { border-radius: var(--radius); padding: 2rem; margin-bottom: 1.5rem; color: #fff; position: relative; overflow: hidden; }
+  .course-hero h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .course-hero p { font-size: 0.9rem; opacity: 0.85; max-width: 560px; }
+  .course-hero-meta { display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
+  .hero-chip { background: rgba(255,255,255,0.18); padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 500; }
+
+  /* REUSE INDICATOR */
+  .reuse-pill { display: inline-flex; align-items: center; gap: 4px; background: #F0FDF4; border: 1px solid #BBF7D0; color: #166534; padding: 2px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 600; }
+
+  /* PROGRESS BAR */
+  .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+  .progress-fill { height: 100%; background: var(--success); border-radius: 3px; transition: width 0.4s; }
+
+  /* UTILS */
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .justify-between { justify-content: space-between; }
+  .gap-2 { gap: 0.5rem; }
+  .gap-3 { gap: 0.75rem; }
+  .gap-4 { gap: 1rem; }
+  .mb-2 { margin-bottom: 0.5rem; }
+  .mb-4 { margin-bottom: 1rem; }
+  .mb-6 { margin-bottom: 1.5rem; }
+  .mt-4 { margin-top: 1rem; }
+  .mt-6 { margin-top: 1.5rem; }
+  .text-muted { color: var(--text-muted); }
+  .text-sm { font-size: 0.875rem; }
+  .text-xs { font-size: 0.78rem; }
+  .font-bold { font-weight: 600; }
+  .w-full { width: 100%; }
+  .hidden { display: none !important; }
+  .loading { opacity: 0.55; pointer-events: none; }
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(99,102,241,0.25); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
+  .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .app-layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .form-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;">
+        <div style="width:40px;height:40px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.2rem;color:#fff;">A</div>
+        <div>
+          <div style="font-weight:700;font-size:1rem;">Alexandria</div>
+          <div style="font-size:0.78rem;color:var(--text-muted);">Training Portal</div>
+        </div>
+      </div>
+      <h2>Staff Sign In</h2>
+      <p>Sign in with your staff account to access the catalog.</p>
+      <div id="loginAlert"></div>
+      <div class="form-group mb-4">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="you@alexandria.dev"/>
+      </div>
+      <div class="form-group mb-6">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+      </div>
+      <button class="btn btn-primary w-full" onclick="doLogin()">Sign In →</button>
+      <p class="text-sm text-muted mt-4" style="text-align:center;">
+        <a href="#" onclick="demoLogin()">Continue as demo (read-only) →</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP (hidden until logged in) -->
+<div id="appShell" class="hidden">
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-brand">
+      <div class="logo-mark">A</div>
+      <span>Alexandria — Training Portal</span>
+    </div>
+    <div class="nav-right">
+      <span class="nav-staff-badge" id="navStaffName">Loading...</span>
+      <button class="nav-btn" onclick="doLogout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-section">Overview</div>
+      <div class="sidebar-item active" onclick="showPanel('dashboard')" id="nav-dashboard"><span class="icon">📊</span> Dashboard</div>
+      <div class="sidebar-section">Content</div>
+      <div class="sidebar-item" onclick="showPanel('catalog')" id="nav-catalog"><span class="icon">📚</span> Course Catalog</div>
+      <div class="sidebar-item" onclick="showPanel('modules')" id="nav-modules"><span class="icon">🧩</span> Module Library</div>
+      <div class="sidebar-section">People</div>
+      <div class="sidebar-item" onclick="showPanel('students')" id="nav-students"><span class="icon">👥</span> Students</div>
+      <div class="sidebar-item" onclick="showPanel('staff')" id="nav-staff"><span class="icon">🛡️</span> Staff &amp; Access</div>
+      <div class="sidebar-section">Moderation</div>
+      <div class="sidebar-item" onclick="showPanel('moderation')" id="nav-moderation"><span class="icon">📨</span> Message Queue</div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main" id="mainContent">
+
+      <!-- DASHBOARD -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="page-title">Dashboard</div>
+        <div class="page-sub">Alexandria Training Portal overview</div>
+        <div class="stat-grid" id="dashStats"></div>
+        <div class="card">
+          <div class="font-bold mb-4">Recent Enrollments</div>
+          <table class="data-table">
+            <thead><tr><th>Student</th><th>Course</th><th>Enrolled</th></tr></thead>
+            <tbody id="recentEnrollments"><tr><td colspan="3" class="text-muted text-sm">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CATALOG -->
+      <div class="panel" id="panel-catalog">
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <div class="page-title">Course Catalog</div>
+            <div class="page-sub">All courses you have access to</div>
+          </div>
+          <button class="btn btn-primary" id="btnNewCourse" onclick="openCourseModal()">+ New Course</button>
+        </div>
+        <div class="card-grid" id="courseGrid"><div class="text-muted text-sm"><span class="spinner"></span> Loading courses...</div></div>
+      </div>
+
+      <!-- COURSE DETAIL -->
+      <div class="panel" id="panel-courseDetail">
+        <div id="courseDetailContent"></div>
+      </div>
+
+      <!-- MODULE LIBRARY -->
+      <div class="panel" id="panel-modules">
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <div class="page-title">Module Library</div>
+            <div class="page-sub">All modules — reuse across any course</div>
+          </div>
+          <button class="btn btn-primary" onclick="openModuleModal()">+ New Module</button>
+        </div>
+        <div class="card">
+          <div id="moduleLibraryList"><div class="text-muted text-sm"><span class="spinner"></span> Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- STUDENTS -->
+      <div class="panel" id="panel-students">
+        <div class="page-title">Students</div>
+        <div class="page-sub">Enrollment and progress overview</div>
+        <div class="card">
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Courses Enrolled</th><th>Joined</th></tr></thead>
+            <tbody id="studentsTable"><tr><td colspan="4" class="text-muted text-sm">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- STAFF -->
+      <div class="panel" id="panel-staff">
+        <div class="page-title">Staff &amp; Access</div>
+        <div class="page-sub">Roles and course-level access grants</div>
+        <div class="card mb-4">
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Course Access</th><th>Status</th></tr></thead>
+            <tbody id="staffTable"><tr><td colspan="5" class="text-muted text-sm">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MODERATION -->
+      <div class="panel" id="panel-moderation">
+        <div class="page-title">Message Queue</div>
+        <div class="page-sub">Pending messages across all training boards</div>
+        <div class="card">
+          <table class="data-table">
+            <thead><tr><th>Submitted</th><th>Author</th><th>Content</th><th>Context</th><th>Actions</th></tr></thead>
+            <tbody id="moderationTable"><tr><td colspan="5" class="text-muted text-sm">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /main -->
+  </div><!-- /app-layout -->
+</div><!-- /appShell -->
+
+<!-- COURSE MODAL -->
+<div class="modal-overlay" id="courseModal">
+  <div class="modal">
+    <div class="modal-title" id="courseModalTitle">New Course</div>
+    <div id="courseModalAlert"></div>
+    <div class="form-grid">
+      <div class="form-group form-full">
+        <label>Course Title *</label>
+        <input type="text" id="cmTitle" placeholder="e.g. Web Development Fundamentals"/>
+      </div>
+      <div class="form-group form-full">
+        <label>Description</label>
+        <textarea id="cmDesc" placeholder="What will students learn?"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="cmStatus">
+          <option value="draft">Draft</option>
+          <option value="published">Published</option>
+          <option value="archived">Archived</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Color Scheme</label>
+        <select id="cmColorScheme">
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+          <option value="brand">Brand</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Primary Color</label>
+        <div class="flex gap-2 items-center">
+          <input type="color" id="cmPrimaryPicker" style="width:42px;height:36px;padding:2px;cursor:pointer;" value="#0F172A"/>
+          <input type="text" id="cmPrimary" placeholder="#0F172A" style="flex:1;"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Accent Color</label>
+        <div class="flex gap-2 items-center">
+          <input type="color" id="cmAccentPicker" style="width:42px;height:36px;padding:2px;cursor:pointer;" value="#6366F1"/>
+          <input type="text" id="cmAccent" placeholder="#6366F1" style="flex:1;"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Font Family</label>
+        <input type="text" id="cmFont" placeholder="Inter"/>
+      </div>
+      <div class="form-group form-full">
+        <label>Banner Image URL</label>
+        <input type="url" id="cmBanner" placeholder="https://..."/>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('courseModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCourse()">Save Course</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODULE MODAL -->
+<div class="modal-overlay" id="moduleModal">
+  <div class="modal">
+    <div class="modal-title">New Module</div>
+    <div id="moduleModalAlert"></div>
+    <div class="form-grid">
+      <div class="form-group form-full">
+        <label>Module Title *</label>
+        <input type="text" id="mmTitle" placeholder="e.g. HTML Structure & Semantics"/>
+      </div>
+      <div class="form-group form-full">
+        <label>Description</label>
+        <textarea id="mmDesc" placeholder="What does this module cover?"></textarea>
+      </div>
+      <div class="form-group form-full">
+        <label>Cover Image URL</label>
+        <input type="url" id="mmCover" placeholder="https://..."/>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('moduleModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveModule()">Save Module</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA LAYER — pure fetch, same pattern as lawnscaping-portal
+// ============================================================
+const SUPABASE_URL     = 'https://nmemmfblpzrkwyljpmvp.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tZW1tZmJscHpya3d5bGpwbXZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDUzNzUsImV4cCI6MjA5MjcyMTM3NX0.iAEq-vnY481qdX0nmsonoDZWNFyFrao02GB_MS5BPzs';
+
+let _token = SUPABASE_ANON_KEY;
+let APP = { staff: null, accessMap: {}, demo: false };
+
+function headers(write = false) {
+  return {
+    'apikey': SUPABASE_ANON_KEY,
+    'Authorization': `Bearer ${_token}`,
+    'Content-Type': 'application/json',
+    ...(write ? { 'Prefer': 'return=representation' } : {})
+  };
+}
+
+async function dbSelect(table, params = '') {
+  const q = params ? `?${params}&apikey=${SUPABASE_ANON_KEY}` : `?apikey=${SUPABASE_ANON_KEY}`;
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${q}`, { headers: headers() });
+  const data = await res.json();
+  return res.ok ? { data, error: null } : { data: null, error: data };
+}
+
+async function dbInsert(table, payload) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*&apikey=${SUPABASE_ANON_KEY}`, {
+    method: 'POST', headers: headers(true), body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  return res.ok ? { data: Array.isArray(data) ? data : [data], error: null } : { data: null, error: data };
+}
+
+async function dbUpdate(table, match, payload) {
+  const q = Object.entries(match).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${q}&select=*&apikey=${SUPABASE_ANON_KEY}`, {
+    method: 'PATCH', headers: headers(true), body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  return res.ok ? { data, error: null } : { data: null, error: data };
+}
+
+async function authSignIn(email, password) {
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+  const data = await res.json();
+  if (!res.ok) return { error: data };
+  _token = data.access_token;
+  return { data, error: null };
+}
+
+async function authSignOut() {
+  await fetch(`${SUPABASE_URL}/auth/v1/logout`, {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${_token}` }
+  });
+  _token = SUPABASE_ANON_KEY;
+}
+
+// ============================================================
+// AUTH FLOW
+// ============================================================
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPassword').value;
+  document.getElementById('loginAlert').innerHTML = '';
+  const { error } = await authSignIn(email, pass);
+  if (error) {
+    document.getElementById('loginAlert').innerHTML = `<div class="alert alert-error">${error.error_description || error.message || 'Login failed'}</div>`;
+    return;
+  }
+  // Look up staff record by email
+  const { data: staffArr } = await dbSelect('staff', `email=eq.${encodeURIComponent(email)}&limit=1`);
+  if (!staffArr || !staffArr.length) {
+    document.getElementById('loginAlert').innerHTML = `<div class="alert alert-error">No staff account found for this email.</div>`;
+    return;
+  }
+  APP.staff = staffArr[0];
+  await loadAccessMap();
+  activateApp();
+}
+
+async function demoLogin() {
+  APP.demo = true;
+  APP.staff = { name: 'Demo Viewer', role: 'admin', email: 'demo' };
+  activateApp();
+}
+
+async function loadAccessMap() {
+  if (APP.staff.role === 'super_admin') { APP.accessMap = { all: true }; return; }
+  const { data } = await dbSelect('staff_course_access', `staff_id=eq.${APP.staff.id}`);
+  APP.accessMap = {};
+  (data || []).forEach(row => { APP.accessMap[row.course_id] = row.access_level; });
+}
+
+function activateApp() {
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('appShell').classList.remove('hidden');
+  const roleMap = { super_admin: 'badge-super', admin: 'badge-admin', instructor: 'badge-instructor' };
+  document.getElementById('navStaffName').innerHTML =
+    `${APP.staff.name} &nbsp;<span class="badge ${roleMap[APP.staff.role]||'badge-neutral'}">${APP.staff.role || 'demo'}</span>`;
+  // Hide new course button for instructors
+  if (APP.staff.role === 'instructor') document.getElementById('btnNewCourse').classList.add('hidden');
+  loadAll();
+}
+
+async function doLogout() {
+  await authSignOut();
+  APP = { staff: null, accessMap: {}, demo: false };
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('appShell').classList.add('hidden');
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPassword').value = '';
+}
+
+// ============================================================
+// DATA LOADING
+// ============================================================
+async function loadAll() {
+  await Promise.all([ loadDashboard(), loadCatalog(), loadModuleLibrary(), loadStudents(), loadStaff(), loadModeration() ]);
+}
+
+async function loadDashboard() {
+  const [courses, students, enrollments, pending] = await Promise.all([
+    dbSelect('courses', 'select=id'),
+    dbSelect('students', 'select=id'),
+    dbSelect('course_enrollments', 'is_active=eq.true&select=id'),
+    dbSelect('messages', `app_context=eq.training&status=eq.pending&select=id`)
+  ]);
+  const stats = [
+    { label: 'Courses', value: (courses.data||[]).length, sub: 'in catalog', icon: '📚' },
+    { label: 'Students', value: (students.data||[]).length, sub: 'registered', icon: '🎓' },
+    { label: 'Enrollments', value: (enrollments.data||[]).length, sub: 'active', icon: '✅' },
+    { label: 'Pending Messages', value: (pending.data||[]).length, sub: 'awaiting review', icon: '📨' }
+  ];
+  document.getElementById('dashStats').innerHTML = stats.map(s => `
+    <div class="stat-card">
+      <div class="stat-label">${s.icon} &nbsp;${s.label}</div>
+      <div class="stat-value">${s.value}</div>
+      <div class="stat-sub">${s.sub}</div>
+    </div>`).join('');
+
+  const { data: recEnroll } = await dbSelect('course_enrollments', 'order=created_at.desc&limit=8&select=created_at,student_id,course_id');
+  const [stMap, coMap] = await Promise.all([
+    dbSelect('students', 'select=id,name'),
+    dbSelect('courses',  'select=id,title')
+  ]);
+  const stu = Object.fromEntries((stMap.data||[]).map(s=>[s.id,s.name]));
+  const cor = Object.fromEntries((coMap.data||[]).map(c=>[c.id,c.title]));
+  document.getElementById('recentEnrollments').innerHTML = (recEnroll||[]).map(e => `<tr>
+    <td>${stu[e.student_id]||'—'}</td>
+    <td>${cor[e.course_id]||'—'}</td>
+    <td class="text-sm text-muted">${new Date(e.created_at).toLocaleDateString()}</td>
+  </tr>`).join('') || '<tr><td colspan="3" class="text-muted text-sm">No enrollments yet.</td></tr>';
+}
+
+async function loadCatalog() {
+  const { data: courses } = await dbSelect('courses', 'order=created_at.asc');
+  if (!courses || !courses.length) {
+    document.getElementById('courseGrid').innerHTML = '<div class="empty-state"><div class="empty-icon">📚</div><p>No courses yet. Create your first course.</p></div>';
+    return;
+  }
+
+  // Filter by access if not super_admin
+  const visible = APP.accessMap.all ? courses : courses.filter(c => APP.accessMap[c.id]);
+
+  // Count modules and enrollments per course
+  const [modCounts, enrollCounts] = await Promise.all([
+    dbSelect('course_modules', 'select=course_id'),
+    dbSelect('course_enrollments', 'is_active=eq.true&select=course_id')
+  ]);
+  const modMap = {}; (modCounts.data||[]).forEach(r => { modMap[r.course_id] = (modMap[r.course_id]||0)+1; });
+  const enrMap = {}; (enrollCounts.data||[]).forEach(r => { enrMap[r.course_id] = (enrMap[r.course_id]||0)+1; });
+
+  const statusBadge = s => ({ published: 'badge-published', draft: 'badge-draft', archived: 'badge-archived' }[s]||'badge-neutral');
+
+  document.getElementById('courseGrid').innerHTML = visible.map(c => `
+    <div class="course-card" onclick="openCourseDetail('${c.id}')">
+      <div class="course-card-banner" style="background:${c.accent_color||'var(--accent)'};"></div>
+      <div class="course-card-body">
+        <div class="flex justify-between items-center mb-2">
+          <span class="badge ${statusBadge(c.status)}">${c.status}</span>
+          <span class="text-xs text-muted">${c.color_scheme||'light'}</span>
+        </div>
+        <div class="course-card-title">${c.title}</div>
+        <div class="course-card-desc">${c.description||''}</div>
+        <div class="course-card-meta">
+          <span class="text-xs text-muted">🧩 ${modMap[c.id]||0} modules</span>
+          <span class="text-xs text-muted">🎓 ${enrMap[c.id]||0} enrolled</span>
+          ${APP.accessMap[c.id] ? `<span class="badge badge-info text-xs">${APP.accessMap[c.id]}</span>` : (APP.accessMap.all ? '<span class="badge badge-super text-xs">super</span>' : '')}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function openCourseDetail(courseId) {
+  showPanel('courseDetail');
+  const el = document.getElementById('courseDetailContent');
+  el.innerHTML = '<div class="text-muted"><span class="spinner"></span> Loading...</div>';
+
+  const [{ data: course }, { data: cms }, { data: allModules }, { data: enrollments }] = await Promise.all([
+    dbSelect('courses', `id=eq.${courseId}&limit=1`),
+    dbSelect('course_modules', `course_id=eq.${courseId}&order=order_index.asc`),
+    dbSelect('modules', 'select=id,title,description'),
+    dbSelect('course_enrollments', `course_id=eq.${courseId}&is_active=eq.true&select=student_id`)
+  ]);
+  const c = course[0];
+  const modMap = Object.fromEntries((allModules||[]).map(m=>[m.id,m]));
+
+  // How many courses does each module appear in (reuse indicator)
+  const { data: allCMs } = await dbSelect('course_modules', 'select=module_id,course_id');
+  const moduleUsage = {};
+  (allCMs||[]).forEach(r => { moduleUsage[r.module_id] = (moduleUsage[r.module_id]||0)+1; });
+
+  const banner = c.banner_url
+    ? `url('${c.banner_url}') center/cover no-repeat`
+    : `linear-gradient(135deg, ${c.primary_color||'#0F172A'} 0%, ${c.accent_color||'#6366F1'} 100%)`;
+
+  el.innerHTML = `
+    <button class="btn btn-ghost mb-4" onclick="showPanel('catalog')">← Back to Catalog</button>
+    <div class="course-hero" style="background:${banner};">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <span class="badge ${c.status==='published'?'badge-published':c.status==='draft'?'badge-draft':'badge-archived'} mb-2">${c.status}</span>
+          <h1 style="font-family:'${c.font_family||'Inter'}',sans-serif;">${c.title}</h1>
+          <p>${c.description||''}</p>
+        </div>
+        <button class="btn btn-outline" style="border-color:rgba(255,255,255,0.4);color:#fff;" onclick="openCourseModal('${c.id}')">Edit Course</button>
+      </div>
+      <div class="course-hero-meta">
+        <span class="hero-chip">🧩 ${cms.length} modules</span>
+        <span class="hero-chip">🎓 ${enrollments.length} enrolled</span>
+        <span class="hero-chip">🎨 ${c.primary_color||'default'} · ${c.accent_color||'default'}</span>
+        <span class="hero-chip">🔤 ${c.font_family||'Inter'}</span>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="flex justify-between items-center mb-4">
+        <div class="font-bold">Modules</div>
+        <span class="text-sm text-muted">Order • Section Label • Reuse</span>
+      </div>
+      ${cms.map(cm => {
+        const mod = modMap[cm.module_id] || {};
+        const isShared = (moduleUsage[cm.module_id]||1) > 1;
+        return `
+        <div class="module-row">
+          <div class="module-order" style="background:${c.accent_color||'var(--accent)'}1a;color:${c.accent_color||'var(--accent)'}">${cm.order_index}</div>
+          <div class="module-info">
+            <strong>${mod.title||'Unknown'}</strong>
+            <span>${cm.section_label ? `<em>${cm.section_label}</em> · ` : ''}${mod.description||''}</span>
+          </div>
+          <div class="flex gap-2 items-center">
+            ${isShared ? `<span class="reuse-pill">♻️ Used in ${moduleUsage[cm.module_id]} courses</span>` : ''}
+            ${cm.accent_color_override ? `<span class="badge badge-info text-xs">color override</span>` : ''}
+          </div>
+        </div>`;
+      }).join('')}
+      ${cms.length === 0 ? '<div class="empty-state"><div class="empty-icon">🧩</div><p>No modules assigned yet.</p></div>' : ''}
+    </div>
+
+    <div class="card">
+      <div class="font-bold mb-4">Enrolled Students (${enrollments.length})</div>
+      <div id="enrolledStudentsList"><span class="spinner"></span></div>
+    </div>`;
+
+  // Load student names
+  if (enrollments.length) {
+    const ids = enrollments.map(e=>e.student_id);
+    const { data: studs } = await dbSelect('students', `id=in.(${ids.join(',')})&select=id,name,email`);
+    document.getElementById('enrolledStudentsList').innerHTML = `
+      <table class="data-table">
+        <thead><tr><th>Name</th><th>Email</th></tr></thead>
+        <tbody>${(studs||[]).map(s=>`<tr><td>${s.name}</td><td class="text-sm text-muted">${s.email}</td></tr>`).join('')}</tbody>
+      </table>`;
+  } else {
+    document.getElementById('enrolledStudentsList').innerHTML = '<p class="text-muted text-sm">No students enrolled.</p>';
+  }
+}
+
+async function loadModuleLibrary() {
+  const [{ data: modules }, { data: allCMs }, { data: courses }] = await Promise.all([
+    dbSelect('modules', 'order=created_at.asc'),
+    dbSelect('course_modules', 'select=module_id,course_id,section_label,order_index'),
+    dbSelect('courses', 'select=id,title,accent_color')
+  ]);
+  const courseMap = Object.fromEntries((courses||[]).map(c=>[c.id,c]));
+  const usage = {};
+  (allCMs||[]).forEach(r => {
+    if (!usage[r.module_id]) usage[r.module_id] = [];
+    usage[r.module_id].push({ ...r, course: courseMap[r.course_id] });
+  });
+
+  const el = document.getElementById('moduleLibraryList');
+  if (!modules || !modules.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">🧩</div><p>No modules yet.</p></div>';
+    return;
+  }
+  el.innerHTML = modules.map(m => {
+    const usedIn = usage[m.id] || [];
+    const isShared = usedIn.length > 1;
+    return `
+      <div class="module-row">
+        <div class="module-order" style="background:${isShared?'#D1FAE5':'var(--bg)'};color:${isShared?'#065F46':'var(--text-muted)'}">${usedIn.length}</div>
+        <div class="module-info">
+          <strong>${m.title}</strong>
+          <span>${m.description||''}</span>
+        </div>
+        <div class="flex gap-2 items-center flex-wrap">
+          ${usedIn.map(u => `
+            <span style="display:inline-flex;align-items:center;gap:4px;background:${(u.course?.accent_color||'#6366F1')}22;color:${u.course?.accent_color||'#6366F1'};padding:3px 10px;border-radius:20px;font-size:0.74rem;font-weight:600;">
+              ${u.course?.title||'Unknown'} &middot; ${u.section_label||'#'+u.order_index}
+            </span>`).join('')}
+          ${usedIn.length === 0 ? '<span class="badge badge-neutral">Unassigned</span>' : ''}
+          ${isShared ? '<span class="reuse-pill">♻️ Shared</span>' : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function loadStudents() {
+  const [{ data: students }, { data: enrollments }] = await Promise.all([
+    dbSelect('students', 'order=created_at.desc'),
+    dbSelect('course_enrollments', 'is_active=eq.true&select=student_id')
+  ]);
+  const enrCount = {};
+  (enrollments||[]).forEach(e => { enrCount[e.student_id] = (enrCount[e.student_id]||0)+1; });
+  document.getElementById('studentsTable').innerHTML = (students||[]).map(s => `<tr>
+    <td class="font-bold">${s.name}</td>
+    <td class="text-sm text-muted">${s.email}</td>
+    <td><span class="badge badge-info">${enrCount[s.id]||0} course${(enrCount[s.id]||0)!==1?'s':''}</span></td>
+    <td class="text-sm text-muted">${new Date(s.created_at).toLocaleDateString()}</td>
+  </tr>`).join('') || '<tr><td colspan="4" class="text-muted text-sm">No students.</td></tr>';
+}
+
+async function loadStaff() {
+  const [{ data: staff }, { data: access }, { data: courses }] = await Promise.all([
+    dbSelect('staff', 'order=role.asc,name.asc'),
+    dbSelect('staff_course_access', 'select=staff_id,course_id,access_level'),
+    dbSelect('courses', 'select=id,title')
+  ]);
+  const courseMap = Object.fromEntries((courses||[]).map(c=>[c.id,c.title]));
+  const accessByStaff = {};
+  (access||[]).forEach(r => {
+    if (!accessByStaff[r.staff_id]) accessByStaff[r.staff_id] = [];
+    accessByStaff[r.staff_id].push({ course: courseMap[r.course_id], level: r.access_level });
+  });
+  const roleBadge = r => ({ super_admin:'badge-super', admin:'badge-admin', instructor:'badge-instructor' }[r]||'badge-neutral');
+  document.getElementById('staffTable').innerHTML = (staff||[]).map(s => {
+    const acc = s.role === 'super_admin' ? '<span class="badge badge-super">All courses</span>' :
+      (accessByStaff[s.id]||[]).map(a => `<span style="display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:12px;font-size:0.72rem;font-weight:600;background:var(--bg);color:var(--text-muted);">${a.course||'?'} <em>(${a.level})</em></span>`).join(' ') || '<span class="text-muted text-xs">None assigned</span>';
+    return `<tr>
+      <td class="font-bold">${s.name}</td>
+      <td class="text-sm text-muted">${s.email}</td>
+      <td><span class="badge ${roleBadge(s.role)}">${s.role}</span></td>
+      <td style="max-width:320px;">${acc}</td>
+      <td>${s.is_active ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-neutral">Inactive</span>'}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="5" class="text-muted text-sm">No staff.</td></tr>';
+}
+
+async function loadModeration() {
+  const { data: msgs } = await dbSelect('messages', 'app_context=eq.training&order=created_at.desc&limit=50');
+  const el = document.getElementById('moderationTable');
+  if (!msgs || !msgs.length) {
+    el.innerHTML = '<tr><td colspan="5" class="text-muted text-sm">No training messages yet.</td></tr>';
+    return;
+  }
+  const statusBadge = s => ({ pending:'badge-warning', approved:'badge-success', rejected:'badge-danger' }[s]||'badge-neutral');
+  el.innerHTML = msgs.map(m => `<tr>
+    <td class="text-sm text-muted">${new Date(m.created_at).toLocaleDateString()}</td>
+    <td>${m.author_name || '<em class="text-muted">Anonymous</em>'}</td>
+    <td style="max-width:280px;">
+      <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:260px;" title="${m.content.replace(/"/g,'&quot;')}">${m.content}</div>
+    </td>
+    <td><span class="badge ${statusBadge(m.status)}">${m.status}</span></td>
+    <td>
+      ${m.status === 'pending' && !APP.demo ? `
+        <button class="btn btn-sm btn-success" onclick="moderateMsg('${m.id}','approved')">Approve</button>
+        <button class="btn btn-sm btn-danger"  onclick="moderateMsg('${m.id}','rejected')" style="margin-left:4px;">Reject</button>` : '—'}
+    </td>
+  </tr>`).join('');
+}
+
+async function moderateMsg(id, status) {
+  await dbUpdate('messages', { id }, { status, reviewed_at: new Date().toISOString() });
+  loadModeration();
+  loadDashboard();
+}
+
+// ============================================================
+// PANEL ROUTING
+// ============================================================
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  const panel = document.getElementById('panel-' + name);
+  const nav   = document.getElementById('nav-'   + name);
+  if (panel) panel.classList.add('active');
+  if (nav)   nav.classList.add('active');
+}
+
+// ============================================================
+// COURSE MODAL
+// ============================================================
+let _editingCourseId = null;
+
+function openCourseModal(courseId = null) {
+  _editingCourseId = courseId;
+  document.getElementById('courseModalTitle').textContent = courseId ? 'Edit Course' : 'New Course';
+  document.getElementById('courseModalAlert').innerHTML = '';
+  if (!courseId) {
+    document.getElementById('cmTitle').value = '';
+    document.getElementById('cmDesc').value = '';
+    document.getElementById('cmStatus').value = 'draft';
+    document.getElementById('cmColorScheme').value = 'dark';
+    document.getElementById('cmPrimary').value = '#0F172A';
+    document.getElementById('cmAccent').value  = '#6366F1';
+    document.getElementById('cmPrimaryPicker').value = '#0F172A';
+    document.getElementById('cmAccentPicker').value  = '#6366F1';
+    document.getElementById('cmFont').value = 'Inter';
+    document.getElementById('cmBanner').value = '';
+  } else {
+    // Fetch course data
+    dbSelect('courses', `id=eq.${courseId}&limit=1`).then(({ data }) => {
+      if (!data || !data.length) return;
+      const c = data[0];
+      document.getElementById('cmTitle').value  = c.title || '';
+      document.getElementById('cmDesc').value   = c.description || '';
+      document.getElementById('cmStatus').value = c.status || 'draft';
+      document.getElementById('cmColorScheme').value = c.color_scheme || 'light';
+      document.getElementById('cmPrimary').value = c.primary_color || '#0F172A';
+      document.getElementById('cmAccent').value  = c.accent_color  || '#6366F1';
+      document.getElementById('cmPrimaryPicker').value = c.primary_color || '#0F172A';
+      document.getElementById('cmAccentPicker').value  = c.accent_color  || '#6366F1';
+      document.getElementById('cmFont').value   = c.font_family || 'Inter';
+      document.getElementById('cmBanner').value = c.banner_url || '';
+    });
+  }
+  // Sync pickers
+  document.getElementById('cmPrimaryPicker').oninput = e => { document.getElementById('cmPrimary').value = e.target.value; };
+  document.getElementById('cmPrimary').oninput = e => { document.getElementById('cmPrimaryPicker').value = e.target.value; };
+  document.getElementById('cmAccentPicker').oninput = e => { document.getElementById('cmAccent').value = e.target.value; };
+  document.getElementById('cmAccent').oninput = e => { document.getElementById('cmAccentPicker').value = e.target.value; };
+  document.getElementById('courseModal').classList.add('open');
+}
+
+async function saveCourse() {
+  const title = document.getElementById('cmTitle').value.trim();
+  if (!title) { document.getElementById('courseModalAlert').innerHTML = '<div class="alert alert-error">Title is required.</div>'; return; }
+  const payload = {
+    title,
+    description:    document.getElementById('cmDesc').value.trim() || null,
+    status:         document.getElementById('cmStatus').value,
+    color_scheme:   document.getElementById('cmColorScheme').value,
+    primary_color:  document.getElementById('cmPrimary').value || null,
+    accent_color:   document.getElementById('cmAccent').value  || null,
+    font_family:    document.getElementById('cmFont').value.trim() || null,
+    banner_url:     document.getElementById('cmBanner').value.trim() || null
+  };
+  let err;
+  if (_editingCourseId) {
+    const res = await dbUpdate('courses', { id: _editingCourseId }, payload);
+    err = res.error;
+  } else {
+    const res = await dbInsert('courses', payload);
+    err = res.error;
+  }
+  if (err) { document.getElementById('courseModalAlert').innerHTML = `<div class="alert alert-error">${JSON.stringify(err)}</div>`; return; }
+  closeModal('courseModal');
+  loadCatalog();
+  loadDashboard();
+}
+
+// ============================================================
+// MODULE MODAL
+// ============================================================
+async function openModuleModal() {
+  document.getElementById('mmTitle').value = '';
+  document.getElementById('mmDesc').value  = '';
+  document.getElementById('mmCover').value = '';
+  document.getElementById('moduleModalAlert').innerHTML = '';
+  document.getElementById('moduleModal').classList.add('open');
+}
+
+async function saveModule() {
+  const title = document.getElementById('mmTitle').value.trim();
+  if (!title) { document.getElementById('moduleModalAlert').innerHTML = '<div class="alert alert-error">Title is required.</div>'; return; }
+  const payload = {
+    title,
+    description:     document.getElementById('mmDesc').value.trim() || null,
+    cover_image_url: document.getElementById('mmCover').value.trim() || null
+  };
+  const { error } = await dbInsert('modules', payload);
+  if (error) { document.getElementById('moduleModalAlert').innerHTML = `<div class="alert alert-error">${JSON.stringify(error)}</div>`; return; }
+  closeModal('moduleModal');
+  loadModuleLibrary();
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// Kick it off
+document.getElementById('loginScreen').classList.remove('hidden');
+</script>
+</body>
+</html>

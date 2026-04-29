@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Alexandria — Request Access</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --primary: #0F172A;
+    --accent:  #6366F1;
+    --accent-light: #818CF8;
+    --surface: #ffffff;
+    --bg: #F1F5F9;
+    --border: #E2E8F0;
+    --text: #0F172A;
+    --text-muted: #64748B;
+    --success: #10B981;
+    --danger:  #EF4444;
+    --font: 'Inter', sans-serif;
+    --radius: 10px;
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); color: var(--text); background: var(--bg); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .wrap { width: 100%; max-width: 460px; }
+
+  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 2rem; justify-content: center; }
+  .brand .logo { width: 40px; height: 40px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; color: #fff; }
+  .brand-name { font-weight: 700; font-size: 1rem; }
+  .brand-sub  { font-size: 0.78rem; color: var(--text-muted); }
+
+  .card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 2.5rem; }
+  .card h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .card .sub { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.75rem; line-height: 1.55; }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1rem; }
+  label { font-size: 0.82rem; font-weight: 600; }
+  input, textarea { width: 100%; padding: 9px 13px; border: 1.5px solid var(--border); border-radius: 8px; font-family: var(--font); font-size: 0.9rem; color: var(--text); background: #fff; transition: border-color 0.2s; }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+  textarea { resize: vertical; min-height: 90px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 20px; border-radius: 8px; font-size: 0.9rem; font-weight: 500; cursor: pointer; border: 1.5px solid transparent; transition: all 0.2s; font-family: var(--font); width: 100%; }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-light); border-color: var(--accent-light); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-outline { background: transparent; color: var(--text); border-color: var(--border); margin-top: 0.6rem; }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  .alert { padding: 11px 14px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1rem; }
+  .alert-error   { background: #FEE2E2; border-left: 4px solid var(--danger);  color: #7F1D1D; }
+  .alert-success { background: #D1FAE5; border-left: 4px solid var(--success); color: #064E3B; }
+  .alert-info    { background: #EFF6FF; border-left: 4px solid var(--accent);  color: #1E3A5F; }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+  .text-center { text-align: center; }
+  .text-sm { font-size: 0.85rem; }
+  .text-muted { color: var(--text-muted); }
+  .hidden { display: none !important; }
+
+  .confirmed-icon { font-size: 2.75rem; margin-bottom: 1rem; text-align: center; }
+  .confirmed-title { font-size: 1.3rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem; }
+  .confirmed-body { color: var(--text-muted); font-size: 0.88rem; line-height: 1.7; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <div class="logo">A</div>
+    <div>
+      <div class="brand-name">Alexandria</div>
+      <div class="brand-sub">Training Portal</div>
+    </div>
+  </div>
+
+  <!-- Step 1: Entry choice -->
+  <div class="card" id="panel-choice">
+    <h2>Welcome</h2>
+    <p class="sub">Alexandria is an invite-only learning portal. Choose how you'd like to continue.</p>
+    <button class="btn btn-primary" id="btn-have-invite">I have an invite link</button>
+    <button class="btn btn-outline" id="btn-request">Request access</button>
+    <hr class="divider"/>
+    <p class="text-sm text-muted text-center">Already a member? <a href="index.html">Sign in →</a></p>
+  </div>
+
+  <!-- Step 2a: Token entry -->
+  <div class="card hidden" id="panel-token">
+    <h2>Enter Your Invite Code</h2>
+    <p class="sub">Paste the token from your invite link. It's the long code at the end of the URL.</p>
+    <div id="token-alert"></div>
+    <div class="form-group">
+      <label>Invite Token</label>
+      <input type="text" id="token-input" placeholder="e.g. 3f9a2c4d…" autocomplete="off" spellcheck="false"/>
+    </div>
+    <button class="btn btn-primary" id="btn-verify-token">Verify & Continue →</button>
+    <button class="btn btn-outline" id="btn-back-from-token">← Back</button>
+  </div>
+
+  <!-- Step 2b: Access request form -->
+  <div class="card hidden" id="panel-request">
+    <h2>Request Access</h2>
+    <p class="sub">Tell us a bit about yourself. A staff member will review your request and send an invite if approved.</p>
+    <div id="request-alert"></div>
+    <div class="form-group">
+      <label>Your Name *</label>
+      <input type="text" id="req-name" placeholder="Full name or display name"/>
+    </div>
+    <div class="form-group">
+      <label>Email Address *</label>
+      <input type="email" id="req-email" placeholder="you@example.com"/>
+    </div>
+    <div class="form-group">
+      <label>Why do you want access?</label>
+      <textarea id="req-message" placeholder="How did you hear about Alexandria? What are you hoping to learn or contribute?"></textarea>
+    </div>
+    <button class="btn btn-primary" id="btn-submit-request">Submit Request</button>
+    <button class="btn btn-outline" id="btn-back-from-request">← Back</button>
+  </div>
+
+  <!-- Step 3: Confirmation -->
+  <div class="card hidden" id="panel-confirmed">
+    <div class="confirmed-icon">✉️</div>
+    <div class="confirmed-title">Request Submitted</div>
+    <p class="confirmed-body">
+      Your request has been received. A staff member will review it and,
+      if approved, send an invite link to <strong id="confirmed-email"></strong>.<br/><br/>
+      Most requests are reviewed within a few business days.
+    </p>
+    <hr class="divider"/>
+    <p class="text-sm text-muted text-center"><a href="index.html">← Back to sign in</a></p>
+  </div>
+
+</div>
+
+<script type="module">
+import { submitAccessRequest, verifyInviteToken } from './js/invitations.js'
+
+// --- Panel navigation ---
+const PANELS = ['panel-choice','panel-token','panel-request','panel-confirmed']
+const show = id => PANELS.forEach(p => document.getElementById(p).classList.toggle('hidden', p !== id))
+const setAlert = (elId, type, msg) => {
+  const el = document.getElementById(elId)
+  el.innerHTML = msg ? `<div class="alert alert-${type}">${msg}</div>` : ''
+}
+
+// Entry choice
+document.getElementById('btn-have-invite').addEventListener('click', () => show('panel-token'))
+document.getElementById('btn-request').addEventListener('click', () => show('panel-request'))
+document.getElementById('btn-back-from-token').addEventListener('click', () => show('panel-choice'))
+document.getElementById('btn-back-from-request').addEventListener('click', () => show('panel-choice'))
+
+// Auto-fill token from URL ?token=...
+const urlToken = new URLSearchParams(location.search).get('token')
+if (urlToken) {
+  document.getElementById('token-input').value = urlToken
+  show('panel-token')
+}
+
+// --- Token verification ---
+document.getElementById('btn-verify-token').addEventListener('click', async () => {
+  const token = document.getElementById('token-input').value.trim()
+  setAlert('token-alert', '', '')
+  if (!token) { setAlert('token-alert', 'error', 'Please enter your invite token.'); return }
+
+  const btn = document.getElementById('btn-verify-token')
+  btn.disabled = true; btn.textContent = 'Verifying…'
+
+  const { data, error } = await verifyInviteToken(token)
+
+  if (error || !data) {
+    setAlert('token-alert', 'error', 'Invite not found, already used, or expired. Contact the person who invited you.')
+    btn.disabled = false; btn.textContent = 'Verify & Continue →'
+    return
+  }
+
+  // Store invite context and redirect to signup
+  sessionStorage.setItem('invite_token', token)
+  sessionStorage.setItem('invite_email', data.email)
+  sessionStorage.setItem('invite_role',  data.role)
+  window.location.href = `index.html?invite=1`
+})
+
+// --- Access request submission ---
+document.getElementById('btn-submit-request').addEventListener('click', async () => {
+  const name    = document.getElementById('req-name').value.trim()
+  const email   = document.getElementById('req-email').value.trim()
+  const message = document.getElementById('req-message').value.trim()
+  setAlert('request-alert', '', '')
+
+  if (!name)  { setAlert('request-alert', 'error', 'Name is required.'); return }
+  if (!email) { setAlert('request-alert', 'error', 'Email is required.'); return }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    setAlert('request-alert', 'error', 'Please enter a valid email address.')
+    return
+  }
+
+  const btn = document.getElementById('btn-submit-request')
+  btn.disabled = true; btn.textContent = 'Submitting…'
+
+  const { error, duplicate } = await submitAccessRequest({ name, email, message: message || null })
+
+  if (duplicate) {
+    setAlert('request-alert', 'info', duplicate)
+    btn.disabled = false; btn.textContent = 'Submit Request'
+    return
+  }
+
+  if (error) {
+    setAlert('request-alert', 'error', 'Something went wrong. Please try again in a moment.')
+    btn.disabled = false; btn.textContent = 'Submit Request'
+    return
+  }
+
+  document.getElementById('confirmed-email').textContent = email
+  show('panel-confirmed')
+})
+</script>
+</body>
+</html>

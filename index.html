@@ -164,6 +164,48 @@
   .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 6px; }
   .progress-fill { height: 100%; background: var(--success); border-radius: 3px; transition: width 0.4s; }
 
+  /* ============================================================
+     DISCUSSION BOARDS
+     ============================================================ */
+  .disc-board-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.15s;
+    border-top: 4px solid var(--accent);
+  }
+  .disc-board-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+  .disc-board-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.35rem; }
+  .disc-board-meta  { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.5rem; }
+  .disc-board-stats { display: flex; gap: 1rem; margin-top: 0.75rem; }
+  .disc-board-stat  { font-size: 0.78rem; color: var(--text-muted); }
+
+  .thread-row { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
+  .thread-row:last-child { border-bottom: none; }
+  .thread-row:hover { background: #F8FAFC; }
+  .thread-avatar { width: 38px; height: 38px; border-radius: 10px; background: var(--accent); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 1rem; flex-shrink: 0; }
+  .thread-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.2rem; line-height: 1.4; }
+  .thread-meta  { font-size: 0.78rem; color: var(--text-muted); }
+  .thread-reply-count { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 52px; text-align: center; color: var(--text-muted); }
+  .thread-reply-count .count { font-size: 1.25rem; font-weight: 700; color: var(--text); line-height: 1; }
+  .thread-reply-count .label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .post-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.25rem 1.5rem; margin-bottom: 1rem; border-left: 4px solid transparent; }
+  .post-card.post-first { border-left-color: var(--accent); }
+  .post-card.post-pending  { border-left-color: var(--warning); opacity: 0.8; }
+  .post-card.post-rejected { border-left-color: var(--danger);  opacity: 0.55; }
+  .post-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; flex-wrap: wrap; gap: 0.5rem; }
+  .post-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+  .post-author { font-weight: 600; font-size: 0.9rem; }
+  .post-date   { font-size: 0.78rem; color: var(--text-muted); }
+  .post-content { font-size: 0.9rem; line-height: 1.7; color: var(--text); white-space: pre-wrap; word-break: break-word; }
+  .post-actions { display: flex; gap: 0.5rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+
+  .reply-box { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; margin-top: 1.5rem; border-top: 3px solid var(--accent); }
+  .reply-box .reply-title { font-weight: 600; font-size: 1rem; margin-bottom: 1.25rem; }
+
   /* UTILS */
   .flex { display: flex; }
   .items-center { align-items: center; }
@@ -211,7 +253,6 @@
         </div>
       </div>
 
-      <!-- Invite welcome banner — shown only when arriving from ?invite=1 -->
       <div class="invite-banner hidden" id="inviteBanner">
         🎉 <span>You've been invited! Your email has been pre-filled below. Complete sign-in to continue.</span>
       </div>
@@ -264,6 +305,8 @@
       <div class="sidebar-section">People</div>
       <div class="sidebar-item" onclick="showPanel('students')" id="nav-students"><span class="icon">👥</span> Students</div>
       <div class="sidebar-item" onclick="showPanel('staff')" id="nav-staff"><span class="icon">🛡️</span> Staff &amp; Access</div>
+      <div class="sidebar-section">Community</div>
+      <div class="sidebar-item" onclick="showPanel('discussions')" id="nav-discussions"><span class="icon">💬</span> Discussion Boards</div>
       <div class="sidebar-section">Moderation</div>
       <div class="sidebar-item" onclick="showPanel('moderation')" id="nav-moderation"><span class="icon">📨</span> Message Queue</div>
     </div>
@@ -339,6 +382,64 @@
           </table>
         </div>
       </div>
+
+      <!-- ============================================================
+           DISCUSSION BOARDS
+           ============================================================ -->
+      <div class="panel" id="panel-discussions">
+
+        <!-- SUB-VIEW 1: Board Overview -->
+        <div id="disc-view-boards">
+          <div class="flex justify-between items-center mb-4" style="flex-wrap:wrap;gap:0.75rem;">
+            <div>
+              <div class="page-title">Discussion Boards</div>
+              <div class="page-sub">One board per course — Q&amp;A, announcements, and community discussion</div>
+            </div>
+          </div>
+          <div class="card-grid" id="discBoardGrid">
+            <div class="text-muted text-sm"><span class="spinner"></span> Loading boards...</div>
+          </div>
+        </div>
+
+        <!-- SUB-VIEW 2: Thread List -->
+        <div id="disc-view-threads" class="hidden">
+          <button class="btn btn-ghost mb-4" onclick="discShowView('boards')" style="padding-left:0;">← All Boards</button>
+          <div class="flex justify-between items-center mb-4" style="flex-wrap:wrap;gap:0.75rem;">
+            <div>
+              <div class="page-title" id="discBoardTitle"></div>
+              <div class="page-sub" id="discBoardSub"></div>
+            </div>
+            <button class="btn btn-primary" id="btnNewThread" onclick="openNewThreadModal()">+ New Thread</button>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div id="discThreadList"><div class="text-muted text-sm" style="padding:1.5rem;"><span class="spinner"></span> Loading threads...</div></div>
+          </div>
+        </div>
+
+        <!-- SUB-VIEW 3: Thread Detail -->
+        <div id="disc-view-thread" class="hidden">
+          <button class="btn btn-ghost mb-4" onclick="discShowView('threads')" style="padding-left:0;">← Back to Board</button>
+          <div class="card mb-4" id="discThreadHeader"></div>
+          <div id="discPostsList"></div>
+          <!-- Reply box -->
+          <div class="reply-box" id="discReplyBox">
+            <div class="reply-title">💬 Post a Reply</div>
+            <div class="form-group mb-4">
+              <label>Your Name</label>
+              <input type="text" id="replyAuthor" placeholder="Your name"/>
+            </div>
+            <div class="form-group mb-4">
+              <label>Message</label>
+              <textarea id="replyContent" rows="4" placeholder="Write your reply..."></textarea>
+            </div>
+            <div class="flex gap-3 items-center">
+              <button class="btn btn-primary" onclick="submitReply()">Post Reply</button>
+              <div id="replyAlert" style="flex:1;"></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /panel-discussions -->
 
       <!-- MODERATION -->
       <div class="panel" id="panel-moderation">
@@ -425,7 +526,7 @@
     <div class="form-grid">
       <div class="form-group form-full">
         <label>Module Title *</label>
-        <input type="text" id="mmTitle" placeholder="e.g. HTML Structure & Semantics"/>
+        <input type="text" id="mmTitle" placeholder="e.g. HTML Structure &amp; Semantics"/>
       </div>
       <div class="form-group form-full">
         <label>Description</label>
@@ -443,17 +544,51 @@
   </div>
 </div>
 
+<!-- NEW THREAD MODAL -->
+<div class="modal-overlay" id="newThreadModal">
+  <div class="modal">
+    <div class="modal-title">📝 New Discussion Thread</div>
+    <div id="ntAlert"></div>
+    <div class="form-grid">
+      <div class="form-group form-full">
+        <label>Thread Title *</label>
+        <input type="text" id="ntTitle" placeholder="e.g. Week 1 Q&amp;A, Intro Discussion"/>
+      </div>
+      <div class="form-group form-full">
+        <label>Opening Post <span class="text-muted" style="font-weight:400;">(optional)</span></label>
+        <textarea id="ntBody" rows="4" placeholder="Provide context, a question, or an announcement to kick things off..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Pin this thread?</label>
+        <select id="ntPinned">
+          <option value="false">No</option>
+          <option value="true">Yes — pin to top</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Start locked?</label>
+        <select id="ntLocked">
+          <option value="false">No — open for replies</option>
+          <option value="true">Yes — announcement only</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('newThreadModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNewThread()">Create Thread</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ============================================================
-// INVITE PRE-FILL — runs before anything else
-// If arriving from request-access.html via ?invite=1, pre-fill email
+// INVITE PRE-FILL
 // ============================================================
 (function() {
   const params = new URLSearchParams(location.search);
   if (params.get('invite') === '1') {
     const email = sessionStorage.getItem('invite_email');
     if (email) {
-      // Wait for DOM then pre-fill
       document.addEventListener('DOMContentLoaded', () => {
         const emailEl = document.getElementById('loginEmail');
         if (emailEl) {
@@ -464,15 +599,14 @@
         document.getElementById('inviteBanner').classList.remove('hidden');
       }, { once: true });
     }
-    // Clean URL without reloading
     history.replaceState(null, '', location.pathname);
   }
 })();
 
 // ============================================================
-// DATA LAYER — pure fetch, same pattern as lawnscaping-portal
+// DATA LAYER
 // ============================================================
-const SUPABASE_URL     = 'https://nmemmfblpzrkwyljpmvp.supabase.co';
+const SUPABASE_URL      = 'https://nmemmfblpzrkwyljpmvp.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tZW1tZmJscHpya3d5bGpwbXZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDUzNzUsImV4cCI6MjA5MjcyMTM3NX0.iAEq-vnY481qdX0nmsonoDZWNFyFrao02GB_MS5BPzs';
 
 let _token = SUPABASE_ANON_KEY;
@@ -543,7 +677,6 @@ async function doLogin() {
     document.getElementById('loginAlert').innerHTML = `<div class="alert alert-error">${error.error_description || error.message || 'Login failed'}</div>`;
     return;
   }
-  // Look up staff record by email
   const { data: staffArr } = await dbSelect('staff', `email=eq.${encodeURIComponent(email)}&limit=1`);
   if (!staffArr || !staffArr.length) {
     document.getElementById('loginAlert').innerHTML = `<div class="alert alert-error">No staff account found for this email.</div>`;
@@ -573,7 +706,6 @@ function activateApp() {
   const roleMap = { super_admin: 'badge-super', admin: 'badge-admin', instructor: 'badge-instructor' };
   document.getElementById('navStaffName').innerHTML =
     `${APP.staff.name} &nbsp;<span class="badge ${roleMap[APP.staff.role]||'badge-neutral'}">${APP.staff.role || 'demo'}</span>`;
-  // Hide new course button for instructors
   if (APP.staff.role === 'instructor') document.getElementById('btnNewCourse').classList.add('hidden');
   loadAll();
 }
@@ -594,7 +726,15 @@ async function doLogout() {
 // DATA LOADING
 // ============================================================
 async function loadAll() {
-  await Promise.all([ loadDashboard(), loadCatalog(), loadModuleLibrary(), loadStudents(), loadStaff(), loadModeration() ]);
+  await Promise.all([
+    loadDashboard(),
+    loadCatalog(),
+    loadModuleLibrary(),
+    loadStudents(),
+    loadStaff(),
+    loadModeration(),
+    loadDiscussions()
+  ]);
 }
 
 async function loadDashboard() {
@@ -605,10 +745,10 @@ async function loadDashboard() {
     dbSelect('messages', `app_context=eq.training&status=eq.pending&select=id`)
   ]);
   const stats = [
-    { label: 'Courses', value: (courses.data||[]).length, sub: 'in catalog', icon: '📚' },
-    { label: 'Students', value: (students.data||[]).length, sub: 'registered', icon: '🎓' },
-    { label: 'Enrollments', value: (enrollments.data||[]).length, sub: 'active', icon: '✅' },
-    { label: 'Pending Messages', value: (pending.data||[]).length, sub: 'awaiting review', icon: '📨' }
+    { label: 'Courses',          value: (courses.data||[]).length,     sub: 'in catalog',      icon: '📚' },
+    { label: 'Students',         value: (students.data||[]).length,    sub: 'registered',      icon: '🎓' },
+    { label: 'Enrollments',      value: (enrollments.data||[]).length, sub: 'active',          icon: '✅' },
+    { label: 'Pending Messages', value: (pending.data||[]).length,     sub: 'awaiting review', icon: '📨' }
   ];
   document.getElementById('dashStats').innerHTML = stats.map(s => `
     <div class="stat-card">
@@ -637,20 +777,14 @@ async function loadCatalog() {
     document.getElementById('courseGrid').innerHTML = '<div class="empty-state"><div class="empty-icon">📚</div><p>No courses yet. Create your first course.</p></div>';
     return;
   }
-
-  // Filter by access if not super_admin
   const visible = APP.accessMap.all ? courses : courses.filter(c => APP.accessMap[c.id]);
-
-  // Count modules and enrollments per course
   const [modCounts, enrollCounts] = await Promise.all([
     dbSelect('course_modules', 'select=course_id'),
     dbSelect('course_enrollments', 'is_active=eq.true&select=course_id')
   ]);
   const modMap = {}; (modCounts.data||[]).forEach(r => { modMap[r.course_id] = (modMap[r.course_id]||0)+1; });
   const enrMap = {}; (enrollCounts.data||[]).forEach(r => { enrMap[r.course_id] = (enrMap[r.course_id]||0)+1; });
-
   const statusBadge = s => ({ published: 'badge-published', draft: 'badge-draft', archived: 'badge-archived' }[s]||'badge-neutral');
-
   document.getElementById('courseGrid').innerHTML = visible.map(c => `
     <div class="course-card" onclick="openCourseDetail('${c.id}')">
       <div class="course-card-banner" style="background:${c.accent_color||'var(--accent)'};"></div>
@@ -674,7 +808,6 @@ async function openCourseDetail(courseId) {
   showPanel('courseDetail');
   const el = document.getElementById('courseDetailContent');
   el.innerHTML = '<div class="text-muted"><span class="spinner"></span> Loading...</div>';
-
   const [{ data: course }, { data: cms }, { data: allModules }, { data: enrollments }] = await Promise.all([
     dbSelect('courses', `id=eq.${courseId}&limit=1`),
     dbSelect('course_modules', `course_id=eq.${courseId}&order=order_index.asc`),
@@ -683,16 +816,12 @@ async function openCourseDetail(courseId) {
   ]);
   const c = course[0];
   const modMap = Object.fromEntries((allModules||[]).map(m=>[m.id,m]));
-
-  // How many courses does each module appear in (reuse indicator)
   const { data: allCMs } = await dbSelect('course_modules', 'select=module_id,course_id');
   const moduleUsage = {};
   (allCMs||[]).forEach(r => { moduleUsage[r.module_id] = (moduleUsage[r.module_id]||0)+1; });
-
   const banner = c.banner_url
     ? `url('${c.banner_url}') center/cover no-repeat`
     : `linear-gradient(135deg, ${c.primary_color||'#0F172A'} 0%, ${c.accent_color||'#6366F1'} 100%)`;
-
   el.innerHTML = `
     <button class="btn btn-ghost mb-4" onclick="showPanel('catalog')">← Back to Catalog</button>
     <div class="course-hero" style="background:${banner};">
@@ -709,9 +838,9 @@ async function openCourseDetail(courseId) {
         <span class="hero-chip">🎓 ${enrollments.length} enrolled</span>
         <span class="hero-chip">🎨 ${c.primary_color||'default'} · ${c.accent_color||'default'}</span>
         <span class="hero-chip">🔤 ${c.font_family||'Inter'}</span>
+        <span class="hero-chip" style="cursor:pointer;" onclick="openDiscBoard('${c.id}','${c.title.replace(/'/g,"\\'")}')">💬 Discussion Board →</span>
       </div>
     </div>
-
     <div class="card mb-4">
       <div class="flex justify-between items-center mb-4">
         <div class="font-bold">Modules</div>
@@ -735,13 +864,10 @@ async function openCourseDetail(courseId) {
       }).join('')}
       ${cms.length === 0 ? '<div class="empty-state"><div class="empty-icon">🧩</div><p>No modules assigned yet.</p></div>' : ''}
     </div>
-
     <div class="card">
       <div class="font-bold mb-4">Enrolled Students (${enrollments.length})</div>
       <div id="enrolledStudentsList"><span class="spinner"></span></div>
     </div>`;
-
-  // Load student names
   if (enrollments.length) {
     const ids = enrollments.map(e=>e.student_id);
     const { data: studs } = await dbSelect('students', `id=in.(${ids.join(',')})&select=id,name,email`);
@@ -767,7 +893,6 @@ async function loadModuleLibrary() {
     if (!usage[r.module_id]) usage[r.module_id] = [];
     usage[r.module_id].push({ ...r, course: courseMap[r.course_id] });
   });
-
   const el = document.getElementById('moduleLibraryList');
   if (!modules || !modules.length) {
     el.innerHTML = '<div class="empty-state"><div class="empty-icon">🧩</div><p>No modules yet.</p></div>';
@@ -898,7 +1023,6 @@ function openCourseModal(courseId = null) {
     document.getElementById('cmFont').value = 'Inter';
     document.getElementById('cmBanner').value = '';
   } else {
-    // Fetch course data
     dbSelect('courses', `id=eq.${courseId}&limit=1`).then(({ data }) => {
       if (!data || !data.length) return;
       const c = data[0];
@@ -914,7 +1038,6 @@ function openCourseModal(courseId = null) {
       document.getElementById('cmBanner').value = c.banner_url || '';
     });
   }
-  // Sync pickers
   document.getElementById('cmPrimaryPicker').oninput = e => { document.getElementById('cmPrimary').value = e.target.value; };
   document.getElementById('cmPrimary').oninput = e => { document.getElementById('cmPrimaryPicker').value = e.target.value; };
   document.getElementById('cmAccentPicker').oninput = e => { document.getElementById('cmAccent').value = e.target.value; };
@@ -975,6 +1098,300 @@ async function saveModule() {
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ============================================================
+// DISCUSSION BOARDS
+// ============================================================
+let _discCurrentCourseId   = null;
+let _discCurrentCourseName = null;
+let _discCurrentThreadId   = null;
+
+function discShowView(view) {
+  ['boards', 'threads', 'thread'].forEach(v => {
+    document.getElementById(`disc-view-${v}`).classList.toggle('hidden', v !== view);
+  });
+}
+
+// Board overview — one card per course
+async function loadDiscussions() {
+  const [{ data: courses }, { data: threads }, { data: posts }] = await Promise.all([
+    dbSelect('courses', 'select=id,title,accent_color,status&order=created_at.asc'),
+    dbSelect('discussion_threads', 'select=course_id'),
+    dbSelect('discussion_posts', 'select=thread_id,status')
+  ]);
+
+  const threadCount = {};
+  (threads || []).forEach(t => { threadCount[t.course_id] = (threadCount[t.course_id] || 0) + 1; });
+
+  const el = document.getElementById('discBoardGrid');
+  if (!courses || !courses.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">💬</div><p>No courses yet. Create a course to get a discussion board.</p></div>';
+    return;
+  }
+
+  const visible = APP.accessMap.all ? courses : courses.filter(c => APP.accessMap[c.id]);
+  el.innerHTML = visible.map(c => {
+    const tc = threadCount[c.id] || 0;
+    return `
+    <div class="disc-board-card" style="border-top-color:${c.accent_color||'var(--accent)'};"
+         onclick="openDiscBoard('${c.id}','${c.title.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.5rem;">
+        <div style="width:36px;height:36px;border-radius:8px;background:${c.accent_color||'var(--accent)'};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1rem;flex-shrink:0;">💬</div>
+        <div class="disc-board-title">${c.title}</div>
+      </div>
+      <div class="disc-board-stats">
+        <span class="disc-board-stat">🗂️ ${tc} thread${tc !== 1 ? 's' : ''}</span>
+        <span class="badge ${c.status === 'published' ? 'badge-published' : c.status === 'draft' ? 'badge-draft' : 'badge-archived'}" style="margin-left:auto;">${c.status}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Open a course's board → show thread list
+async function openDiscBoard(courseId, courseName) {
+  _discCurrentCourseId   = courseId;
+  _discCurrentCourseName = courseName;
+  document.getElementById('discBoardTitle').textContent = courseName;
+  document.getElementById('discBoardSub').textContent   = 'Community discussions · Q&A · Announcements';
+  // Hide new thread button for demo users
+  document.getElementById('btnNewThread').classList.toggle('hidden', !!APP.demo);
+  showPanel('discussions');
+  discShowView('threads');
+  await loadThreadList();
+}
+
+async function loadThreadList() {
+  const el = document.getElementById('discThreadList');
+  el.innerHTML = '<div class="text-muted text-sm" style="padding:1.5rem;"><span class="spinner"></span> Loading threads...</div>';
+
+  const { data: threads } = await dbSelect(
+    'discussion_threads',
+    `course_id=eq.${_discCurrentCourseId}&order=is_pinned.desc,created_at.desc`
+  );
+
+  if (!threads || !threads.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">💬</div><p>No threads yet. Start the conversation!</p></div>';
+    return;
+  }
+
+  // Fetch approved reply counts per thread
+  const ids = threads.map(t => t.id).join(',');
+  const { data: posts } = await dbSelect('discussion_posts', `thread_id=in.(${ids})&status=eq.approved&select=thread_id`);
+  const replyCount = {};
+  (posts || []).forEach(p => { replyCount[p.thread_id] = (replyCount[p.thread_id] || 0) + 1; });
+
+  el.innerHTML = threads.map(t => {
+    const rc = replyCount[t.id] || 0;
+    const initials = (t.author_name || '?')[0].toUpperCase();
+    return `
+    <div class="thread-row" onclick="openDiscThread('${t.id}')">
+      <div class="thread-avatar" style="background:${t.is_pinned ? 'var(--warning)' : 'var(--accent)'}">${t.is_pinned ? '📌' : initials}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="thread-title">
+          ${t.is_locked ? '<span style="color:var(--text-muted);font-size:0.85rem;">🔒 </span>' : ''}
+          ${t.title}
+        </div>
+        <div class="thread-meta">
+          By <strong>${t.author_name}</strong> · ${new Date(t.created_at).toLocaleDateString()}
+        </div>
+      </div>
+      <div class="flex gap-2 items-center" style="flex-shrink:0;">
+        ${t.is_pinned ? '<span class="badge badge-warning">Pinned</span>' : ''}
+        ${t.is_locked ? '<span class="badge badge-neutral">Locked</span>' : ''}
+        <div class="thread-reply-count">
+          <span class="count">${rc}</span>
+          <span class="label">repl${rc !== 1 ? 'ies' : 'y'}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Open a single thread → show posts
+async function openDiscThread(threadId) {
+  _discCurrentThreadId = threadId;
+  discShowView('thread');
+
+  const headerEl = document.getElementById('discThreadHeader');
+  const postsEl  = document.getElementById('discPostsList');
+  headerEl.innerHTML = '<span class="spinner"></span>';
+  postsEl.innerHTML  = '<div class="text-muted text-sm"><span class="spinner"></span> Loading posts...</div>';
+
+  const [{ data: threadArr }, { data: posts }] = await Promise.all([
+    dbSelect('discussion_threads', `id=eq.${threadId}&limit=1`),
+    dbSelect('discussion_posts',   `thread_id=eq.${threadId}&order=created_at.asc`)
+  ]);
+  const thread = threadArr[0];
+  const isStaffAdmin = !APP.demo && (APP.staff.role === 'super_admin' || APP.staff.role === 'admin');
+
+  // Thread header
+  headerEl.innerHTML = `
+    <div class="flex justify-between items-start" style="flex-wrap:wrap;gap:0.75rem;">
+      <div>
+        <div class="page-title" style="margin-bottom:0.35rem;">${thread.title}</div>
+        <div class="page-sub" style="margin-bottom:0;">
+          By <strong>${thread.author_name}</strong> · ${new Date(thread.created_at).toLocaleDateString()}
+          ${thread.is_pinned ? ' &nbsp;<span class="badge badge-warning">📌 Pinned</span>' : ''}
+          ${thread.is_locked ? ' &nbsp;<span class="badge badge-neutral">🔒 Locked</span>' : ''}
+        </div>
+      </div>
+      ${isStaffAdmin ? `
+      <div class="flex gap-2">
+        <button class="btn btn-sm btn-outline" onclick="toggleThreadPin('${thread.id}', ${!thread.is_pinned})">
+          ${thread.is_pinned ? 'Unpin' : '📌 Pin'}
+        </button>
+        <button class="btn btn-sm btn-outline" onclick="toggleThreadLock('${thread.id}', ${!thread.is_locked})">
+          ${thread.is_locked ? '🔓 Unlock' : '🔒 Lock'}
+        </button>
+      </div>` : ''}
+    </div>
+    ${thread.body ? `<hr class="divider"><p style="font-size:0.9rem;line-height:1.75;white-space:pre-wrap;">${thread.body}</p>` : ''}`;
+
+  // Determine which posts to show
+  const isAdmin = !APP.demo && (APP.staff.role === 'super_admin' || APP.staff.role === 'admin');
+  const visiblePosts = isAdmin ? (posts || []) : (posts || []).filter(p => p.status === 'approved');
+
+  if (!visiblePosts.length) {
+    postsEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🗨️</div><p>No replies yet. Be the first to respond!</p></div>';
+  } else {
+    const avatarColors = ['#6366F1','#10B981','#F59E0B','#EF4444','#3B82F6','#8B5CF6','#EC4899','#14B8A6'];
+    const colorFor = name => avatarColors[(name||'?').charCodeAt(0) % avatarColors.length];
+
+    postsEl.innerHTML = visiblePosts.map((p, idx) => `
+      <div class="post-card ${idx === 0 ? 'post-first' : ''} ${p.status === 'pending' ? 'post-pending' : p.status === 'rejected' ? 'post-rejected' : ''}">
+        <div class="post-header">
+          <div class="flex gap-3 items-center">
+            <div class="post-avatar" style="background:${colorFor(p.author_name)};">${(p.author_name||'?')[0].toUpperCase()}</div>
+            <div>
+              <div class="post-author">${p.author_name || 'Anonymous'}
+                ${p.author_type && p.author_type !== 'student' ? `<span class="badge badge-admin" style="margin-left:4px;font-size:0.68rem;">${p.author_type}</span>` : ''}
+              </div>
+              <div class="post-date">${new Date(p.created_at).toLocaleString()}</div>
+            </div>
+            ${p.status !== 'approved' ? `<span class="badge badge-warning" style="margin-left:4px;">${p.status}</span>` : ''}
+          </div>
+          ${isAdmin && p.status === 'pending' ? `
+          <div class="flex gap-2">
+            <button class="btn btn-sm btn-success" onclick="moderateDiscPost('${p.id}','approved')">✓ Approve</button>
+            <button class="btn btn-sm btn-danger"  onclick="moderateDiscPost('${p.id}','rejected')">✗ Reject</button>
+          </div>` : ''}
+        </div>
+        <div class="post-content">${escHtml(p.content)}</div>
+      </div>`);
+  }
+
+  // Reply box — hide if locked
+  const replyBox = document.getElementById('discReplyBox');
+  if (thread.is_locked || APP.demo) {
+    replyBox.classList.add('hidden');
+    if (thread.is_locked) {
+      postsEl.innerHTML += '<div class="alert alert-info" style="margin-top:1rem;">🔒 This thread is locked. No new replies can be posted.</div>';
+    }
+  } else {
+    replyBox.classList.remove('hidden');
+    // Pre-fill staff name
+    const authorInput = document.getElementById('replyAuthor');
+    if (APP.staff && !APP.demo) {
+      authorInput.value    = APP.staff.name;
+      authorInput.readOnly = true;
+      authorInput.style.background = '#F8FAFC';
+    } else {
+      authorInput.value    = '';
+      authorInput.readOnly = false;
+      authorInput.style.background = '';
+    }
+    document.getElementById('replyContent').value = '';
+    document.getElementById('replyAlert').innerHTML = '';
+  }
+}
+
+// Submit a reply
+async function submitReply() {
+  const author  = document.getElementById('replyAuthor').value.trim();
+  const content = document.getElementById('replyContent').value.trim();
+  const alertEl = document.getElementById('replyAlert');
+  if (!author || !content) {
+    alertEl.innerHTML = '<div class="alert alert-error">Name and message are required.</div>';
+    return;
+  }
+  const isStaff = !APP.demo && !!APP.staff;
+  const payload = {
+    thread_id:   _discCurrentThreadId,
+    author_name: author,
+    author_type: isStaff ? APP.staff.role : 'student',
+    content,
+    status:      isStaff ? 'approved' : 'pending'
+  };
+  const { error } = await dbInsert('discussion_posts', payload);
+  if (error) {
+    alertEl.innerHTML = `<div class="alert alert-error">${JSON.stringify(error)}</div>`;
+    return;
+  }
+  alertEl.innerHTML = '<div class="alert alert-success">Reply posted!</div>';
+  document.getElementById('replyContent').value = '';
+  setTimeout(() => { alertEl.innerHTML = ''; }, 2500);
+  await openDiscThread(_discCurrentThreadId);
+}
+
+// Moderate a discussion post (approve/reject)
+async function moderateDiscPost(postId, status) {
+  await dbUpdate('discussion_posts', { id: postId }, { status });
+  await openDiscThread(_discCurrentThreadId);
+}
+
+// Toggle pin
+async function toggleThreadPin(threadId, pinned) {
+  await dbUpdate('discussion_threads', { id: threadId }, { is_pinned: pinned });
+  await openDiscThread(threadId);
+  await loadThreadList();
+}
+
+// Toggle lock
+async function toggleThreadLock(threadId, locked) {
+  await dbUpdate('discussion_threads', { id: threadId }, { is_locked: locked });
+  await openDiscThread(threadId);
+  await loadThreadList();
+}
+
+// New Thread Modal
+function openNewThreadModal() {
+  document.getElementById('ntTitle').value  = '';
+  document.getElementById('ntBody').value   = '';
+  document.getElementById('ntPinned').value = 'false';
+  document.getElementById('ntLocked').value = 'false';
+  document.getElementById('ntAlert').innerHTML = '';
+  document.getElementById('newThreadModal').classList.add('open');
+}
+
+async function saveNewThread() {
+  const title = document.getElementById('ntTitle').value.trim();
+  if (!title) {
+    document.getElementById('ntAlert').innerHTML = '<div class="alert alert-error">Thread title is required.</div>';
+    return;
+  }
+  const payload = {
+    course_id:   _discCurrentCourseId,
+    title,
+    body:        document.getElementById('ntBody').value.trim() || null,
+    author_name: APP.staff?.name || 'Staff',
+    author_type: APP.staff?.role || 'staff',
+    is_pinned:   document.getElementById('ntPinned').value === 'true',
+    is_locked:   document.getElementById('ntLocked').value === 'true'
+  };
+  const { error } = await dbInsert('discussion_threads', payload);
+  if (error) {
+    document.getElementById('ntAlert').innerHTML = `<div class="alert alert-error">${JSON.stringify(error)}</div>`;
+    return;
+  }
+  closeModal('newThreadModal');
+  await loadThreadList();
+  await loadDiscussions();
+}
+
+// HTML escape helper
+function escHtml(str) {
+  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');
+}
 
 // Kick it off
 document.getElementById('loginScreen').classList.remove('hidden');

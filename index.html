@@ -59,6 +59,9 @@
   .login-card h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
   .login-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
 
+  /* INVITE BANNER */
+  .invite-banner { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 10px 14px; margin-bottom: 1.25rem; font-size: 0.85rem; color: #1E40AF; display: flex; align-items: center; gap: 8px; }
+
   /* TYPOGRAPHY */
   .page-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }
   .page-sub { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.75rem; }
@@ -207,6 +210,12 @@
           <div style="font-size:0.78rem;color:var(--text-muted);">Training Portal</div>
         </div>
       </div>
+
+      <!-- Invite welcome banner — shown only when arriving from ?invite=1 -->
+      <div class="invite-banner hidden" id="inviteBanner">
+        🎉 <span>You've been invited! Your email has been pre-filled below. Complete sign-in to continue.</span>
+      </div>
+
       <h2>Staff Sign In</h2>
       <p>Sign in with your staff account to access the catalog.</p>
       <div id="loginAlert"></div>
@@ -219,9 +228,11 @@
         <input type="password" id="loginPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
       </div>
       <button class="btn btn-primary w-full" onclick="doLogin()">Sign In →</button>
-      <p class="text-sm text-muted mt-4" style="text-align:center;">
-        <a href="#" onclick="demoLogin()">Continue as demo (read-only) →</a>
-      </p>
+      <hr style="border:none;border-top:1px solid var(--border);margin:1.25rem 0;"/>
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.83rem;color:var(--text-muted);">
+        <a href="request-access.html">Request access →</a>
+        <a href="#" onclick="demoLogin()">Demo (read-only)</a>
+      </div>
     </div>
   </div>
 </div>
@@ -434,6 +445,31 @@
 
 <script>
 // ============================================================
+// INVITE PRE-FILL — runs before anything else
+// If arriving from request-access.html via ?invite=1, pre-fill email
+// ============================================================
+(function() {
+  const params = new URLSearchParams(location.search);
+  if (params.get('invite') === '1') {
+    const email = sessionStorage.getItem('invite_email');
+    if (email) {
+      // Wait for DOM then pre-fill
+      document.addEventListener('DOMContentLoaded', () => {
+        const emailEl = document.getElementById('loginEmail');
+        if (emailEl) {
+          emailEl.value = email;
+          emailEl.readOnly = true;
+          emailEl.style.background = '#F0F9FF';
+        }
+        document.getElementById('inviteBanner').classList.remove('hidden');
+      }, { once: true });
+    }
+    // Clean URL without reloading
+    history.replaceState(null, '', location.pathname);
+  }
+})();
+
+// ============================================================
 // DATA LAYER — pure fetch, same pattern as lawnscaping-portal
 // ============================================================
 const SUPABASE_URL     = 'https://nmemmfblpzrkwyljpmvp.supabase.co';
@@ -549,6 +585,9 @@ async function doLogout() {
   document.getElementById('appShell').classList.add('hidden');
   document.getElementById('loginEmail').value = '';
   document.getElementById('loginPassword').value = '';
+  document.getElementById('loginEmail').readOnly = false;
+  document.getElementById('loginEmail').style.background = '';
+  document.getElementById('inviteBanner').classList.add('hidden');
 }
 
 // ============================================================

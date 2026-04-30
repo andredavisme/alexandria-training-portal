@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NorthStar Benefits — Wellness Portal</title>
+<link rel="icon" href="data:,"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --primary:#0EA5E9;--accent:#F59E0B;--green:#22C55E;--red:#EF4444;--purple:#8B5CF6;
+  --bg:#0F172A;--card:#1E293B;--border:#334155;--text:#F8FAFC;--muted:#94A3B8;
+  --font:'Inter',sans-serif;--radius:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;}
+.hidden{display:none!important;}
+
+/* Login screen */
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;}
+.login-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:100%;max-width:420px;text-align:center;}
+.login-logo{font-size:3rem;margin-bottom:.5rem;}
+.login-tenant{font-size:1.4rem;font-weight:800;margin-bottom:.25rem;}
+.login-tagline{font-size:.85rem;color:var(--muted);margin-bottom:2rem;}
+.login-label{font-size:.75rem;font-weight:600;color:var(--muted);text-align:left;display:block;margin-bottom:.4rem;}
+.login-select{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;background:#0F172A;color:var(--text);font-size:.9rem;font-family:var(--font);margin-bottom:1.25rem;}
+.login-select:focus{outline:none;border-color:var(--primary);}
+.btn-login{width:100%;padding:12px;border-radius:9px;font-size:.95rem;font-weight:700;border:none;cursor:pointer;font-family:var(--font);transition:opacity .15s;background:var(--primary);color:#fff;}
+.btn-login:hover{opacity:.85;}
+.powered{font-size:.65rem;color:#475569;margin-top:1.5rem;}
+.powered span{color:var(--muted);}
+
+/* App shell */
+.app{display:flex;flex-direction:column;min-height:100vh;}
+.topbar{height:58px;border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;gap:.75rem;background:#0B1120;position:sticky;top:0;z-index:50;}
+.topbar-logo{font-size:1.4rem;}
+.topbar-name{font-weight:800;font-size:.95rem;}
+.topbar-sub{font-size:.68rem;color:var(--muted);}
+.topbar-space{flex:1;}
+.topbar-user{font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:.5rem;}
+.user-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0;}
+.role-pill{font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:6px;}
+.pill-employee{background:#1e3a5f;color:#93C5FD;}
+.pill-admin{background:#2e1065;color:#C4B5FD;}
+.btn-logout{background:none;border:none;color:var(--muted);font-size:.75rem;cursor:pointer;font-family:var(--font);padding:5px 8px;border-radius:6px;}
+.btn-logout:hover{color:var(--text);background:var(--border);}
+
+/* Nav tabs */
+.nav-tabs{border-bottom:1px solid var(--border);background:#0B1120;padding:0 1.5rem;display:flex;gap:4px;overflow-x:auto;}
+.nav-tab{background:none;border:none;color:var(--muted);font-size:.8rem;font-weight:600;padding:.65rem .9rem;cursor:pointer;font-family:var(--font);white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s;}
+.nav-tab:hover{color:var(--text);}
+.nav-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+
+/* Content */
+.content{flex:1;padding:1.5rem;max-width:1100px;margin:0 auto;width:100%;}
+.page{display:none;}
+.page.active{display:block;}
+
+/* Page header */
+.pg-header{margin-bottom:1.5rem;}
+.pg-header h1{font-size:1.25rem;font-weight:800;margin-bottom:.25rem;}
+.pg-header p{font-size:.8rem;color:var(--muted);}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.75rem;margin-bottom:1.5rem;}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:.9rem 1rem;}
+.stat .num{font-size:1.5rem;font-weight:800;}
+.stat .lbl{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-top:2px;}
+.stat.blue .num{color:#60A5FA;}.stat.green .num{color:var(--green);}.stat.yellow .num{color:var(--accent);}.stat.purple .num{color:#A78BFA;}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;}
+.card-title{font-size:.85rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;}
+
+/* Activity log form */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.fg-full{grid-column:1/-1;}
+.field-lbl{display:block;font-size:.7rem;font-weight:600;color:var(--muted);margin-bottom:.3rem;}
+.field-inp{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.85rem;font-family:var(--font);color:var(--text);background:#0F172A;transition:border-color .15s;}
+.field-inp:focus{outline:none;border-color:var(--primary);}
+textarea.field-inp{resize:vertical;min-height:60px;}
+.btn-primary{padding:10px 20px;border-radius:8px;font-size:.85rem;font-weight:700;background:var(--primary);color:#fff;border:none;cursor:pointer;font-family:var(--font);transition:opacity .15s;}
+.btn-primary:hover{opacity:.85;}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+.btn-success{background:var(--green);color:#0B1120;}
+.btn-sm{font-size:.7rem;padding:5px 10px;border-radius:6px;}
+
+/* Activity feed */
+.activity-feed{display:flex;flex-direction:column;gap:.6rem;}
+.activity-item{background:#0F172A;border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;display:flex;align-items:flex-start;gap:.75rem;}
+.activity-icon{font-size:1.3rem;flex-shrink:0;margin-top:1px;}
+.activity-main{flex:1;min-width:0;}
+.activity-title{font-size:.82rem;font-weight:700;}
+.activity-sub{font-size:.7rem;color:var(--muted);margin-top:2px;}
+.activity-badges{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap;}
+.badge{font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:4px;}
+.badge-verified{background:#14532D;color:#86EFAC;}
+.badge-pending{background:#451a03;color:#FCD34D;}
+.badge-vigorous{background:#3b1f1f;color:#FCA5A5;}
+.badge-moderate{background:#1e3a5f;color:#93C5FD;}
+.badge-light{background:#1c2f1c;color:#86EFAC;}
+.badge-type{background:#1e293b;color:#94A3B8;border:1px solid var(--border);}
+.activity-date{font-size:.65rem;color:#475569;margin-top:3px;}
+
+/* Reward events */
+.reward-item{background:#0F172A;border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;}
+.reward-icon{font-size:1.4rem;flex-shrink:0;}
+.reward-main{flex:1;}
+.reward-title{font-size:.82rem;font-weight:700;color:#FCD34D;}
+.reward-sub{font-size:.7rem;color:var(--muted);margin-top:2px;}
+.reward-date{font-size:.65rem;color:#475569;}
+.new-badge{font-size:.6rem;font-weight:700;background:var(--accent);color:#0B1120;padding:2px 7px;border-radius:5px;}
+
+/* Admin table */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.78rem;}
+th{text-align:left;font-size:.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding:.6rem .75rem;border-bottom:1px solid var(--border);white-space:nowrap;}
+td{padding:.6rem .75rem;border-bottom:1px solid #1e293b;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#1a2540;}
+.td-name{font-weight:600;}
+.td-dept{color:var(--muted);font-size:.7rem;}
+.verify-btn{font-size:.65rem;font-weight:700;padding:4px 9px;border-radius:5px;border:1px solid var(--green);color:var(--green);background:none;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:background .15s;}
+.verify-btn:hover{background:#14532D;}
+.verified-tag{font-size:.65rem;font-weight:700;color:#86EFAC;}
+
+/* Rules */
+.rule-card{background:#0F172A;border:1px solid var(--border);border-radius:8px;padding:.9rem 1rem;margin-bottom:.6rem;display:flex;align-items:flex-start;gap:1rem;}
+.rule-main{flex:1;}
+.rule-name{font-size:.85rem;font-weight:700;margin-bottom:2px;}
+.rule-desc{font-size:.72rem;color:var(--muted);line-height:1.5;margin-bottom:.4rem;}
+.rule-reward{font-size:.72rem;color:#FCD34D;font-weight:600;}
+.rule-type-badge{font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:2px;}
+.rt-rate{background:#1c2f1c;color:#86EFAC;}.rt-points{background:#1e3a5f;color:#93C5FD;}
+.rt-unlock{background:#2e1065;color:#C4B5FD;}.rt-recognition{background:#3b2900;color:#FCD34D;}
+
+/* Export */
+.export-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;}
+.export-title{font-size:.85rem;font-weight:700;margin-bottom:.5rem;}
+.export-desc{font-size:.75rem;color:var(--muted);line-height:1.6;margin-bottom:1rem;}
+.export-options{display:flex;gap:.75rem;flex-wrap:wrap;}
+
+/* Toast */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#1E293B;border:1px solid var(--green);color:var(--text);padding:.75rem 1.25rem;border-radius:10px;font-size:.82rem;font-weight:600;z-index:999;animation:slideIn .25s ease;box-shadow:0 4px 20px rgba(0,0,0,.4);}
+@keyframes slideIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* Donut chart */
+.donut-wrap{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;}
+.donut-legend{display:flex;flex-direction:column;gap:.4rem;font-size:.72rem;}
+.legend-item{display:flex;align-items:center;gap:.4rem;}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+/* Progress bar */
+.prog-row{margin-bottom:.75rem;}
+.prog-label{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:4px;}
+.prog-label span:last-child{color:var(--text);font-weight:600;}
+.prog-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:3px;transition:width .5s ease;}
+
+@media(max-width:600px){
+  .form-grid{grid-template-columns:1fr;}
+  .fg-full{grid-column:1;}
+  .stats{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen" class="login-screen">
+  <div class="login-card">
+    <div class="login-logo" id="login-logo">⭐</div>
+    <div class="login-tenant" id="login-tenant">NorthStar Benefits</div>
+    <div class="login-tagline" id="login-tagline">Wellness that works for everyone</div>
+    <label class="login-label">Sign in as</label>
+    <select class="login-select" id="user-select"></select>
+    <button class="btn-login" onclick="login()">→ Enter Portal</button>
+    <div class="powered">Powered by <span>207 Analytix — Employee Fitness Empowerment Platform</span></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="app hidden">
+  <div class="topbar">
+    <div class="topbar-logo" id="app-logo">⭐</div>
+    <div>
+      <div class="topbar-name" id="app-tenant">NorthStar Benefits</div>
+      <div class="topbar-sub">Wellness Portal</div>
+    </div>
+    <div class="topbar-space"></div>
+    <div class="topbar-user">
+      <div class="user-avatar" id="user-avatar" style="background:#0EA5E9">J</div>
+      <div>
+        <div style="font-weight:600;font-size:.78rem" id="user-name">Jordan</div>
+        <div><span class="role-pill" id="role-pill">employee</span></div>
+      </div>
+    </div>
+    <button class="btn-logout" onclick="logout()">← Switch</button>
+  </div>
+
+  <div class="nav-tabs" id="nav-tabs"></div>
+
+  <div class="content">
+
+    <!-- EMPLOYEE: Dashboard -->
+    <div class="page" id="page-dashboard">
+      <div class="pg-header"><h1>My Wellness Dashboard</h1><p id="dash-greeting"></p></div>
+      <div class="stats" id="dash-stats"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="card">
+          <div class="card-title">Recent Activity</div>
+          <div class="activity-feed" id="dash-feed"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🏆 My Rewards</div>
+          <div id="dash-rewards"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMPLOYEE: Log Activity -->
+    <div class="page" id="page-log">
+      <div class="pg-header"><h1>📝 Log Activity</h1><p>Record your workout or wellness session.</p></div>
+      <div class="card">
+        <div class="form-grid">
+          <div>
+            <label class="field-lbl">Activity Type *</label>
+            <select class="field-inp" id="log-type">
+              <option value="cardio">🏃 Cardio</option>
+              <option value="strength">💪 Strength</option>
+              <option value="flexibility">🧘 Flexibility</option>
+              <option value="yoga">🧘 Yoga</option>
+              <option value="walking">🚶 Walking</option>
+              <option value="cycling">🚴 Cycling</option>
+              <option value="swimming">🏊 Swimming</option>
+              <option value="sports">⚽ Sports</option>
+              <option value="other">⭐ Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-lbl">Duration (minutes) *</label>
+            <input class="field-inp" type="number" id="log-duration" min="5" max="300" placeholder="e.g. 45"/>
+          </div>
+          <div>
+            <label class="field-lbl">Intensity</label>
+            <select class="field-inp" id="log-intensity">
+              <option value="light">Light</option>
+              <option value="moderate" selected>Moderate</option>
+              <option value="vigorous">Vigorous</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-lbl">Date</label>
+            <input class="field-inp" type="date" id="log-date"/>
+          </div>
+          <div class="fg-full">
+            <label class="field-lbl">Notes <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+            <textarea class="field-inp" id="log-notes" placeholder="Describe your session…"></textarea>
+          </div>
+        </div>
+        <div style="margin-top:1rem">
+          <button class="btn-primary" id="log-btn" onclick="submitLog()">✓ Submit Activity</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">My Activity History</div>
+        <div class="activity-feed" id="log-history"></div>
+      </div>
+    </div>
+
+    <!-- EMPLOYEE: Rewards -->
+    <div class="page" id="page-rewards">
+      <div class="pg-header"><h1>🏆 Rewards & Benefits</h1><p>Active rules and your earned rewards.</p></div>
+      <div class="card">
+        <div class="card-title">Active Reward Rules</div>
+        <div id="emp-rules"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">My Earned Rewards</div>
+        <div id="emp-rewards"></div>
+      </div>
+    </div>
+
+    <!-- ADMIN: Overview -->
+    <div class="page" id="page-admin-overview">
+      <div class="pg-header"><h1>📊 Program Overview</h1><p>NorthStar Benefits — Acme Corp wellness program at a glance.</p></div>
+      <div class="stats" id="admin-stats"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="card">
+          <div class="card-title">Activity Breakdown</div>
+          <div id="activity-breakdown"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Employee Participation</div>
+          <div id="emp-participation"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN: Verification Queue -->
+    <div class="page" id="page-verify">
+      <div class="pg-header"><h1>✅ Verification Queue</h1><p>Review and verify pending employee activity submissions.</p></div>
+      <div class="card">
+        <div class="table-wrap">
+          <table id="verify-table">
+            <thead><tr><th>Employee</th><th>Dept</th><th>Activity</th><th>Duration</th><th>Intensity</th><th>Date</th><th>Notes</th><th>Action</th></tr></thead>
+            <tbody id="verify-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN: All Activity -->
+    <div class="page" id="page-admin-activity">
+      <div class="pg-header"><h1>📋 All Activity</h1><p>Complete activity log across all employees.</p></div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Employee</th><th>Dept</th><th>Activity</th><th>Duration</th><th>Intensity</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody id="all-activity-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN: Rules -->
+    <div class="page" id="page-rules">
+      <div class="pg-header"><h1>⚙️ Reward Rules</h1><p>Configure activity thresholds that trigger rate adjustments and benefit unlocks.</p></div>
+      <div id="rules-list"></div>
+    </div>
+
+    <!-- ADMIN: Export -->
+    <div class="page" id="page-export">
+      <div class="pg-header"><h1>📤 Export Data</h1><p>Download verified activity reports for policy review.</p></div>
+      <div class="export-section">
+        <div class="export-title">Verified Activity Report</div>
+        <div class="export-desc">Exports all verified employee activity logs for the selected period. De-identified option available for HIPAA-adjacent compliance. Use this data to adjust policy rates or unlock group benefits.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem">
+          <div><label class="field-lbl">From</label><input class="field-inp" type="date" id="export-from"/></div>
+          <div><label class="field-lbl">To</label><input class="field-inp" type="date" id="export-to"/></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;">
+          <label style="display:flex;align-items:center;gap:6px;font-size:.78rem;cursor:pointer;color:var(--muted)">
+            <input type="checkbox" id="deidentify" style="accent-color:var(--primary)"/> De-identify employee names
+          </label>
+        </div>
+        <div class="export-options">
+          <button class="btn-primary" onclick="exportCSV()">Download CSV</button>
+          <button class="btn-primary" style="background:var(--purple)" onclick="exportJSON()">Download JSON</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SUPA_URL='https://hhyhulqngdkwsxhymmcd.supabase.co'
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoeWh1bHFuZ2Rrd3N4aHltbWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzEyMDEsImV4cCI6MjA5MjcwNzIwMX0.dmSy7Q8Je5lEY4XCFzwvfPnkBYLebPE0yZMhy6Y8czI'
+const TENANT_ID='aaaaaaaa-0000-0000-0000-000000000001'
+
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+async function supa(path,opts={}){
+  const{headers:h,...rest}=opts
+  const r=await fetch(SUPA_URL+path,{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json',...(h||{})},...rest})
+  if(!r.ok)throw new Error(await r.text())
+  const t=await r.text();return t?JSON.parse(t):null
+}
+
+const ACTIVITY_ICONS={cardio:'🏃',strength:'💪',flexibility:'🧘',yoga:'🧘',walking:'🚶',cycling:'🚴',swimming:'🏊',sports:'⚽',other:'⭐'}
+const REWARD_ICONS={rate_discount:'💰',benefit_unlock:'🔓',points:'⭐',recognition:'🏅'}
+const COLORS=['#0EA5E9','#22C55E','#F59E0B','#8B5CF6','#EF4444','#14B8A6','#F97316','#EC4899']
+
+let currentUser=null
+let allEmployees=[],allLogs=[],allRules=[],allRewards=[],tenant=null
+
+async function init(){
+  tenant=await supa(`/rest/v1/fitness_tenants?id=eq.${TENANT_ID}&select=*`).then(r=>r[0])
+  allEmployees=await supa(`/rest/v1/fitness_employees?tenant_id=eq.${TENANT_ID}&select=*&order=full_name`)
+  document.getElementById('login-logo').textContent=tenant.logo_emoji
+  document.getElementById('login-tenant').textContent=tenant.name
+  document.getElementById('login-tagline').textContent=tenant.tagline||''
+  document.querySelector(':root').style.setProperty('--primary',tenant.primary_color)
+  document.querySelector(':root').style.setProperty('--accent',tenant.accent_color)
+  const sel=document.getElementById('user-select')
+  sel.innerHTML=allEmployees.map(e=>`<option value="${esc(e.id)}">${esc(e.full_name)} — ${esc(e.department)} (${e.role})</option>`).join('')
+}
+
+function login(){
+  const id=document.getElementById('user-select').value
+  currentUser=allEmployees.find(e=>e.id===id)
+  if(!currentUser)return
+  document.getElementById('login-screen').classList.add('hidden')
+  document.getElementById('app').classList.remove('hidden')
+  document.getElementById('app-logo').textContent=tenant.logo_emoji
+  document.getElementById('app-tenant').textContent=tenant.name
+  document.getElementById('user-name').textContent=currentUser.full_name.split(' ')[0]
+  document.getElementById('user-avatar').textContent=currentUser.full_name[0]
+  document.getElementById('user-avatar').style.background=COLORS[allEmployees.indexOf(currentUser)%COLORS.length]
+  const rp=document.getElementById('role-pill')
+  rp.textContent=currentUser.role
+  rp.className='role-pill '+(currentUser.role==='admin'?'pill-admin':'pill-employee')
+  buildNav()
+  loadData()
+  document.getElementById('log-date').value=new Date().toISOString().split('T')[0]
+  const ef=document.getElementById('export-from')
+  const et=document.getElementById('export-to')
+  et.value=new Date().toISOString().split('T')[0]
+  ef.value=new Date(Date.now()-30*864e5).toISOString().split('T')[0]
+}
+
+function logout(){
+  currentUser=null
+  document.getElementById('app').classList.add('hidden')
+  document.getElementById('login-screen').classList.remove('hidden')
+}
+
+function buildNav(){
+  const tabs=currentUser.role==='admin'
+    ?[{id:'admin-overview',label:'📊 Overview'},{id:'verify',label:'✅ Verify Queue'},{id:'admin-activity',label:'📋 All Activity'},{id:'rules',label:'⚙️ Rules'},{id:'export',label:'📤 Export'}]
+    :[{id:'dashboard',label:'🏠 Dashboard'},{id:'log',label:'📝 Log Activity'},{id:'rewards',label:'🏆 Rewards'}]
+  const nav=document.getElementById('nav-tabs')
+  nav.innerHTML=tabs.map((t,i)=>`<button class="nav-tab${i===0?' active':''}" data-page="page-${t.id}" onclick="switchPage('page-${t.id}',this)">${t.label}</button>`).join('')
+  switchPage('page-'+tabs[0].id,nav.querySelector('.nav-tab'))
+}
+
+function switchPage(pageId,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'))
+  const pg=document.getElementById(pageId)
+  if(pg)pg.classList.add('active')
+  if(btn)btn.classList.add('active')
+}
+
+async function loadData(){
+  ;[allLogs,allRules,allRewards]=await Promise.all([
+    supa(`/rest/v1/fitness_activity_logs?tenant_id=eq.${TENANT_ID}&select=*,employee:fitness_employees(full_name,department)&order=created_at.desc`),
+    supa(`/rest/v1/fitness_reward_rules?tenant_id=eq.${TENANT_ID}&select=*&order=created_at`),
+    supa(`/rest/v1/fitness_reward_events?tenant_id=eq.${TENANT_ID}&select=*&order=triggered_at.desc`),
+  ])
+  if(currentUser.role==='admin'){renderAdmin()}else{renderEmployee()}
+}
+
+// ─ EMPLOYEE ────────────────────────────────────────
+function renderEmployee(){
+  const myLogs=allLogs.filter(l=>l.employee_id===currentUser.id)
+  const myRewards=allRewards.filter(r=>r.employee_id===currentUser.id)
+  const verified=myLogs.filter(l=>l.verified).length
+  const totalMins=myLogs.reduce((s,l)=>s+(l.duration_minutes||0),0)
+  const thisWeek=myLogs.filter(l=>{
+    const d=new Date(l.logged_at);const now=new Date()
+    return(now-d)/(864e5)<=7
+  }).length
+  // stats
+  document.getElementById('dash-stats').innerHTML=`
+    <div class="stat blue"><div class="num">${myLogs.length}</div><div class="lbl">Total Sessions</div></div>
+    <div class="stat green"><div class="num">${verified}</div><div class="lbl">Verified</div></div>
+    <div class="stat yellow"><div class="num">${thisWeek}</div><div class="lbl">This Week</div></div>
+    <div class="stat purple"><div class="num">${Math.round(totalMins/60*10)/10}h</div><div class="lbl">Total Active Time</div></div>`
+  // greeting
+  const h=new Date().getHours()
+  const g=h<12?'Good morning':'h<17?Good afternoon':'Good evening'
+  document.getElementById('dash-greeting').textContent=`${g<12?'Good morning':h<17?'Good afternoon':'Good evening'}, ${currentUser.full_name.split(' ')[0]}. Keep it up!`
+  // feed
+  const feedHtml=myLogs.slice(0,4).map(l=>activityItem(l)).join('')
+  document.getElementById('dash-feed').innerHTML=feedHtml||'<p style="color:var(--muted);font-size:.8rem">No activity yet.</p>'
+  document.getElementById('log-history').innerHTML=myLogs.map(l=>activityItem(l)).join('')||'<p style="color:var(--muted);font-size:.8rem">No activity yet. Log your first session!</p>'
+  // rewards
+  const rewardHtml=myRewards.length?myRewards.map(r=>`
+    <div class="reward-item">
+      <div class="reward-icon">${REWARD_ICONS[allRules.find(x=>x.id===r.rule_id)?.reward_type]||'🎁'}</div>
+      <div class="reward-main">
+        <div class="reward-title">${esc(r.reward_description)}</div>
+        <div class="reward-date">${new Date(r.triggered_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+      </div>
+      ${!r.acknowledged?'<span class="new-badge">NEW</span>':''}
+    </div>`).join(''):'<p style="color:var(--muted);font-size:.8rem">No rewards earned yet. Keep logging activity!</p>'
+  document.getElementById('dash-rewards').innerHTML=rewardHtml
+  document.getElementById('emp-rewards').innerHTML=rewardHtml
+  // rules
+  document.getElementById('emp-rules').innerHTML=allRules.filter(r=>r.active).map(r=>`
+    <div class="rule-card">
+      <div class="rule-main">
+        <div class="rule-name">${esc(r.name)}</div>
+        <div class="rule-desc">${esc(r.description)}</div>
+        <div class="rule-reward">🏆 ${esc(r.reward_value)}</div>
+      </div>
+      <span class="rule-type-badge rt-${r.reward_type.split('_')[0]}">${r.reward_type.replace('_',' ')}</span>
+    </div>`).join('')
+}
+
+function activityItem(l){
+  const emp=l.employee?.full_name||''
+  return`<div class="activity-item">
+    <div class="activity-icon">${ACTIVITY_ICONS[l.activity_type]||'⭐'}</div>
+    <div class="activity-main">
+      <div class="activity-title">${l.activity_type.charAt(0).toUpperCase()+l.activity_type.slice(1)} — ${l.duration_minutes} min</div>
+      ${l.notes?`<div class="activity-sub">${esc(l.notes)}</div>`:''}
+      <div class="activity-badges">
+        <span class="badge badge-${l.intensity}">${l.intensity}</span>
+        <span class="badge badge-type">${l.activity_type}</span>
+        <span class="badge ${l.verified?'badge-verified':'badge-pending'}">${l.verified?'✅ Verified':'⏳ Pending'}</span>
+      </div>
+      <div class="activity-date">${new Date(l.logged_at+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}${l.verified&&l.verified_by?` · Verified by ${esc(l.verified_by)}`:''}</div>
+    </div>
+  </div>`
+}
+
+async function submitLog(){
+  const type=document.getElementById('log-type').value
+  const dur=parseInt(document.getElementById('log-duration').value)
+  const intensity=document.getElementById('log-intensity').value
+  const notes=document.getElementById('log-notes').value.trim()
+  const date=document.getElementById('log-date').value
+  if(!dur||dur<5){alert('Please enter a valid duration (minimum 5 minutes).');return}
+  const btn=document.getElementById('log-btn')
+  btn.disabled=true;btn.textContent='Submitting…'
+  try{
+    await supa('/rest/v1/fitness_activity_logs',{
+      method:'POST',headers:{'Prefer':'return=minimal'},
+      body:JSON.stringify({tenant_id:TENANT_ID,employee_id:currentUser.id,activity_type:type,duration_minutes:dur,intensity,notes:notes||null,logged_at:date,verified:false})
+    })
+    document.getElementById('log-duration').value=''
+    document.getElementById('log-notes').value=''
+    toast('✅ Activity logged! Pending verification.')
+    await loadData()
+  }catch(e){alert('Error: '+e.message)
+  }finally{btn.disabled=false;btn.textContent='✓ Submit Activity'}
+}
+
+// ─ ADMIN ─────────────────────────────────────────
+function renderAdmin(){
+  const verified=allLogs.filter(l=>l.verified).length
+  const pending=allLogs.filter(l=>!l.verified).length
+  const activeEmp=new Set(allLogs.map(l=>l.employee_id)).size
+  const rewardCount=allRewards.length
+  document.getElementById('admin-stats').innerHTML=`
+    <div class="stat blue"><div class="num">${allLogs.length}</div><div class="lbl">Total Logs</div></div>
+    <div class="stat green"><div class="num">${verified}</div><div class="lbl">Verified</div></div>
+    <div class="stat yellow"><div class="num">${pending}</div><div class="lbl">Pending Review</div></div>
+    <div class="stat purple"><div class="num">${activeEmp}/${allEmployees.filter(e=>e.role==='employee').length}</div><div class="lbl">Active Employees</div></div>
+    <div class="stat"><div class="num" style="color:#FCD34D">${rewardCount}</div><div class="lbl">Rewards Earned</div></div>`
+  // activity breakdown
+  const typeCounts={}
+  allLogs.forEach(l=>typeCounts[l.activity_type]=(typeCounts[l.activity_type]||0)+1)
+  const total=allLogs.length
+  document.getElementById('activity-breakdown').innerHTML=Object.entries(typeCounts).sort((a,b)=>b[1]-a[1]).map(([type,count],i)=>`
+    <div class="prog-row">
+      <div class="prog-label"><span>${ACTIVITY_ICONS[type]||''} ${type.charAt(0).toUpperCase()+type.slice(1)}</span><span>${count} session${count!==1?'s':''}</span></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${Math.round(count/total*100)}%;background:${COLORS[i%COLORS.length]}"></div></div>
+    </div>`).join('')
+  // participation
+  const empLogs={}
+  allLogs.forEach(l=>{if(!empLogs[l.employee_id])empLogs[l.employee_id]={name:l.employee?.full_name||'?',dept:l.employee?.department||'',count:0,verified:0};empLogs[l.employee_id].count++;if(l.verified)empLogs[l.employee_id].verified++})
+  const maxLogs=Math.max(...Object.values(empLogs).map(e=>e.count),1)
+  document.getElementById('emp-participation').innerHTML=Object.values(empLogs).sort((a,b)=>b.count-a.count).map((e,i)=>`
+    <div class="prog-row">
+      <div class="prog-label"><span>${esc(e.name)}</span><span>${e.count} sessions</span></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${Math.round(e.count/maxLogs*100)}%;background:${COLORS[i%COLORS.length]}"></div></div>
+    </div>`).join('')
+  // verify queue
+  const pending2=allLogs.filter(l=>!l.verified)
+  document.getElementById('verify-body').innerHTML=pending2.length
+    ?pending2.map(l=>`<tr>
+      <td class="td-name">${esc(l.employee?.full_name||'?')}</td>
+      <td class="td-dept">${esc(l.employee?.department||'')}</td>
+      <td>${ACTIVITY_ICONS[l.activity_type]||''} ${esc(l.activity_type)}</td>
+      <td>${l.duration_minutes} min</td>
+      <td><span class="badge badge-${l.intensity}">${l.intensity}</span></td>
+      <td>${new Date(l.logged_at+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td>
+      <td style="max-width:180px;color:var(--muted);font-size:.7rem">${esc(l.notes||'—')}</td>
+      <td><button class="verify-btn" onclick="verifyLog('${l.id}')">Verify</button></td>
+    </tr>`).join('')
+    :'<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:2rem">No pending submissions — all caught up!</td></tr>'
+  // all activity
+  document.getElementById('all-activity-body').innerHTML=allLogs.map(l=>`<tr>
+    <td class="td-name">${esc(l.employee?.full_name||'?')}</td>
+    <td class="td-dept">${esc(l.employee?.department||'')}</td>
+    <td>${ACTIVITY_ICONS[l.activity_type]||''} ${esc(l.activity_type)}</td>
+    <td>${l.duration_minutes} min</td>
+    <td><span class="badge badge-${l.intensity}">${l.intensity}</span></td>
+    <td>${new Date(l.logged_at+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td>
+    <td>${l.verified?'<span class="verified-tag">✅ Verified</span>':'<span style="color:#FCD34D;font-size:.7rem">⏳ Pending</span>'}</td>
+  </tr>`).join('')
+  // rules
+  document.getElementById('rules-list').innerHTML=allRules.map(r=>`
+    <div class="rule-card">
+      <div class="rule-main">
+        <div class="rule-name">${esc(r.name)} ${r.active?'':'<span style="color:var(--muted);font-weight:400;font-size:.75rem">(inactive)</span>'}</div>
+        <div class="rule-desc">${esc(r.description||'')}</div>
+        <div style="font-size:.7rem;color:var(--muted);margin-top:.3rem">
+          Trigger: <strong style="color:var(--text)">${r.min_sessions} session${r.min_sessions!==1?'s':''}</strong> of 
+          <strong style="color:var(--text)">${r.activity_type==='any'?'any activity':r.activity_type}</strong> 
+          within <strong style="color:var(--text)">${r.period_days} days</strong>
+        </div>
+        <div class="rule-reward" style="margin-top:.4rem">🏆 ${esc(r.reward_value)}</div>
+      </div>
+      <span class="rule-type-badge rt-${r.reward_type.split('_')[0]}">${r.reward_type.replace('_',' ')}</span>
+    </div>`).join('')
+}
+
+async function verifyLog(id){
+  try{
+    await supa(`/rest/v1/fitness_activity_logs?id=eq.${id}`,{
+      method:'PATCH',headers:{'Prefer':'return=minimal'},
+      body:JSON.stringify({verified:true,verified_by:currentUser.full_name,verified_at:new Date().toISOString()})
+    })
+    toast('✅ Activity verified!')
+    await loadData()
+  }catch(e){alert('Error: '+e.message)}
+}
+
+// ─ Export ──────────────────────────────────────
+function getExportData(){
+  const from=document.getElementById('export-from').value
+  const to=document.getElementById('export-to').value
+  const deidentify=document.getElementById('deidentify').checked
+  const filtered=allLogs.filter(l=>l.verified&&l.logged_at>=from&&l.logged_at<=to)
+  return filtered.map((l,i)=>({
+    employee: deidentify?`EMP-${String(i+1).padStart(3,'0')}`:l.employee?.full_name,
+    department: deidentify?null:l.employee?.department,
+    activity_type:l.activity_type,
+    duration_minutes:l.duration_minutes,
+    intensity:l.intensity,
+    logged_date:l.logged_at,
+    verified:l.verified,
+    verified_by:l.verified_by,
+  }))
+}
+function exportCSV(){
+  const data=getExportData()
+  if(!data.length){alert('No verified activity in that date range.');return}
+  const headers=Object.keys(data[0])
+  const rows=data.map(r=>headers.map(h=>JSON.stringify(r[h]??'')).join(','))
+  const csv=[headers.join(','),...rows].join('\n')
+  download('wellness-activity-export.csv','text/csv',csv)
+  toast('📤 CSV downloaded!')
+}
+function exportJSON(){
+  const data=getExportData()
+  if(!data.length){alert('No verified activity in that date range.');return}
+  download('wellness-activity-export.json','application/json',JSON.stringify(data,null,2))
+  toast('📤 JSON downloaded!')
+}
+function download(filename,type,content){
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}))
+  a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a)
+}
+
+// ─ Toast ────────────────────────────────────────
+function toast(msg){
+  const t=document.createElement('div');t.className='toast';t.textContent=msg
+  document.body.appendChild(t);setTimeout(()=>t.remove(),3000)
+}
+
+init()
+</script>
+</body>
+</html>

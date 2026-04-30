@@ -97,12 +97,11 @@
   .layout {
     display: grid;
     grid-template-columns: 260px 1fr;
-    gap: 0;
+    gap: 1.5rem;
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem 1.5rem;
     align-items: start;
-    gap: 1.5rem;
   }
   @media (max-width: 768px) {
     .layout { grid-template-columns: 1fr; }
@@ -142,6 +141,7 @@
     font-weight: 700; display: flex; align-items: center; justify-content: center; }
   .sec-nav-item.active .sec-num { background: var(--role-accent); color: #fff; }
 
+  /* Member list */
   .member-list { display: flex; flex-direction: column; gap: 0; }
   .member-row {
     display: flex; align-items: center; gap: 0.7rem;
@@ -150,14 +150,23 @@
   }
   .member-row:last-child { border-bottom: none; }
   .member-avatar {
-    width: 30px; height: 30px; border-radius: 50%;
+    width: 32px; height: 32px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     font-size: 0.75rem; font-weight: 700; color: #fff; flex-shrink: 0;
   }
-  .member-name { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+  .member-info { flex: 1; min-width: 0; }
+  .member-name { font-size: 0.82rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .member-li {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 0.68rem; color: #0077B5; font-weight: 500;
+    margin-top: 1px; text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .member-li:hover { opacity: 0.75; }
+  .member-li svg { flex-shrink: 0; }
   .member-status {
-    font-size: 0.65rem; font-weight: 600; padding: 1px 6px;
-    border-radius: 20px; margin-left: auto; flex-shrink: 0;
+    font-size: 0.65rem; font-weight: 600; padding: 2px 7px;
+    border-radius: 20px; flex-shrink: 0;
   }
   .status-active   { background: #D1FAE5; color: #065F46; }
   .status-pending  { background: #FEF3C7; color: #92400E; }
@@ -176,113 +185,50 @@
   /* ── Main content ───────────────────────── */
   .main { display: flex; flex-direction: column; gap: 1.25rem; }
 
-  /* Role hero */
-  .role-hero {
-    background: var(--surface); border-radius: var(--radius);
-    box-shadow: var(--shadow-sm); overflow: hidden;
-  }
+  .role-hero { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
   .hero-stripe { height: 5px; }
   .hero-body { padding: 1.5rem 1.75rem; }
-  .hero-eyebrow { font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 0.4rem; }
+  .hero-eyebrow { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 0.4rem; }
   .hero-title { font-size: 1.6rem; font-weight: 800; line-height: 1.2; margin-bottom: 0.3rem; }
-  .hero-tagline { font-size: 1rem; color: var(--text-muted); font-weight: 400;
-    font-style: italic; margin-bottom: 1.1rem; line-height: 1.5; }
+  .hero-tagline { font-size: 1rem; color: var(--text-muted); font-weight: 400; font-style: italic; margin-bottom: 1.1rem; line-height: 1.5; }
   .hero-meta { display: flex; gap: 0.6rem; flex-wrap: wrap; }
-  .meta-pill {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-size: 0.75rem; font-weight: 600; padding: 4px 10px;
-    border-radius: 20px; border: 1.5px solid var(--border);
-  }
+  .meta-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 20px; border: 1.5px solid var(--border); }
 
-  /* Ecosystem impact */
-  .impact-card {
-    background: var(--surface); border-radius: var(--radius);
-    box-shadow: var(--shadow-sm); overflow: hidden;
-  }
-  .impact-header {
-    display: flex; align-items: center; gap: 0.75rem;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--border);
-  }
+  .impact-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
+  .impact-header { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); }
   .impact-icon { font-size: 1.3rem; }
   .impact-header h3 { font-size: 0.88rem; font-weight: 700; }
   .impact-header p  { font-size: 0.75rem; color: var(--text-muted); margin-top: 1px; }
-  .impact-body {
-    padding: 1.25rem 1.5rem;
-    font-size: 0.88rem; line-height: 1.8;
-    color: var(--text);
-    border-left: 4px solid var(--role-accent);
-    margin: 0 1.5rem 1.25rem;
-    background: #F8FAFC;
-    border-radius: 0 8px 8px 0;
-  }
+  .impact-body { padding: 1.25rem 1.5rem; font-size: 0.88rem; line-height: 1.8; color: var(--text); border-left: 4px solid var(--role-accent); margin: 0 1.5rem 1.25rem; background: #F8FAFC; border-radius: 0 8px 8px 0; }
 
-  /* Section cards */
-  .section-card {
-    background: var(--surface); border-radius: var(--radius);
-    box-shadow: var(--shadow-sm); overflow: hidden;
-    scroll-margin-top: 120px;
-    transition: box-shadow 0.2s;
-  }
+  .section-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; scroll-margin-top: 120px; transition: box-shadow 0.2s; }
   .section-card.highlight { box-shadow: 0 0 0 2px var(--role-accent), var(--shadow-sm); }
-  .section-card-header {
-    display: flex; align-items: center; gap: 1rem;
-    padding: 1.1rem 1.5rem;
-    cursor: pointer;
-    user-select: none;
-    transition: background 0.12s;
-  }
+  .section-card-header { display: flex; align-items: center; gap: 1rem; padding: 1.1rem 1.5rem; cursor: pointer; user-select: none; transition: background 0.12s; }
   .section-card-header:hover { background: #F8FAFC; }
-  .section-badge {
-    flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.75rem; font-weight: 800; color: #fff;
-  }
+  .section-badge { flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; color: #fff; }
   .section-title-group { flex: 1; }
-  .section-num { font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 2px; }
+  .section-num { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 2px; }
   .section-title { font-size: 0.95rem; font-weight: 700; }
   .section-chevron { color: var(--text-muted); font-size: 0.9rem; transition: transform 0.2s; }
   .section-card.is-open .section-chevron { transform: rotate(180deg); }
-  .section-read-btn {
-    flex-shrink: 0; font-size: 0.72rem; font-weight: 600;
-    padding: 4px 10px; border-radius: 6px; cursor: pointer;
-    border: 1.5px solid var(--border); background: none;
-    color: var(--text-muted); font-family: var(--font);
-    transition: all 0.15s;
-  }
+  .section-read-btn { flex-shrink: 0; font-size: 0.72rem; font-weight: 600; padding: 4px 10px; border-radius: 6px; cursor: pointer; border: 1.5px solid var(--border); background: none; color: var(--text-muted); font-family: var(--font); transition: all 0.15s; }
   .section-read-btn:hover { border-color: #22C55E; color: #15803D; }
   .section-read-btn.done { background: #D1FAE5; border-color: #22C55E; color: #15803D; }
+  .section-body { border-top: 1px solid var(--border); padding: 1.25rem 1.5rem; font-size: 0.875rem; line-height: 1.85; color: var(--text); }
 
-  .section-body {
-    border-top: 1px solid var(--border);
-    padding: 1.25rem 1.5rem;
-    font-size: 0.875rem; line-height: 1.85;
-    color: var(--text);
-  }
-
-  /* Progress bar */
-  .progress-bar-wrap {
-    background: var(--surface); border-radius: var(--radius);
-    box-shadow: var(--shadow-sm); padding: 1rem 1.5rem;
-    display: flex; align-items: center; gap: 1rem;
-  }
+  .progress-bar-wrap { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
   .progress-label { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
   .progress-track { flex: 1; height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; }
   .progress-fill  { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
   .progress-pct   { font-size: 0.82rem; font-weight: 700; white-space: nowrap; }
 
-  /* States */
   .spinner { text-align: center; padding: 5rem; color: var(--text-muted); font-size: 0.875rem; }
   .alert { padding: 11px 14px; border-radius: 8px; font-size: 0.85rem; }
   .alert-error { background: #FEE2E2; border-left: 4px solid #EF4444; color: #7F1D1D; }
-
   .empty-pane { text-align: center; padding: 4rem 2rem; color: var(--text-muted); }
   .empty-pane .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
   .empty-pane p { font-size: 0.88rem; line-height: 1.6; }
 
-  /* Print */
   @media print {
     .nav, .role-bar, .sidebar, .section-read-btn, .progress-bar-wrap { display: none !important; }
     .layout { grid-template-columns: 1fr; padding: 0; }
@@ -293,14 +239,10 @@
 </head>
 <body>
 
-<!-- ── Nav ── -->
 <nav class="nav">
   <a href="index.html" class="brand">
     <div class="logo-a">A</div>
-    <div>
-      <div class="brand-name">Alexandria</div>
-      <div class="brand-sub">Training Portal</div>
-    </div>
+    <div><div class="brand-name">Alexandria</div><div class="brand-sub">Training Portal</div></div>
   </a>
   <span class="nav-sep">›</span>
   <div class="logo-207">207</div>
@@ -310,35 +252,32 @@
   </div>
   <div class="nav-spacer"></div>
   <span class="nav-badge">Internal</span>
-  <a href="catalog.html" class="btn-ghost-nav" style="margin-left:8px;">← Portal</a>
+  <a href="index.html" class="btn-ghost-nav" style="margin-left:8px;">← Portal</a>
 </nav>
 
-<!-- ── Role tabs ── -->
 <div class="role-bar" id="role-bar">
   <div class="spinner" style="padding:1rem 2rem;font-size:0.8rem;">Loading roles…</div>
 </div>
 
-<!-- ── Main layout ── -->
 <div class="layout">
-  <aside class="sidebar" id="sidebar">
-    <div class="spinner" style="padding:2rem 1rem;"></div>
-  </aside>
+  <aside class="sidebar" id="sidebar"></aside>
   <main class="main" id="main">
     <div class="spinner">Select a role above to open their training manual.</div>
   </main>
 </div>
 
 <script>
-// ── Config ───────────────────────────────────────────────────────────────────
 const SUPA_URL = 'https://hhyhulqngdkwsxhymmcd.supabase.co'
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoeWh1bHFuZ2Rrd3N4aHltbWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzEyMDEsImV4cCI6MjA5MjcwNzIwMX0.dmSy7Q8Je5lEY4XCFzwvfPnkBYLebPE0yZMhy6Y8czI'
 
 const ROLE_META = {
-  founder:     { color: '#7C3AED', light: '#F3E8FF', icon: '🏛️',  label: 'Co-Founder'    },
-  operator:    { color: '#1D4ED8', light: '#DBEAFE', icon: '⚡',   label: 'Operator'       },
-  sales_agent: { color: '#047857', light: '#D1FAE5', icon: '🤝',  label: 'Sales Agent'    },
-  accountant:  { color: '#B45309', light: '#FEF3C7', icon: '📊',  label: 'Accountant'     }
+  founder:     { color: '#7C3AED', light: '#F3E8FF', icon: '🏛️', label: 'Co-Founder'  },
+  operator:    { color: '#1D4ED8', light: '#DBEAFE', icon: '⚡',  label: 'Operator'     },
+  sales_agent: { color: '#047857', light: '#D1FAE5', icon: '🤝', label: 'Sales Agent'  },
+  accountant:  { color: '#B45309', light: '#FEF3C7', icon: '📊', label: 'Accountant'   }
 }
+
+const LI_ICON = `<svg width="10" height="10" viewBox="0 0 24 24" fill="#0077B5" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452H16.893V14.883C16.893 13.555 16.866 11.846 15.041 11.846C13.188 11.846 12.905 13.291 12.905 14.785V20.452H9.351V9H12.765V10.561H12.811C13.288 9.661 14.448 8.711 16.181 8.711C19.782 8.711 20.448 11.081 20.448 14.166V20.452H20.447ZM5.337 7.433C4.193 7.433 3.274 6.507 3.274 5.368C3.274 4.23 4.194 3.305 5.337 3.305C6.477 3.305 7.401 4.23 7.401 5.368C7.401 6.507 6.476 7.433 5.337 7.433ZM7.119 20.452H3.555V9H7.119V20.452ZM22.225 0H1.771C0.792 0 0 0.774 0 1.729V22.271C0 23.227 0.792 24 1.771 24H22.222C23.2 24 24 23.227 24 22.271V1.729C24 0.774 23.2 0 22.222 0H22.225Z"/></svg>`
 
 function esc(s) {
   return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
@@ -352,39 +291,31 @@ async function supa(path) {
   return r.json()
 }
 
-// ── State ─────────────────────────────────────────────────────────────────────
 let allRoles = []
 let activeRoleType = null
 
-// ── Boot ──────────────────────────────────────────────────────────────────────
 ;(async () => {
   try {
-    allRoles = await supa(
-      '/rest/v1/team_roles?select=*,training_manuals(*),team_members(*)&order=created_at.asc'
-    )
+    allRoles = await supa('/rest/v1/team_roles?select=*,training_manuals(*),team_members(*)&order=created_at.asc')
     renderTabs()
-    // auto-select first role
     if (allRoles.length) activateRole(allRoles[0].role_type)
   } catch(e) {
-    document.getElementById('role-bar').innerHTML = `<div class="alert alert-error" style="margin:0.75rem 1.5rem;">Failed to load roles: ${esc(e.message)}</div>`
+    document.getElementById('role-bar').innerHTML =
+      `<div class="alert alert-error" style="margin:0.75rem 1.5rem;">Failed to load roles: ${esc(e.message)}</div>`
     document.getElementById('main').innerHTML = ''
-    document.getElementById('sidebar').innerHTML = ''
   }
 })()
 
-// ── Tabs ──────────────────────────────────────────────────────────────────────
 function renderTabs() {
-  const bar = document.getElementById('role-bar')
-  bar.innerHTML = allRoles.map(r => {
-    const m = ROLE_META[r.role_type] || { color: '#64748B', icon: '👤', label: r.role_title }
-    const members = r.team_members || []
+  document.getElementById('role-bar').innerHTML = allRoles.map(r => {
+    const m = ROLE_META[r.role_type] || { color: '#64748B', icon: '👤' }
     return `
     <button class="role-tab" id="tab-${esc(r.role_type)}"
       style="--tab-color:${m.color}"
       onclick="activateRole('${esc(r.role_type)}')">
       <span class="tab-icon">${m.icon}</span>
       ${esc(r.role_title)}
-      <span class="tab-count">${members.length}</span>
+      <span class="tab-count">${(r.team_members||[]).length}</span>
     </button>`
   }).join('')
 }
@@ -394,34 +325,29 @@ function activateRole(roleType) {
   document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'))
   const tab = document.getElementById('tab-' + roleType)
   if (tab) tab.classList.add('active')
-
   const role = allRoles.find(r => r.role_type === roleType)
   if (!role) return
-
   const m = ROLE_META[roleType] || { color: '#1D4ED8', light: '#DBEAFE', icon: '👤' }
   document.documentElement.style.setProperty('--role-accent', m.color)
   document.documentElement.style.setProperty('--role-accent-light', m.light)
-
   renderSidebar(role, m)
   renderMain(role, m)
 }
 
-// ── Sidebar ───────────────────────────────────────────────────────────────────
 function renderSidebar(role, m) {
-  const manual = (role.training_manuals || [])[0]
-  const members = role.team_members || []
+  const manual   = (role.training_manuals || [])[0]
+  const members  = role.team_members || []
   const sections = manual ? (manual.sections || []) : []
-  const storageKey = 'read_' + role.role_type
-  const readSet = JSON.parse(localStorage.getItem(storageKey) || '[]')
+  const readSet  = JSON.parse(localStorage.getItem('read_' + role.role_type) || '[]')
 
   const sectionNavHtml = sections.length ? `
     <div class="sidebar-card">
       <div class="sidebar-header">Manual Sections</div>
-      <div class="section-nav" id="sec-nav">
+      <div class="section-nav">
         ${sections.map(s => `
-        <button class="sec-nav-item ${readSet.includes(s.section) ? 'read' : ''}"
-          id="snav-${role.role_type}-${s.section}"
-          onclick="scrollToSection('${esc(role.role_type)}', ${s.section})">
+        <button class="sec-nav-item ${readSet.includes(s.section)?'read':''}"
+          id="snav-${esc(role.role_type)}-${s.section}"
+          onclick="scrollToSection('${esc(role.role_type)}',${s.section})">
           <span class="sec-num">${s.section}</span>
           <span style="flex:1;text-align:left;">${esc(s.title)}</span>
           <span class="sec-check">✓</span>
@@ -434,7 +360,7 @@ function renderSidebar(role, m) {
       <div class="commission-box" style="--role-accent:${m.color};--role-accent-light:${m.light}">
         <div class="label">Commission Rate</div>
         <div class="value">${role.commission_pct}%</div>
-        <div class="desc">Per delivered & QA-approved project. Paid from Human OpEx account.</div>
+        <div class="desc">Per delivered &amp; QA-approved project. Paid from Human OpEx account.</div>
       </div>
     </div>` : ''
 
@@ -444,16 +370,19 @@ function renderSidebar(role, m) {
       <div class="sidebar-header">Team Members (${members.length})</div>
       <div class="member-list">
         ${members.map((mem, i) => {
-          const initials = (mem.name || 'TBD').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase()
+          const initials = (mem.name||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase()
           const bg = avatarColors[i % avatarColors.length]
-          const statusClass = 'status-' + (mem.status || 'pending')
+          const liLink = mem.linkedin_url
+            ? `<a class="member-li" href="${esc(mem.linkedin_url)}" target="_blank" rel="noopener">${LI_ICON} LinkedIn</a>`
+            : ''
           return `
           <div class="member-row">
             <div class="member-avatar" style="background:${bg}">${esc(initials)}</div>
-            <div>
-              <div class="member-name">${esc(mem.name || 'Open Seat')}</div>
+            <div class="member-info">
+              <div class="member-name">${esc(mem.name||'Open Seat')}</div>
+              ${liLink}
             </div>
-            <span class="member-status ${statusClass}">${esc(mem.status || 'pending')}</span>
+            <span class="member-status status-${esc(mem.status||'pending')}">${esc(mem.status||'pending')}</span>
           </div>`
         }).join('')}
       </div>
@@ -462,12 +391,10 @@ function renderSidebar(role, m) {
   document.getElementById('sidebar').innerHTML = sectionNavHtml + commissionHtml + membersHtml
 }
 
-// ── Main ──────────────────────────────────────────────────────────────────────
 function renderMain(role, m) {
-  const manual = (role.training_manuals || [])[0]
+  const manual   = (role.training_manuals || [])[0]
   const sections = manual ? (manual.sections || []) : []
-  const storageKey = 'read_' + role.role_type
-  const readSet = JSON.parse(localStorage.getItem(storageKey) || '[]')
+  const readSet  = JSON.parse(localStorage.getItem('read_' + role.role_type) || '[]')
   const pct = sections.length ? Math.round((readSet.length / sections.length) * 100) : 0
 
   const heroHtml = `
@@ -476,12 +403,12 @@ function renderMain(role, m) {
     <div class="hero-body">
       <div class="hero-eyebrow">207 Analytix · Team Training</div>
       <div class="hero-title">${m.icon} ${esc(role.role_title)}</div>
-      <div class="hero-tagline">${esc(role.tagline || '')}</div>
+      <div class="hero-tagline">${esc(role.tagline||'')}</div>
       <div class="hero-meta">
-        <span class="meta-pill">👥 ${role.headcount_target} seat${role.headcount_target !== 1 ? 's' : ''}</span>
-        ${role.commission_pct ? `<span class="meta-pill" style="border-color:${m.color};color:${m.color};">💰 ${role.commission_pct}% commission</span>` : ''}
-        ${role.reports_to ? `<span class="meta-pill">↑ Reports to ${esc(role.reports_to.replace('_',' '))}</span>` : ''}
-        ${manual ? `<span class="meta-pill" style="border-color:#22C55E;color:#15803D;">📄 v${esc(manual.version)}</span>` : ''}
+        <span class="meta-pill">👥 ${role.headcount_target} seat${role.headcount_target!==1?'s':''}</span>
+        ${role.commission_pct?`<span class="meta-pill" style="border-color:${m.color};color:${m.color};">💰 ${role.commission_pct}% commission</span>`:''}
+        ${role.reports_to?`<span class="meta-pill">↑ Reports to ${esc(role.reports_to.replace('_',' '))}</span>`:''}
+        ${manual?`<span class="meta-pill" style="border-color:#22C55E;color:#15803D;">📄 v${esc(manual.version)}</span>`:''}
       </div>
     </div>
   </div>`
@@ -499,24 +426,18 @@ function renderMain(role, m) {
   <div class="impact-card">
     <div class="impact-header">
       <span class="impact-icon">🌐</span>
-      <div>
-        <h3>Your Impact on the 207 Analytix Ecosystem</h3>
-        <p>How this role affects every other part of the organization</p>
-      </div>
+      <div><h3>Your Impact on the 207 Analytix Ecosystem</h3><p>How this role affects every other part of the organization</p></div>
     </div>
     <div class="impact-body" style="--role-accent:${m.color}">${esc(role.ecosystem_impact)}</div>
   </div>` : ''
 
-  const responsibilitiesHtml = (role.responsibilities || []).length ? `
+  const responsibilitiesHtml = (role.responsibilities||[]).length ? `
   <div class="impact-card">
     <div class="impact-header">
       <span class="impact-icon">✅</span>
-      <div>
-        <h3>Core Responsibilities</h3>
-        <p>What this role is accountable for, every week</p>
-      </div>
+      <div><h3>Core Responsibilities</h3><p>What this role is accountable for, every week</p></div>
     </div>
-    <div style="padding: 0 1.5rem 1.25rem;">
+    <div style="padding:0 1.5rem 1.25rem;">
       ${role.responsibilities.map(r => `
       <div style="display:flex;gap:0.65rem;align-items:flex-start;padding:0.55rem 0;border-bottom:1px solid var(--border);font-size:0.875rem;line-height:1.65;">
         <span style="color:${m.color};font-size:1rem;flex-shrink:0;margin-top:1px;">›</span>
@@ -535,27 +456,22 @@ function renderMain(role, m) {
           <div class="section-num">Section ${s.section}</div>
           <div class="section-title">${esc(s.title)}</div>
         </div>
-        <button class="section-read-btn ${isRead ? 'done' : ''}"
+        <button class="section-read-btn ${isRead?'done':''}"
           id="rbtn-${esc(role.role_type)}-${s.section}"
-          onclick="event.stopPropagation(); markRead('${esc(role.role_type)}', ${s.section})"
-        >${isRead ? '✓ Read' : 'Mark Read'}</button>
+          onclick="event.stopPropagation();markRead('${esc(role.role_type)}',${s.section})"
+        >${isRead?'✓ Read':'Mark Read'}</button>
         <span class="section-chevron">▾</span>
       </div>
       <div class="section-body hidden">${esc(s.content)}</div>
     </div>`
-  }).join('') : `
-    <div class="empty-pane">
-      <div class="empty-icon">📭</div>
-      <p>No training manual sections found for this role.</p>
-    </div>`
-
-  const noManualWarning = !manual ? `<div class="alert alert-error">No training manual found for this role yet.</div>` : ''
+  }).join('') : `<div class="empty-pane"><div class="empty-icon">📭</div><p>No training manual sections found for this role yet.</p></div>`
 
   document.getElementById('main').innerHTML =
-    heroHtml + progressHtml + noManualWarning + impactHtml + responsibilitiesHtml + sectionsHtml
+    heroHtml + progressHtml +
+    (!manual ? '<div class="alert alert-error">No training manual found for this role yet.</div>' : '') +
+    impactHtml + responsibilitiesHtml + sectionsHtml
 }
 
-// ── Interactions ──────────────────────────────────────────────────────────────
 function toggleSection(header) {
   const card = header.closest('.section-card')
   const body = card.querySelector('.section-body')
@@ -565,21 +481,15 @@ function toggleSection(header) {
 }
 
 function scrollToSection(roleType, num) {
-  const el = document.getElementById('sec-' + roleType + '-' + num)
+  const el = document.getElementById('sec-'+roleType+'-'+num)
   if (!el) return
   el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  // open it
-  const body = el.querySelector('.section-body')
-  const card = el
-  body.classList.remove('hidden')
-  card.classList.add('is-open')
-  // highlight briefly
-  card.classList.add('highlight')
-  setTimeout(() => card.classList.remove('highlight'), 1200)
-  // mark active in sidebar
+  el.querySelector('.section-body').classList.remove('hidden')
+  el.classList.add('is-open', 'highlight')
+  setTimeout(() => el.classList.remove('highlight'), 1200)
   document.querySelectorAll('.sec-nav-item').forEach(i => i.classList.remove('active'))
-  const navItem = document.getElementById('snav-' + roleType + '-' + num)
-  if (navItem) navItem.classList.add('active')
+  const nav = document.getElementById('snav-'+roleType+'-'+num)
+  if (nav) nav.classList.add('active')
 }
 
 function markRead(roleType, sectionNum) {
@@ -587,24 +497,17 @@ function markRead(roleType, sectionNum) {
   const readSet = JSON.parse(localStorage.getItem(key) || '[]')
   if (!readSet.includes(sectionNum)) readSet.push(sectionNum)
   localStorage.setItem(key, JSON.stringify(readSet))
-
-  // update read button
-  const btn = document.getElementById('rbtn-' + roleType + '-' + sectionNum)
+  const btn = document.getElementById('rbtn-'+roleType+'-'+sectionNum)
   if (btn) { btn.textContent = '✓ Read'; btn.classList.add('done') }
-
-  // update sidebar nav item
-  const navItem = document.getElementById('snav-' + roleType + '-' + sectionNum)
+  const navItem = document.getElementById('snav-'+roleType+'-'+sectionNum)
   if (navItem) navItem.classList.add('read')
-
-  // update progress
   const role = allRoles.find(r => r.role_type === roleType)
-  const manual = (role?.training_manuals || [])[0]
-  const total = (manual?.sections || []).length
-  const pct = total ? Math.round((readSet.length / total) * 100) : 0
-  const fill = document.getElementById('prog-fill-' + roleType)
-  const pctEl = document.getElementById('prog-pct-' + roleType)
-  if (fill) fill.style.width = pct + '%'
-  if (pctEl) pctEl.textContent = pct + '%'
+  const total = ((role?.training_manuals||[])[0]?.sections||[]).length
+  const pct = total ? Math.round((readSet.length/total)*100) : 0
+  const fill = document.getElementById('prog-fill-'+roleType)
+  const pctEl = document.getElementById('prog-pct-'+roleType)
+  if (fill) fill.style.width = pct+'%'
+  if (pctEl) pctEl.textContent = pct+'%'
 }
 </script>
 </body>

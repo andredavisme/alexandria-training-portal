@@ -222,50 +222,37 @@ function setAlert(id, type, msg) {
   document.getElementById(id).innerHTML = msg ? `<div class="alert alert-${type}">${msg}</div>` : ''
 }
 
-// ── Fetch module metadata ─────────────────────────────────────────────────────
 async function fetchModuleInfo(moduleId) {
-  const p = new URLSearchParams({
-    id: `eq.${moduleId}`,
-    select: 'id,title,driving_question,description',
-    limit: '1'
-  })
+  const p = new URLSearchParams({ id: `eq.${moduleId}`, select: 'id,title,driving_question,description', limit: '1' })
   const r = await fetch(`${SUPABASE_URL}/rest/v1/modules?${p}`, { headers: hdrs })
   const d = await r.json()
   return r.ok && d.length ? d[0] : null
 }
 
 async function fetchCourseModuleOrder(courseId, moduleId) {
-  const p = new URLSearchParams({
-    course_id: `eq.${courseId}`,
-    module_id: `eq.${moduleId}`,
-    select: 'order_index,section_label',
-    limit: '1'
-  })
+  const p = new URLSearchParams({ course_id: `eq.${courseId}`, module_id: `eq.${moduleId}`, select: 'order_index,section_label', limit: '1' })
   const r = await fetch(`${SUPABASE_URL}/rest/v1/course_modules?${p}`, { headers: hdrs })
   const d = await r.json()
   return r.ok && d.length ? d[0] : null
 }
 
-// ── Bootstrap ─────────────────────────────────────────────────────────────────
 async function init() {
   await loadCourses()
 
   if (isModuleMode) {
-    // Fetch module info in parallel
     const [mod, cm] = await Promise.all([
       fetchModuleInfo(paramModule),
       fetchCourseModuleOrder(paramCourse, paramModule)
     ])
     moduleInfo = mod
 
-    const course = courses.find(c => c.id === paramCourse)
+    const course      = courses.find(c => c.id === paramCourse)
     const courseTitle = course?.title || 'Course'
     const moduleNum   = cm?.order_index || ''
     const sectionLabel = cm?.section_label || ''
     const moduleTitle  = mod?.title || 'Module Discussion'
     const drivingQ     = mod?.driving_question || ''
 
-    // Nav
     document.getElementById('nav-context').textContent = courseTitle
     document.getElementById('nav-sep-2').classList.remove('hidden')
     document.getElementById('nav-module-label').textContent = `Module ${moduleNum} Discussion`
@@ -273,7 +260,6 @@ async function init() {
     document.getElementById('nav-back').textContent = `← ${courseTitle}`
     document.getElementById('nav-back').href = `course.html?course=${paramCourse}`
 
-    // Breadcrumb
     const bc = document.getElementById('breadcrumb')
     bc.classList.remove('hidden')
     document.getElementById('bc-course').textContent = courseTitle
@@ -281,28 +267,20 @@ async function init() {
     document.getElementById('bc-all-disc').href = `discussion.html?course=${paramCourse}`
     document.getElementById('bc-module').textContent = `Module ${moduleNum} Discussion`
 
-    // Module banner
-    const banner = document.getElementById('module-banner')
-    banner.classList.remove('hidden')
-    document.getElementById('banner-label').textContent =
-      `Module ${moduleNum}${sectionLabel ? ' — ' + sectionLabel : ''} · Discussion`
+    document.getElementById('module-banner').classList.remove('hidden')
+    document.getElementById('banner-label').textContent = `Module ${moduleNum}${sectionLabel ? ' — ' + sectionLabel : ''} · Discussion`
     document.getElementById('banner-title').textContent = moduleTitle
     document.getElementById('banner-dq').textContent = drivingQ ? `“${drivingQ}”` : ''
     document.getElementById('banner-course-link').href = `course.html?course=${paramCourse}`
-    document.getElementById('banner-course-link').textContent = `← Back to Course`
 
-    // Toolbar
     document.getElementById('page-title').textContent = `Module ${moduleNum} Discussion`
     document.title = `Alexandria — Module ${moduleNum} Discussion`
 
-    // Lock course filter
     const sel = document.getElementById('course-filter')
     sel.value = paramCourse
     sel.disabled = true
 
-    // New thread form: scope note + lock course select
-    document.getElementById('module-scope-note').textContent =
-      `📌 This thread will be posted to Module ${moduleNum}: ${moduleTitle}`
+    document.getElementById('module-scope-note').textContent = `📌 This thread will be posted to Module ${moduleNum}: ${moduleTitle}`
     document.getElementById('module-scope-note').classList.remove('hidden')
     const ntCourse = document.getElementById('nt-course')
     ntCourse.value = paramCourse
@@ -310,7 +288,6 @@ async function init() {
 
     await loadThreads(paramCourse, paramModule)
   } else {
-    // Normal mode — set course filter if ?course= given
     if (paramCourse) {
       document.getElementById('course-filter').value = paramCourse
       const c = courses.find(c => c.id === paramCourse)
@@ -341,12 +318,11 @@ async function loadThreads(courseId, moduleId) {
     ? await fetchThreadsByModule(courseId, moduleId)
     : await fetchThreads(courseId)
   if (error) {
-    document.getElementById('thread-list-wrap').innerHTML =
-      '<div class="alert alert-error">Failed to load threads. Please try again.</div>'
+    document.getElementById('thread-list-wrap').innerHTML = '<div class="alert alert-error">Failed to load threads. Please try again.</div>'
     return
   }
   const threads = data || []
-  if (threads.length === 0) {
+  if (!threads.length) {
     document.getElementById('thread-list-wrap').innerHTML = `
       <div class="empty">
         <div class="empty-icon">💬</div>
@@ -362,9 +338,9 @@ async function loadThreads(courseId, moduleId) {
 function renderThread(t, moduleId) {
   const src = sourceLabel(t.source)
   const course = courses.find(c => c.id === t.course_id)
-  const isModuleThread = t.module_id && !moduleId // show module badge only on full-board view
+  const isModuleThread = t.module_id && !moduleId
   return `
-  <a class="thread-card${t.status === 'pinned' ? ' is-pinned' : ''}${t.status === 'closed' ? ' is-closed' : ''}" href="discussion-thread.html?thread=${t.id}">
+  <a class="thread-card${t.status === 'pinned' ? ' is-pinned' : ''}${t.status === 'closed' ? ' is-closed' : ''}" href="discussion-thread.html?id=${t.id}">
     <div class="thread-header">
       <div class="thread-title">${escHtml(t.title)}</div>
       <div class="badges">
@@ -384,12 +360,10 @@ function renderThread(t, moduleId) {
   </a>`
 }
 
-// ── Course filter (non-module mode only) ─────────────────────────────────────
 document.getElementById('course-filter').addEventListener('change', e => {
   if (!isModuleMode) loadThreads(e.target.value || null, null)
 })
 
-// ── New thread toggle ─────────────────────────────────────────────────────────
 document.getElementById('btn-new-thread').addEventListener('click', () => {
   const panel = document.getElementById('new-thread-panel')
   panel.classList.toggle('hidden')
@@ -400,7 +374,6 @@ document.getElementById('btn-cancel-thread').addEventListener('click', () => {
   setAlert('new-thread-alert', '', '')
 })
 
-// ── Submit thread ─────────────────────────────────────────────────────────────
 document.getElementById('btn-submit-thread').addEventListener('click', async () => {
   const author   = document.getElementById('nt-author').value.trim()
   const courseId = document.getElementById('nt-course').value
@@ -415,19 +388,15 @@ document.getElementById('btn-submit-thread').addEventListener('click', async () 
   const btn = document.getElementById('btn-submit-thread')
   btn.disabled = true; btn.textContent = 'Posting…'
 
-  // Pass moduleId when in module mode so thread is scoped correctly
   const { data, error } = await submitThread(
     courseId, title, body, author,
     isModuleMode ? paramModule : null
   )
   btn.disabled = false; btn.textContent = 'Post Thread'
 
-  if (error) {
-    setAlert('new-thread-alert', 'error', 'Failed to post thread. Please try again.')
-    return
-  }
+  if (error) { setAlert('new-thread-alert', 'error', 'Failed to post thread. Please try again.'); return }
 
-  window.location.href = `discussion-thread.html?thread=${data.id}`
+  window.location.href = `discussion-thread.html?id=${data.id}`
 })
 
 await init()

@@ -43,10 +43,17 @@
   .nav-link:hover { border-color: var(--accent); box-shadow: var(--shadow-sm); text-decoration: none; }
   .nav-link.featured { border-color: #C7D2FE; background: #EEF2FF; }
   .nav-link.featured:hover { border-color: var(--accent); }
+  .nav-link.team { border-color: #BFDBFE; background: #EFF6FF; }
+  .nav-link.team:hover { border-color: #1D4ED8; }
   .nav-link-icon  { font-size: 1.3rem; width: 32px; text-align: center; flex-shrink: 0; }
   .nav-link-label { font-weight: 600; font-size: 0.9rem; }
   .nav-link-sub   { font-size: 0.78rem; color: var(--text-muted); margin-top: 1px; }
   .nav-link-arrow { margin-left: auto; color: var(--text-muted); font-size: 0.85rem; }
+  .nav-link-badge {
+    margin-left: auto; font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; background: #1D4ED8; color: #fff;
+    padding: 2px 7px; border-radius: 20px; flex-shrink: 0;
+  }
 
   .footer { font-size: 0.78rem; color: var(--text-muted); text-align: center; margin-top: 0.5rem; }
 </style>
@@ -111,6 +118,18 @@
           <div class="nav-link-sub">Track the class recycling &amp; circular economy project</div>
         </div>
         <span class="nav-link-arrow">›</span>
+      </a>
+    </div>
+
+    <div class="section-label">207 Analytix — Team</div>
+    <div class="nav-links">
+      <a class="nav-link team" href="operator-training.html">
+        <span class="nav-link-icon">🏛️</span>
+        <div>
+          <div class="nav-link-label">Team Training Manuals</div>
+          <div class="nav-link-sub">Founders, Operators, Sales, Accountant · Role-by-role</div>
+        </div>
+        <span class="nav-link-badge">Internal</span>
       </a>
     </div>
 

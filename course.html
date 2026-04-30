@@ -167,7 +167,6 @@ if (!courseId) {
   } else {
     document.title = `Alexandria — ${course.title}`
     document.getElementById('nav-course-title').textContent = course.title
-    // Override accent from course color
     document.documentElement.style.setProperty('--accent', course.accent_color || '#16A34A')
     document.getElementById('page').innerHTML = renderPage(course, commonsThread)
     wireModuleToggles()
@@ -178,7 +177,7 @@ function renderPage(c, commonsThread) {
   const accent = c.accent_color || '#16A34A'
   const modules = c.course_modules || []
   const commonsLink = commonsThread
-    ? `<a class="btn-outline" href="discussion-thread.html?thread=${commonsThread.id}">♻️ Classroom Commons Discussion</a>`
+    ? `<a class="btn-outline" href="discussion-thread.html?id=${commonsThread.id}">♻️ Classroom Commons Discussion</a>`
     : ''
 
   return `
@@ -191,6 +190,7 @@ function renderPage(c, commonsThread) {
         ${c.course_thread ? `<div class="hero-thread">${escHtml(c.course_thread)}</div>` : ''}
         <div class="hero-actions">
           <a class="btn-primary" href="discussion.html?course=${c.id}" style="background:${escHtml(accent)};color:#fff;">💬 Course Discussion Board</a>
+          <a class="btn-outline" href="textbook.html?course=${c.id}">📖 Digital Textbook</a>
           ${commonsLink}
         </div>
       </div>
@@ -204,10 +204,11 @@ function renderPage(c, commonsThread) {
     <div class="commons-banner">
       <div class="commons-banner-info">
         <h3>♻️ The Classroom Commons</h3>
-        <p>A course-long community project running all 6 months. The class organizes as a community, develops recycling systems, and builds a circular economy — repurposing classroom materials for use or profit. Each module's milestone is shown inside its module card above.</p>
+        <p>A course-long community project running all 6 months. The class organizes as a community, develops recycling systems, and builds a circular economy — repurposing classroom materials for use or profit. Each module’s milestone is shown inside its module card above.</p>
       </div>
       <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
-        ${commonsThread ? `<a class="btn-primary" href="discussion-thread.html?thread=${commonsThread.id}" style="background:#16A34A;color:#fff;">View Commons Discussion</a>` : ''}
+        ${commonsThread ? `<a class="btn-primary" href="discussion-thread.html?id=${commonsThread.id}" style="background:#16A34A;color:#fff;">View Commons Discussion</a>` : ''}
+        <a class="btn-outline" href="commons.html?course=${c.id}">♻️ Classroom Commons</a>
       </div>
     </div>`
 }
@@ -292,6 +293,7 @@ function renderModuleCard(cm, accent) {
 
       <div class="module-footer">
         <a class="btn-outline" href="discussion.html?course=${escHtml(cm.course_id)}&module=${escHtml(m.id)}">💬 Discuss Module ${cm.order_index} →</a>
+        <a class="btn-outline" href="textbook.html?course=${escHtml(cm.course_id)}#module-${cm.order_index}">📖 Read Module ${cm.order_index} in Textbook →</a>
       </div>
 
     </div>

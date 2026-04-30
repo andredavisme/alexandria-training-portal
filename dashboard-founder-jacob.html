@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>207 Analytix — Jacob Hutton | Marketing Command</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0d1117; --bg2:#161b22; --bg3:#1c2333;
+    --green:#4ade80; --teal:#2dd4bf; --gold:#fbbf24;
+    --coral:#fb7185; --blue:#60a5fa; --purple:#a78bfa;
+    --text:#e6edf3; --text2:#8b949e; --border:#30363d;
+    --accent:#4ade80;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+  a { color: var(--green); text-decoration: none; }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,17,23,0.96); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem; display: flex; align-items: center; gap: 0.75rem; height: 56px;
+  }
+  .nav-logo { font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: 1rem;
+    background: linear-gradient(135deg, var(--green), var(--teal));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .nav-spacer { flex: 1; }
+  .nav-link { font-size: 0.82rem; color: var(--text2); padding: 4px 8px; }
+  .role-pill { display: flex; align-items: center; gap: 6px;
+    background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3);
+    border-radius: 20px; padding: 4px 14px;
+    font-size: 0.75rem; font-weight: 700; color: var(--green); }
+
+  .page { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, rgba(74,222,128,0.1), rgba(45,212,191,0.06));
+    border: 1px solid rgba(74,222,128,0.2); border-radius: 16px;
+    padding: 1.75rem 2rem; margin-bottom: 1.75rem;
+    display: flex; align-items: center; gap: 1.5rem;
+  }
+  .hero-avatar {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: linear-gradient(135deg, #047857, var(--teal));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; font-weight: 800; color: #fff; flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(74,222,128,0.25);
+  }
+  .hero-info { flex: 1; }
+  .hero-name { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 800; margin-bottom: 2px; }
+  .hero-title { font-size: 0.88rem; color: var(--green); font-weight: 600; margin-bottom: 6px; }
+  .hero-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .hero-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 3px 10px; border-radius: 20px;
+    background: rgba(74,222,128,0.1); color: var(--green); border: 1px solid rgba(74,222,128,0.25); }
+  .hero-metric { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 3px 10px; border-radius: 20px;
+    background: rgba(251,191,36,0.1); color: var(--gold); border: 1px solid rgba(251,191,36,0.25); }
+  .hero-li { display: inline-flex; align-items: center; gap: 5px;
+    font-size: 0.78rem; color: #0077B5; font-weight: 600;
+    padding: 5px 12px; border-radius: 20px;
+    background: rgba(0,119,181,0.1); border: 1px solid rgba(0,119,181,0.2);
+    text-decoration: none; transition: opacity 0.15s; flex-shrink: 0; }
+  .hero-li:hover { opacity: 0.75; }
+
+  /* SCARCITY CENTREPIECE */
+  .scarcity-centrepiece {
+    background: var(--bg2); border: 1px solid rgba(74,222,128,0.3);
+    border-radius: 16px; padding: 2rem 2rem 1.75rem;
+    margin-bottom: 1.75rem; position: relative; overflow: hidden;
+  }
+  .sc-glow {
+    position: absolute; top: -60px; right: -60px;
+    width: 220px; height: 220px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(74,222,128,0.12), transparent 70%);
+    pointer-events: none;
+  }
+  .sc-eyebrow { font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--green); margin-bottom: 0.5rem; }
+  .sc-headline { font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem;
+    font-weight: 800; margin-bottom: 0.25rem; }
+  .sc-sub { font-size: 0.82rem; color: var(--text2); margin-bottom: 1.75rem; }
+
+  /* BIG NUMBER */
+  .sc-numbers {
+    display: flex; align-items: flex-end; gap: 1.5rem;
+    margin-bottom: 1.25rem; flex-wrap: wrap;
+  }
+  .sc-big {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 5rem; font-weight: 800; line-height: 1;
+    color: var(--green);
+    text-shadow: 0 0 40px rgba(74,222,128,0.25);
+  }
+  .sc-of {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.75rem; font-weight: 700; color: var(--text2);
+    margin-bottom: 0.75rem;
+  }
+  .sc-pct-badge {
+    background: rgba(74,222,128,0.15); border: 1px solid rgba(74,222,128,0.3);
+    border-radius: 10px; padding: 0.5rem 1rem;
+    font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem;
+    font-weight: 800; color: var(--green); margin-bottom: 0.75rem;
+  }
+  .sc-remaining {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.9rem; font-weight: 700; color: var(--coral);
+    margin-bottom: 0.75rem;
+  }
+
+  /* PROGRESS BAR */
+  .sc-track {
+    width: 100%; height: 16px; background: var(--bg3);
+    border-radius: 99px; overflow: hidden; margin-bottom: 0.6rem;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+  }
+  .sc-fill {
+    height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, #16a34a, var(--green), var(--teal));
+    transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+    position: relative;
+  }
+  .sc-fill::after {
+    content: '';
+    position: absolute; right: 0; top: 0; bottom: 0;
+    width: 4px; background: #fff;
+    border-radius: 99px; opacity: 0.5;
+  }
+  .sc-track-labels {
+    display: flex; justify-content: space-between;
+    font-size: 0.68rem; color: var(--text2); margin-bottom: 1.5rem;
+  }
+
+  /* COHORT GRID */
+  .cohort-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
+  @media (max-width: 600px) { .cohort-grid { grid-template-columns: 1fr; } }
+  .cohort-card {
+    background: var(--bg3); border-radius: 12px; padding: 1.25rem;
+    border: 1px solid var(--border); text-align: center;
+  }
+  .cohort-icon  { font-size: 1.5rem; margin-bottom: 0.4rem; }
+  .cohort-name  { font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--text2); margin-bottom: 0.2rem; }
+  .cohort-focus { font-size: 0.7rem; color: var(--text2); margin-bottom: 0.65rem; }
+  .cohort-count { font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 800; color: var(--teal); }
+  .cohort-track { height: 4px; background: var(--bg2); border-radius: 99px; overflow: hidden; margin-top: 0.6rem; }
+  .cohort-fill  { height: 100%; border-radius: 99px; background: var(--teal); }
+  .cohort-target{ font-size: 0.68rem; color: var(--text2); margin-top: 4px; }
+
+  /* STAT GRID */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 1rem; margin-bottom: 1.75rem; }
+  .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.3rem; }
+  .stat-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text2); margin-bottom: 0.35rem; }
+  .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--green); }
+  .stat-sub   { font-size: 0.72rem; color: var(--text2); margin-top: 3px; }
+  .stat-card.gold   .stat-value { color: var(--gold); }
+  .stat-card.coral  .stat-value { color: var(--coral); }
+  .stat-card.teal   .stat-value { color: var(--teal); }
+  .stat-card.purple .stat-value { color: var(--purple); }
+
+  /* SECTION */
+  .section { margin-bottom: 1.75rem; }
+  .section-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text2); margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+
+  /* FILTER CHIPS */
+  .filter-row { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+  .filter-chip { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+    border: 1px solid var(--border); background: var(--bg2); color: var(--text2);
+    cursor: pointer; transition: all 0.15s; }
+  .filter-chip:hover, .filter-chip.active { background: var(--green); color: #0d1117; border-color: var(--green); }
+
+  /* TABLE */
+  .pipeline-table { width: 100%; border-collapse: collapse; }
+  .pipeline-table th { text-align: left; padding: 0.6rem 1rem; font-size: 0.68rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--text2);
+    background: var(--bg3); border-bottom: 1px solid var(--border); }
+  .pipeline-table td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border);
+    font-size: 0.83rem; color: var(--text2); }
+  .pipeline-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .pipeline-table tr:last-child td { border-bottom: none; }
+
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px;
+    font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+  .badge-submitted   { background: rgba(251,113,133,0.15); color: var(--coral); }
+  .badge-reviewed    { background: rgba(251,191,36,0.15);  color: var(--gold); }
+  .badge-converted   { background: rgba(74,222,128,0.15);  color: var(--green); }
+  .badge-started     { background: rgba(167,139,250,0.15); color: var(--purple); }
+  .badge-archived    { background: rgba(139,148,158,0.15); color: var(--text2); }
+  .badge-discovery   { background: rgba(45,212,191,0.15);  color: var(--teal); }
+  .badge-standard    { background: rgba(251,191,36,0.15);  color: var(--gold); }
+  .badge-premium     { background: rgba(251,113,133,0.15); color: var(--coral); }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .loading { text-align: center; padding: 2rem; color: var(--text2); font-size: 0.82rem; }
+  .empty   { text-align: center; padding: 2.5rem; color: var(--text2); font-size: 0.82rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <span style="font-size:1.1rem;">📊</span>
+  <div class="nav-logo">207 Analytix</div>
+  <span style="color:var(--border);">&rsaquo;</span>
+  <span style="font-size:0.88rem;font-weight:600;">Marketing Command</span>
+  <div class="nav-spacer"></div>
+  <div class="role-pill">🏛️ Co-Founder · LMO</div>
+  <a href="index.html" class="nav-link" style="margin-left:0.5rem;">← Portal</a>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-avatar">JH</div>
+    <div class="hero-info">
+      <div class="hero-name">Jacob Hutton</div>
+      <div class="hero-title">Co-Founder · Lead Marketing Officer</div>
+      <div class="hero-tags">
+        <span class="hero-tag">🏛️ Co-Founder</span>
+        <span class="hero-tag">📊 Lead Marketing Officer</span>
+        <span class="hero-metric">📍 Scarcity Metric %</span>
+        <span class="hero-metric">🎯 Cohort Integrity</span>
+      </div>
+    </div>
+    <a class="hero-li" href="https://www.linkedin.com/in/jacob-hutton-mba-494266146/" target="_blank" rel="noopener">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="#0077B5"><path d="M20.447 20.452H16.893V14.883C16.893 13.555 16.866 11.846 15.041 11.846C13.188 11.846 12.905 13.291 12.905 14.785V20.452H9.351V9H12.765V10.561H12.811C13.288 9.661 14.448 8.711 16.181 8.711C19.782 8.711 20.448 11.081 20.448 14.166V20.452H20.447ZM5.337 7.433C4.193 7.433 3.274 6.507 3.274 5.368C3.274 4.23 4.194 3.305 5.337 3.305C6.477 3.305 7.401 4.23 7.401 5.368C7.401 6.507 6.476 7.433 5.337 7.433ZM7.119 20.452H3.555V9H7.119V20.452ZM22.225 0H1.771C0.792 0 0 0.774 0 1.729V22.271C0 23.227 0.792 24 1.771 24H22.222C23.2 24 24 23.227 24 22.271V1.729C24 0.774 23.2 0 22.222 0H22.225Z"/></svg>
+      LinkedIn
+    </a>
+  </div>
+
+  <!-- ═══ SCARCITY CENTREPIECE ═══ -->
+  <div class="scarcity-centrepiece">
+    <div class="sc-glow"></div>
+    <div class="sc-eyebrow">📍 Westbrook 1300 — Primary Success Metric</div>
+    <div class="sc-headline">Market Saturation Tracker</div>
+    <div class="sc-sub">207 Analytix targets a finite pool of 1,300 Westbrook businesses. Scarcity is the value signal — fill rate drives urgency, pricing power, and regional authority.</div>
+
+    <div class="sc-numbers">
+      <div class="sc-big" id="scBig">0</div>
+      <div class="sc-of">/ 1,300</div>
+      <div style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:0.75rem;">
+        <div class="sc-pct-badge" id="scPctBadge">0.00%</div>
+        <div class="sc-remaining" id="scRemaining">1,300 slots remain</div>
+      </div>
+    </div>
+
+    <div class="sc-track">
+      <div class="sc-fill" id="scFill" style="width:0%"></div>
+    </div>
+    <div class="sc-track-labels">
+      <span>0</span>
+      <span>325</span>
+      <span>650</span>
+      <span>975</span>
+      <span style="color:var(--green);font-weight:700;">1,300 ✓</span>
+    </div>
+
+    <!-- COHORT CARDS -->
+    <div class="cohort-grid">
+      <div class="cohort-card">
+        <div class="cohort-icon">🏙️</div>
+        <div class="cohort-name">Downtown</div>
+        <div class="cohort-focus">Professional &amp; Retail</div>
+        <div class="cohort-count" id="c1">—</div>
+        <div class="cohort-track"><div class="cohort-fill" id="cf1" style="width:0%"></div></div>
+        <div class="cohort-target">High-volume data intake</div>
+      </div>
+      <div class="cohort-card">
+        <div class="cohort-icon">🏭</div>
+        <div class="cohort-name">Industrial</div>
+        <div class="cohort-focus">Manufacturing &amp; Logistics</div>
+        <div class="cohort-count" id="c2">—</div>
+        <div class="cohort-track"><div class="cohort-fill" id="cf2" style="width:0%"></div></div>
+        <div class="cohort-target">Supply chain analysis</div>
+      </div>
+      <div class="cohort-card">
+        <div class="cohort-icon">🌲</div>
+        <div class="cohort-name">Rural / Trades</div>
+        <div class="cohort-focus">Construction &amp; Artisan</div>
+        <div class="cohort-count" id="c3">—</div>
+        <div class="cohort-track"><div class="cohort-fill" id="cf3" style="width:0%"></div></div>
+        <div class="cohort-target">Operational efficiency</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIPELINE STATS -->
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-label">Total Leads</div><div class="stat-value" id="sTotal">—</div><div class="stat-sub">All intake submissions</div></div>
+    <div class="stat-card teal"><div class="stat-label">This Week</div><div class="stat-value" id="sWeek">—</div><div class="stat-sub">New leads (7 days)</div></div>
+    <div class="stat-card gold"><div class="stat-label">Reviewed</div><div class="stat-value" id="sReviewed">—</div><div class="stat-sub">In founder review</div></div>
+    <div class="stat-card"><div class="stat-label">Converted</div><div class="stat-value" id="sConverted">—</div><div class="stat-sub">Active clients</div></div>
+    <div class="stat-card coral"><div class="stat-label">Avg Budget</div><div class="stat-value" id="sAvgBudget">—</div><div class="stat-sub">Most common range</div></div>
+    <div class="stat-card purple"><div class="stat-label">Top Industry</div><div class="stat-value" style="font-size:1rem;padding-top:4px;" id="sTopInd">—</div><div class="stat-sub">By lead volume</div></div>
+  </div>
+
+  <!-- LEAD PIPELINE TABLE -->
+  <div class="section">
+    <div class="section-title">Lead Pipeline</div>
+    <div class="filter-row" id="filterRow">
+      <button class="filter-chip active" data-filter="all">All</button>
+      <button class="filter-chip" data-filter="started">Started</button>
+      <button class="filter-chip" data-filter="submitted">Submitted</button>
+      <button class="filter-chip" data-filter="reviewed">Reviewed</button>
+      <button class="filter-chip" data-filter="converted">Converted</button>
+    </div>
+    <div class="card">
+      <table class="pipeline-table">
+        <thead>
+          <tr>
+            <th>Date</th><th>Name</th><th>Business</th><th>Industry</th>
+            <th>City</th><th>Tier</th><th>Project Type</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="pipelineBody"><tr><td colspan="8" class="loading">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BREAKDOWN GRID -->
+  <div class="grid-2">
+    <div class="section">
+      <div class="section-title">Leads by Tier</div>
+      <div class="card">
+        <table class="pipeline-table">
+          <thead><tr><th>Tier</th><th>Count</th><th>%</th></tr></thead>
+          <tbody id="tierBody"><tr><td colspan="3" class="loading">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Leads by Industry</div>
+      <div class="card">
+        <table class="pipeline-table">
+          <thead><tr><th>Industry</th><th>Count</th><th>%</th></tr></thead>
+          <tbody id="industryBody"><tr><td colspan="3" class="loading">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW DID YOU HEAR -->
+  <div class="section">
+    <div class="section-title">Referral &amp; Discovery Sources</div>
+    <div class="card">
+      <table class="pipeline-table">
+        <thead><tr><th>Source</th><th>Count</th><th>%</th></tr></thead>
+        <tbody id="sourceBody"><tr><td colspan="3" class="loading">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const SUPA_URL = 'https://hhyhulqngdkwsxhymmcd.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoeWh1bHFuZ2Rrd3N4aHltbWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzEyMDEsImV4cCI6MjA5MjcwNzIwMX0.dmSy7Q8Je5lEY4XCFzwvfPnkBYLebPE0yZMhy6Y8czI';
+  const { createClient } = supabase;
+  const db = createClient(SUPA_URL, SUPA_KEY);
+  const SCARCITY_TARGET = 1300;
+  let allLeads = [];
+  let activeFilter = 'all';
+
+  function cap(s) { return !s ? '—' : s.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); }
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  }
+
+  function renderPipeline() {
+    const rows = activeFilter === 'all' ? allLeads : allLeads.filter(l => l.status === activeFilter);
+    const tbody = document.getElementById('pipelineBody');
+    if (!rows.length) { tbody.innerHTML = '<tr><td colspan="8" class="empty">No leads match this filter.</td></tr>'; return; }
+    tbody.innerHTML = rows.map(l => `<tr>
+      <td style="font-size:0.75rem;">${fmtDate(l.created_at)}</td>
+      <td style="font-weight:600;color:var(--text);">${l.first_name||''} ${l.last_name||''}</td>
+      <td>${l.business_name||'—'}</td>
+      <td style="font-size:0.78rem;">${cap(l.industry)}</td>
+      <td>${l.city||'—'}</td>
+      <td><span class="badge badge-${l.service_tier||'discovery'}">${cap(l.service_tier)}</span></td>
+      <td style="font-size:0.78rem;">${cap(l.project_type)}</td>
+      <td><span class="badge badge-${l.status||'started'}">${cap(l.status)}</span></td>
+    </tr>`).join('');
+  }
+
+  document.getElementById('filterRow').addEventListener('click', e => {
+    const chip = e.target.closest('.filter-chip');
+    if (!chip) return;
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    activeFilter = chip.dataset.filter;
+    renderPipeline();
+  });
+
+  async function loadAll() {
+    try {
+      const [{ data: leads }, { data: businesses, count: bizCount }] = await Promise.all([
+        db.from('leads').select('*').order('created_at', { ascending: false }),
+        db.from('businesses').select('id, neighborhood', { count: 'exact' }).eq('is_active', true)
+      ]);
+
+      allLeads = leads || [];
+      const bArr = businesses || [];
+      const filled = bizCount || 0;
+      const pct = ((filled / SCARCITY_TARGET) * 100);
+
+      // ── SCARCITY CENTREPIECE ──
+      // Animate the counter
+      const bigEl = document.getElementById('scBig');
+      let current = 0;
+      const step = Math.ceil(filled / 40);
+      const timer = setInterval(() => {
+        current = Math.min(current + step, filled);
+        bigEl.textContent = current.toLocaleString();
+        if (current >= filled) clearInterval(timer);
+      }, 30);
+
+      document.getElementById('scPctBadge').textContent = pct.toFixed(2) + '%';
+      document.getElementById('scRemaining').textContent = (SCARCITY_TARGET - filled).toLocaleString() + ' slots remain';
+      document.getElementById('scFill').style.width = Math.min(pct, 100) + '%';
+
+      // Cohorts by neighborhood
+      const downtown   = bArr.filter(b => (b.neighborhood||'').toLowerCase().includes('downtown')).length;
+      const industrial = bArr.filter(b => (b.neighborhood||'').toLowerCase().includes('industrial')).length;
+      const rural      = bArr.filter(b => ['rural','trade','artisan','construct'].some(k => (b.neighborhood||'').toLowerCase().includes(k))).length;
+      const cohortTarget = Math.ceil(SCARCITY_TARGET / 3); // ~433 each
+
+      document.getElementById('c1').textContent = downtown   || 0;
+      document.getElementById('c2').textContent = industrial || 0;
+      document.getElementById('c3').textContent = rural      || 0;
+      document.getElementById('cf1').style.width = Math.min((downtown   / cohortTarget) * 100, 100) + '%';
+      document.getElementById('cf2').style.width = Math.min((industrial / cohortTarget) * 100, 100) + '%';
+      document.getElementById('cf3').style.width = Math.min((rural      / cohortTarget) * 100, 100) + '%';
+
+      // ── STATS ──
+      const total     = allLeads.length;
+      const weekAgo   = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+      const thisWeek  = allLeads.filter(l => new Date(l.created_at) > weekAgo).length;
+      const reviewed  = allLeads.filter(l => l.status === 'reviewed').length;
+      const converted = allLeads.filter(l => l.status === 'converted').length;
+
+      document.getElementById('sTotal').textContent    = total;
+      document.getElementById('sWeek').textContent     = thisWeek;
+      document.getElementById('sReviewed').textContent = reviewed;
+      document.getElementById('sConverted').textContent = converted;
+
+      // Most common budget range
+      const budgetCounts = {};
+      allLeads.forEach(l => { const b = l.budget_range||'unknown'; budgetCounts[b]=(budgetCounts[b]||0)+1; });
+      const topBudget = Object.entries(budgetCounts).sort((a,b)=>b[1]-a[1])[0];
+      document.getElementById('sAvgBudget').textContent = topBudget ? cap(topBudget[0]) : '—';
+
+      // Top industry
+      const indCounts = {};
+      allLeads.forEach(l => { const i=l.industry||'unknown'; indCounts[i]=(indCounts[i]||0)+1; });
+      const topInd = Object.entries(indCounts).sort((a,b)=>b[1]-a[1])[0];
+      document.getElementById('sTopInd').textContent = topInd ? cap(topInd[0]) : '—';
+
+      renderPipeline();
+
+      // ── TIER BREAKDOWN ──
+      const tierCounts = {};
+      allLeads.forEach(l => { const t=l.service_tier||'unknown'; tierCounts[t]=(tierCounts[t]||0)+1; });
+      document.getElementById('tierBody').innerHTML = Object.entries(tierCounts)
+        .sort((a,b)=>b[1]-a[1]).map(([t,n])=>`
+          <tr>
+            <td><span class="badge badge-${t}">${cap(t)}</span></td>
+            <td style="font-weight:700;color:var(--green);">${n}</td>
+            <td style="color:var(--text2);">${total?Math.round((n/total)*100):0}%</td>
+          </tr>`).join('') || '<tr><td colspan="3" class="empty">No data</td></tr>';
+
+      // ── INDUSTRY BREAKDOWN ──
+      document.getElementById('industryBody').innerHTML = Object.entries(indCounts)
+        .sort((a,b)=>b[1]-a[1]).map(([i,n])=>`
+          <tr>
+            <td style="font-size:0.82rem;">${cap(i)}</td>
+            <td style="font-weight:700;color:var(--green);">${n}</td>
+            <td style="color:var(--text2);">${total?Math.round((n/total)*100):0}%</td>
+          </tr>`).join('') || '<tr><td colspan="3" class="empty">No data</td></tr>';
+
+      // ── REFERRAL SOURCES ──
+      const srcCounts = {};
+      allLeads.forEach(l => { const s=l.how_did_you_hear||'Not specified'; srcCounts[s]=(srcCounts[s]||0)+1; });
+      document.getElementById('sourceBody').innerHTML = Object.entries(srcCounts)
+        .sort((a,b)=>b[1]-a[1]).map(([s,n])=>`
+          <tr>
+            <td style="font-size:0.82rem;">${cap(s)}</td>
+            <td style="font-weight:700;color:var(--teal);">${n}</td>
+            <td style="color:var(--text2);">${total?Math.round((n/total)*100):0}%</td>
+          </tr>`).join('') || '<tr><td colspan="3" class="empty">No data yet.</td></tr>';
+
+    } catch(e) { console.error(e); }
+  }
+
+  loadAll();
+  setInterval(loadAll, 60000);
+</script>
+</body>
+</html>

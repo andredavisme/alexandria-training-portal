@@ -35,9 +35,14 @@
   .card h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.4rem; }
   .card p  { font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem; }
 
+  .section-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 0.5rem; margin-top: 1.25rem; }
+  .section-label:first-of-type { margin-top: 0; }
+
   .nav-links { display: flex; flex-direction: column; gap: 0.65rem; }
   .nav-link { display: flex; align-items: center; gap: 0.85rem; padding: 0.9rem 1.1rem; border: 1.5px solid var(--border); border-radius: 9px; transition: border-color 0.18s, box-shadow 0.18s; text-decoration: none; color: inherit; }
   .nav-link:hover { border-color: var(--accent); box-shadow: var(--shadow-sm); text-decoration: none; }
+  .nav-link.featured { border-color: #C7D2FE; background: #EEF2FF; }
+  .nav-link.featured:hover { border-color: var(--accent); }
   .nav-link-icon  { font-size: 1.3rem; width: 32px; text-align: center; flex-shrink: 0; }
   .nav-link-label { font-weight: 600; font-size: 0.9rem; }
   .nav-link-sub   { font-size: 0.78rem; color: var(--text-muted); margin-top: 1px; }
@@ -61,16 +66,32 @@
   <div class="card">
     <h2>Welcome</h2>
     <p>Alexandria is an invite-only learning portal. Select a section to continue.</p>
+
+    <div class="section-label">Current Course</div>
     <div class="nav-links">
 
-      <a class="nav-link" href="catalog.html">
-        <span class="nav-link-icon">📚</span>
+      <a class="nav-link featured" href="course.html?course=a1b2c3d4-0001-0001-0001-000000000001">
+        <span class="nav-link-icon">🌱</span>
         <div>
-          <div class="nav-link-label">Course Catalog</div>
-          <div class="nav-link-sub">Browse courses and explore module outlines</div>
+          <div class="nav-link-label">Our Living World</div>
+          <div class="nav-link-sub">Soil, Seeds &amp; Stewardship · 6 Months</div>
         </div>
         <span class="nav-link-arrow">›</span>
       </a>
+
+      <a class="nav-link" href="textbook.html?course=a1b2c3d4-0001-0001-0001-000000000001">
+        <span class="nav-link-icon">📖</span>
+        <div>
+          <div class="nav-link-label">Digital Textbook</div>
+          <div class="nav-link-sub">All 6 modules · Vocab, readings &amp; diaspora connections</div>
+        </div>
+        <span class="nav-link-arrow">›</span>
+      </a>
+
+    </div>
+
+    <div class="section-label">Community</div>
+    <div class="nav-links">
 
       <a class="nav-link" href="discussion.html">
         <span class="nav-link-icon">💬</span>
@@ -86,6 +107,20 @@
         <div>
           <div class="nav-link-label">Classroom Commons</div>
           <div class="nav-link-sub">Track the class recycling &amp; circular economy project</div>
+        </div>
+        <span class="nav-link-arrow">›</span>
+      </a>
+
+    </div>
+
+    <div class="section-label">Portal</div>
+    <div class="nav-links">
+
+      <a class="nav-link" href="catalog.html">
+        <span class="nav-link-icon">📚</span>
+        <div>
+          <div class="nav-link-label">Course Catalog</div>
+          <div class="nav-link-sub">Browse all courses and module outlines</div>
         </div>
         <span class="nav-link-arrow">›</span>
       </a>

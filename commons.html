@@ -25,7 +25,6 @@
   a { color: var(--accent); text-decoration: none; }
   .hidden { display: none !important; }
 
-  /* Nav */
   .nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; gap: 0.75rem; height: 56px; }
   .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
   .brand .logo { width: 32px; height: 32px; background: #6366F1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; color: #fff; flex-shrink: 0; }
@@ -37,13 +36,11 @@
   .btn-ghost  { background: transparent; color: var(--text-muted); border: none; padding: 6px 10px; font-size: 0.85rem; cursor: pointer; font-family: var(--font); text-decoration: none; white-space: nowrap; }
   .btn-ghost:hover { color: var(--text); }
 
-  /* Layout */
   .page { max-width: 960px; margin: 0 auto; padding: 2.5rem 1.5rem; display: grid; grid-template-columns: 1fr 320px; gap: 1.5rem; align-items: start; }
   @media (max-width: 720px) { .page { grid-template-columns: 1fr; } }
   .col-main { display: flex; flex-direction: column; gap: 1.5rem; }
   .col-side  { display: flex; flex-direction: column; gap: 1.25rem; }
 
-  /* Hero */
   .hero { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
   .hero-stripe { height: 5px; background: var(--accent); }
   .hero-body   { padding: 1.5rem 1.75rem; }
@@ -57,22 +54,18 @@
   .btn-outline { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 500; font-family: var(--font); border: 1.5px solid var(--border); background: transparent; cursor: pointer; color: var(--text-muted); text-decoration: none; transition: border-color 0.15s, color 0.15s; }
   .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* Section label */
   .section-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.75rem; }
 
-  /* Progress summary cards */
   .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
   @media (max-width: 480px) { .stats-row { grid-template-columns: 1fr; } }
   .stat-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1rem 1.1rem; text-align: center; }
   .stat-value { font-size: 1.6rem; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 0.25rem; }
   .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; }
 
-  /* Milestones */
   .milestone-list { display: flex; flex-direction: column; gap: 0.75rem; }
   .milestone-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; border-left: 4px solid var(--border); transition: border-color 0.2s; }
   .milestone-card.is-current  { border-left-color: var(--accent); }
   .milestone-card.is-complete { border-left-color: #10B981; }
-
   .milestone-header { display: flex; align-items: center; gap: 0.9rem; padding: 1rem 1.1rem; cursor: pointer; user-select: none; }
   .milestone-header:hover { background: #F8FAFC; }
   .ms-num  { flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; color: var(--text-muted); }
@@ -88,7 +81,6 @@
   .badge-upcoming { background: #F1F5F9; color: #94A3B8; }
   .ms-chevron { font-size: 0.85rem; color: var(--text-muted); transition: transform 0.2s; margin-left: 0.5rem; }
   .milestone-card.is-open .ms-chevron { transform: rotate(180deg); }
-
   .milestone-body { border-top: 1px solid var(--border); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.85rem; }
   .ms-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.65; }
   .ms-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
@@ -98,17 +90,12 @@
   .ms-detail-text  { font-size: 0.81rem; color: var(--text); line-height: 1.55; }
   .ms-detail-block.diaspora { grid-column: 1 / -1; border-left: 3px solid var(--accent); }
 
-  /* Log entry form */
   .log-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1.25rem 1.4rem; }
   .log-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.25rem; }
   .log-card p  { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.5; }
   .form-group { margin-bottom: 0.75rem; }
   .form-label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.3rem; }
-  .form-input, .form-select, .form-textarea {
-    width: 100%; padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 7px;
-    font-family: var(--font); font-size: 0.85rem; color: var(--text); background: var(--surface);
-    transition: border-color 0.15s; outline: none;
-  }
+  .form-input, .form-select, .form-textarea { width: 100%; padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 7px; font-family: var(--font); font-size: 0.85rem; color: var(--text); background: var(--surface); transition: border-color 0.15s; outline: none; }
   .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
   .form-textarea { resize: vertical; min-height: 72px; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
@@ -120,7 +107,6 @@
   .form-success { background: #D1FAE5; border-radius: 7px; padding: 9px 12px; font-size: 0.82rem; color: #065F46; font-weight: 500; margin-top: 0.5rem; }
   .form-error   { background: #FEE2E2; border-radius: 7px; padding: 9px 12px; font-size: 0.82rem; color: #7F1D1D; margin-top: 0.5rem; }
 
-  /* Roles */
   .roles-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1.25rem 1.4rem; }
   .roles-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.25rem; }
   .roles-card p  { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.5; }
@@ -131,7 +117,6 @@
   .role-count { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; }
   .role-resp  { font-size: 0.79rem; color: var(--text-muted); line-height: 1.5; margin-top: 2px; }
 
-  /* Log entries */
   .entries-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1.25rem 1.4rem; }
   .entries-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; }
   .entry-list { display: flex; flex-direction: column; gap: 0.5rem; }
@@ -145,7 +130,6 @@
   .entry-complete { font-size: 0.7rem; background: #D1FAE5; color: #065F46; padding: 2px 7px; border-radius: 20px; font-weight: 600; }
   .no-entries { font-size: 0.83rem; color: var(--text-muted); text-align: center; padding: 1rem 0; }
 
-  /* States */
   .spinner { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 0.875rem; }
   .alert-error { background: #FEE2E2; border-left: 4px solid #EF4444; color: #7F1D1D; padding: 11px 14px; border-radius: 8px; font-size: 0.85rem; }
 </style>
@@ -212,7 +196,6 @@ if (error || !course) {
   document.getElementById('nav-course-link').textContent = `← ${course.title}`
   document.title = `Alexandria — Classroom Commons — ${course.title}`
 
-  // Gather milestones from all modules
   const milestones = (course.course_modules || []).map(cm => ({
     month: cm.order_index,
     label: cm.section_label,
@@ -220,7 +203,6 @@ if (error || !course) {
     moduleTitle: cm.modules?.title || ''
   })).filter(m => m.milestone)
 
-  // Compute totals from entries
   const totalWaste    = (entries || []).reduce((s, e) => s + (e.waste_diverted_g || 0), 0)
   const totalItems    = (entries || []).reduce((s, e) => s + (e.items_produced || 0), 0)
   const totalEarnings = (entries || []).reduce((s, e) => s + (e.earnings_cents || 0), 0)
@@ -244,8 +226,8 @@ function renderPage(c, milestones, roles, entries, commonsThread, waste, items, 
           <div class="hero-desc">The class operates as a living circular economy — a self-governing community that audits, collects, repurposes, and sells or uses materials from their own classroom. Roles rotate monthly. Every module adds a new layer of responsibility.</div>
           <div class="hero-dq">“How can our class work together as a community to make sure nothing we use goes to waste?”</div>
           <div class="hero-actions">
-            ${commonsThread ? `<a class="btn-primary" href="discussion-thread.html?thread=${commonsThread.id}">💬 Commons Discussion</a>` : ''}
-            <a class="btn-outline" href="${escHtml(`course.html?course=${c.id}`)}">← Back to Course</a>
+            ${commonsThread ? `<a class="btn-primary" href="discussion-thread.html?id=${commonsThread.id}">💬 Commons Discussion</a>` : ''}
+            <a class="btn-outline" href="${escHtml(`course.html?course=${c.id}`)}"><span>← Back to Course</span></a>
           </div>
         </div>
       </div>
@@ -262,7 +244,7 @@ function renderPage(c, milestones, roles, entries, commonsThread, waste, items, 
             <div class="stat-label">📦 Items Produced</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" id="stat-earnings">$${(totalEarnings/100).toFixed(2)}</div>
+            <div class="stat-value" id="stat-earnings">$${(earnings/100).toFixed(2)}</div>
             <div class="stat-label">💵 Market Earnings</div>
           </div>
         </div>
@@ -399,7 +381,6 @@ function renderEntry(e) {
 }
 
 function wireUI(course, completedMonths, existingEntries) {
-  // Milestone toggles
   document.querySelectorAll('.milestone-header').forEach(h => {
     h.addEventListener('click', () => {
       const card = h.closest('.milestone-card')
@@ -410,10 +391,9 @@ function wireUI(course, completedMonths, existingEntries) {
     })
   })
 
-  // Log form
-  const form    = document.getElementById('log-form')
-  const msg     = document.getElementById('form-msg')
-  const btn     = document.getElementById('submit-btn')
+  const form = document.getElementById('log-form')
+  const msg  = document.getElementById('form-msg')
+  const btn  = document.getElementById('submit-btn')
 
   form.addEventListener('submit', async e => {
     e.preventDefault()
@@ -422,13 +402,13 @@ function wireUI(course, completedMonths, existingEntries) {
     msg.className = 'hidden'
 
     const payload = {
-      course_id:          course.id,
-      class_name:         document.getElementById('class-name').value.trim(),
-      month_number:       parseInt(document.getElementById('month-sel').value),
-      waste_diverted_g:   parseFloat(document.getElementById('waste-g').value)   || 0,
-      items_produced:     parseInt(document.getElementById('items-n').value)      || 0,
-      earnings_cents:     parseInt(document.getElementById('earn-cents').value)   || 0,
-      notes:              document.getElementById('notes').value.trim() || null,
+      course_id:           course.id,
+      class_name:          document.getElementById('class-name').value.trim(),
+      month_number:        parseInt(document.getElementById('month-sel').value),
+      waste_diverted_g:    parseFloat(document.getElementById('waste-g').value)  || 0,
+      items_produced:      parseInt(document.getElementById('items-n').value)    || 0,
+      earnings_cents:      parseInt(document.getElementById('earn-cents').value) || 0,
+      notes:               document.getElementById('notes').value.trim() || null,
       milestone_completed: document.getElementById('ms-complete').checked
     }
 
@@ -441,12 +421,10 @@ function wireUI(course, completedMonths, existingEntries) {
       msg.textContent = '✅ Progress logged!'
       msg.className = 'form-success'
       form.reset()
-      // Prepend new entry to log
       const list = document.getElementById('entry-list')
       const noMsg = list.querySelector('.no-entries')
       if (noMsg) noMsg.remove()
       list.insertAdjacentHTML('afterbegin', renderEntry(data))
-      // Update stat totals
       const allEntries = [data, ...existingEntries]
       const tw = allEntries.reduce((s,x) => s+(x.waste_diverted_g||0),0)
       const ti = allEntries.reduce((s,x) => s+(x.items_produced||0),0)

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Skunk Works — 207 Analytix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --accent:  #6366F1;
+  --green:   #22C55E;
+  --yellow:  #F59E0B;
+  --red:     #EF4444;
+  --surface: #ffffff;
+  --bg:      #0F172A;
+  --card-bg: #1E293B;
+  --border:  #334155;
+  --text:    #F8FAFC;
+  --muted:   #94A3B8;
+  --font:    'Inter', sans-serif;
+  --radius:  10px;
+  --shadow:  0 4px 16px rgba(0,0,0,0.4);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+a { color: var(--accent); text-decoration: none; }
+.hidden { display: none !important; }
+
+/* Nav */
+.nav { background: #0B1120; border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; gap: 0.75rem; height: 56px; position: sticky; top: 0; z-index: 100; }
+.logo-sw { width: 32px; height: 32px; background: #6366F1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.brand-name { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+.brand-sub  { font-size: 0.7rem; color: var(--muted); }
+.nav-sep    { color: var(--border); }
+.nav-spacer { flex: 1; }
+.btn-ghost-nav { background: transparent; color: var(--muted); border: none; padding: 6px 10px; font-size: 0.82rem; cursor: pointer; font-family: var(--font); text-decoration: none; white-space: nowrap; }
+.btn-ghost-nav:hover { color: var(--text); }
+.btn-primary-nav { background: var(--accent); color: #fff; border: none; padding: 7px 14px; border-radius: 7px; font-size: 0.82rem; font-weight: 700; cursor: pointer; font-family: var(--font); white-space: nowrap; display: flex; align-items: center; gap: 5px; transition: opacity 0.15s; }
+.btn-primary-nav:hover { opacity: 0.85; }
+
+/* Header */
+.page-header { padding: 2rem 1.5rem 1.5rem; max-width: 1400px; margin: 0 auto; }
+.page-header h1 { font-size: 1.6rem; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 0.6rem; }
+.page-header p { font-size: 0.875rem; color: var(--muted); margin-top: 0.4rem; max-width: 560px; line-height: 1.6; }
+
+/* Stats row */
+.stats-row { display: flex; gap: 1rem; padding: 0 1.5rem 1.5rem; max-width: 1400px; margin: 0 auto; flex-wrap: wrap; }
+.stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; min-width: 140px; flex: 1; }
+.stat-card .num { font-size: 1.5rem; font-weight: 800; }
+.stat-card .lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 2px; }
+.stat-card.purple .num { color: #A78BFA; }
+.stat-card.yellow .num { color: #FCD34D; }
+.stat-card.green  .num { color: var(--green); }
+.stat-card.blue   .num { color: #60A5FA; }
+
+/* Board */
+.board-wrap { padding: 0 1.5rem 3rem; max-width: 1400px; margin: 0 auto; overflow-x: auto; }
+.board { display: flex; gap: 1rem; min-width: 900px; align-items: flex-start; }
+
+.lane { flex: 1; min-width: 220px; }
+.lane-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; padding: 0 2px; }
+.lane-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; gap: 6px; }
+.lane-count { font-size: 0.7rem; font-weight: 600; background: var(--border); color: var(--muted); padding: 1px 7px; border-radius: 10px; }
+
+.lane-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-pitched    { background: #94A3B8; }
+.dot-approved   { background: #60A5FA; }
+.dot-inprogress { background: #F59E0B; }
+.dot-qa         { background: #A78BFA; }
+.dot-delivered  { background: #34D399; }
+.dot-commodity  { background: #22C55E; }
+
+.lane-body { display: flex; flex-direction: column; gap: 0.75rem; min-height: 120px; }
+
+/* Project card */
+.proj-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; position: relative; }
+.proj-card:hover { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.proj-card.commoditized { border-color: #166534; }
+.proj-title { font-size: 0.875rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+.proj-sponsor { font-size: 0.7rem; color: var(--muted); margin-bottom: 0.6rem; }
+.proj-desc { font-size: 0.75rem; color: #CBD5E1; line-height: 1.5; margin-bottom: 0.75rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.budget-bar-wrap { margin-bottom: 0.6rem; }
+.budget-labels { display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--muted); margin-bottom: 3px; }
+.budget-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.budget-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
+.fill-ok      { background: var(--green); }
+.fill-warn    { background: var(--yellow); }
+.fill-over    { background: var(--red); }
+
+.proj-footer { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-top: 0.5rem; }
+.proj-date { font-size: 0.65rem; color: var(--muted); }
+.btn-advance { font-size: 0.65rem; font-weight: 700; padding: 3px 8px; border-radius: 5px; border: 1px solid var(--border); background: none; color: var(--muted); cursor: pointer; font-family: var(--font); transition: all 0.15s; white-space: nowrap; }
+.btn-advance:hover { border-color: var(--accent); color: var(--accent); }
+.btn-commoditize { background: #14532D; border-color: #166534; color: #86EFAC; }
+.btn-commoditize:hover { background: #166534; color: #fff; border-color: #22C55E; }
+.commodity-badge { font-size: 0.65rem; font-weight: 700; color: #86EFAC; background: #14532D; padding: 2px 7px; border-radius: 5px; }
+
+.empty-lane { border: 1.5px dashed var(--border); border-radius: var(--radius); padding: 1.5rem 1rem; text-align: center; color: var(--muted); font-size: 0.75rem; }
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 1rem; animation: fadeIn 0.18s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal { background: #1E293B; border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto; animation: slideUp 0.2s ease; }
+@keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.modal-header h2 { font-size: 1rem; font-weight: 700; }
+.modal-close { background: none; border: none; color: var(--muted); font-size: 1.2rem; cursor: pointer; padding: 2px 6px; }
+.modal-close:hover { color: var(--text); }
+.modal-body { padding: 1.5rem; }
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--muted); margin-bottom: 0.3rem; }
+.form-group input, .form-group textarea, .form-group select { width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.875rem; font-family: var(--font); color: var(--text); background: #0F172A; transition: border-color 0.15s; }
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--accent); }
+.form-group textarea { resize: vertical; min-height: 72px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.btn-submit { width: 100%; padding: 11px; border-radius: 9px; font-size: 0.9rem; font-weight: 700; background: var(--accent); color: #fff; border: none; cursor: pointer; font-family: var(--font); transition: opacity 0.15s; margin-top: 0.25rem; }
+.btn-submit:hover { opacity: 0.85; }
+.btn-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Detail modal extras */
+.detail-section { margin-bottom: 1.25rem; }
+.detail-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.4rem; }
+.detail-value { font-size: 0.875rem; color: var(--text); line-height: 1.6; }
+.status-select-row { display: flex; gap: 0.75rem; align-items: flex-end; }
+.status-select-row .form-group { flex: 1; margin-bottom: 0; }
+.btn-save-status { padding: 9px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; background: var(--accent); color: #fff; border: none; cursor: pointer; font-family: var(--font); white-space: nowrap; transition: opacity 0.15s; }
+.btn-save-status:hover { opacity: 0.85; }
+.btn-danger { background: #7F1D1D; color: #FCA5A5; border: 1px solid #991B1B; padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: var(--font); transition: background 0.15s; }
+.btn-danger:hover { background: #991B1B; }
+.btn-commoditize-big { width: 100%; padding: 11px; border-radius: 9px; font-size: 0.9rem; font-weight: 700; background: #14532D; color: #86EFAC; border: 1.5px solid #166534; cursor: pointer; font-family: var(--font); transition: background 0.15s; margin-top: 0.5rem; }
+.btn-commoditize-big:hover { background: #166534; color: #fff; }
+
+/* Spinner */
+.spinner-ring { display: inline-block; width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.state-wrap { text-align: center; padding: 4rem 2rem; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="logo-sw">🦨</div>
+  <div>
+    <div class="brand-name">Skunk Works</div>
+    <div class="brand-sub">207 Analytix R&D Pipeline</div>
+  </div>
+  <span class="nav-sep">|</span>
+  <div class="nav-spacer"></div>
+  <a href="commodities.html" class="btn-ghost-nav">📦 Commodities</a>
+  <a href="index.html" class="btn-ghost-nav">← Portal</a>
+  <button class="btn-primary-nav" onclick="openNewModal()">+ Pitch Project</button>
+</nav>
+
+<div class="page-header">
+  <h1>🦨 Skunk Works Pipeline</h1>
+  <p>Internal R&D lab for 207 Analytix. Every commodity starts here — pitched, built, proven, then deployed to the catalog.</p>
+</div>
+
+<div class="stats-row" id="stats-row">
+  <div class="stat-card purple"><div class="num" id="stat-total">—</div><div class="lbl">Total Projects</div></div>
+  <div class="stat-card yellow"><div class="num" id="stat-active">—</div><div class="lbl">In Flight</div></div>
+  <div class="stat-card green" ><div class="num" id="stat-comm">—</div><div class="lbl">Commoditized</div></div>
+  <div class="stat-card blue"  ><div class="num" id="stat-budget">—</div><div class="lbl">Budget Deployed</div></div>
+</div>
+
+<div class="board-wrap">
+  <div class="board" id="board">
+    <div class="state-wrap" style="width:100%"><div class="spinner-ring"></div><p style="margin-top:1rem;">Loading pipeline…</p></div>
+  </div>
+</div>
+
+<!-- New Project Modal -->
+<div class="modal-overlay hidden" id="new-modal" onclick="closeOnBackdrop(event,'new-modal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>🚀 Pitch a Project</h2>
+      <button class="modal-close" onclick="closeModal('new-modal')">×</button>
+    </div>
+    <div class="modal-body">
+      <form onsubmit="submitNew(event)">
+        <div class="form-group"><label>Project Title *</label><input type="text" id="new-title" required placeholder="e.g. Local Business Review Aggregator"/></div>
+        <div class="form-group"><label>Description</label><textarea id="new-desc" placeholder="What problem does this solve? What does it produce?"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label>Sponsor</label><input type="text" id="new-sponsor" placeholder="Who's backing this?"/></div>
+          <div class="form-group"><label>Budget Allocated ($)</label><input type="number" id="new-budget" min="0" step="1" placeholder="0"/></div>
+        </div>
+        <button type="submit" class="btn-submit" id="new-submit-btn">Pitch It →</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay hidden" id="detail-modal" onclick="closeOnBackdrop(event,'detail-modal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="detail-title">Project</h2>
+      <button class="modal-close" onclick="closeModal('detail-modal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-section">
+        <div class="detail-label">Description</div>
+        <div class="detail-value" id="detail-desc">—</div>
+      </div>
+      <div class="form-row" style="margin-bottom:1.25rem;">
+        <div class="detail-section">
+          <div class="detail-label">Sponsor</div>
+          <div class="detail-value" id="detail-sponsor">—</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Created</div>
+          <div class="detail-value" id="detail-created">—</div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Budget</div>
+        <div class="form-row">
+          <div class="form-group"><label>Allocated ($)</label><input type="number" id="det-budget-alloc" min="0" step="1"/></div>
+          <div class="form-group"><label>Spent ($)</label><input type="number" id="det-budget-spent" min="0" step="1"/></div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Pipeline Stage</div>
+        <div class="status-select-row">
+          <div class="form-group">
+            <select id="det-status">
+              <option value="pitched">🎯 Pitched</option>
+              <option value="approved">✅ Approved</option>
+              <option value="in_progress">⚙️ In Progress</option>
+              <option value="qa_review">🔍 QA Review</option>
+              <option value="delivered">📬 Delivered</option>
+            </select>
+          </div>
+          <button class="btn-save-status" onclick="saveDetail()">Save Changes</button>
+        </div>
+      </div>
+
+      <div id="commoditize-section">
+        <button class="btn-commoditize-big" onclick="commoditizeProject()">🏭 Commoditize → Add to Catalog</button>
+      </div>
+      <div id="already-commoditized" class="hidden" style="text-align:center;padding:0.75rem;color:#86EFAC;font-size:0.85rem;font-weight:600;">✅ Already commoditized and live in the catalog.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPA_URL = 'https://hhyhulqngdkwsxhymmcd.supabase.co'
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoeWh1bHFuZ2Rrd3N4aHltbWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzEyMDEsImV4cCI6MjA5MjcwNzIwMX0.dmSy7Q8Je5lEY4XCFzwvfPnkBYLebPE0yZMhy6Y8czI'
+
+function esc(s) { return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+async function supa(path, opts={}) {
+  const r = await fetch(SUPA_URL+path, {
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=representation',...(opts.headers||{})},
+    ...opts
+  })
+  if (!r.ok) throw new Error(await r.text())
+  const txt = await r.text()
+  return txt ? JSON.parse(txt) : null
+}
+
+const STAGES = [
+  { key:'pitched',     label:'Pitched',     dot:'dot-pitched'    },
+  { key:'approved',    label:'Approved',    dot:'dot-approved'   },
+  { key:'in_progress', label:'In Progress', dot:'dot-inprogress' },
+  { key:'qa_review',   label:'QA Review',   dot:'dot-qa'         },
+  { key:'delivered',   label:'Delivered',   dot:'dot-delivered'  },
+  { key:'commoditized',label:'Commoditized',dot:'dot-commodity'  },
+]
+const ADVANCE_LABEL = {
+  'pitched':     'Approve →',
+  'approved':    'Start →',
+  'in_progress': 'QA →',
+  'qa_review':   'Deliver →',
+  'delivered':   '🏭 Commoditize',
+}
+
+let allProjects = []
+let activeId    = null
+
+async function load() {
+  try {
+    allProjects = await supa('/rest/v1/skunkworks_projects?select=*&order=created_at.desc')
+    renderStats()
+    renderBoard()
+  } catch(e) {
+    document.getElementById('board').innerHTML =
+      `<div class="state-wrap" style="width:100%">⚠️ Could not load pipeline: ${esc(e.message)}</div>`
+  }
+}
+
+function renderStats() {
+  const inFlight = allProjects.filter(p => !['pitched','commoditized'].includes(p.status)).length
+  const comm     = allProjects.filter(p => p.commoditized).length
+  const budget   = allProjects.reduce((s,p) => s + (p.budget_spent||0), 0)
+  document.getElementById('stat-total').textContent  = allProjects.length
+  document.getElementById('stat-active').textContent = inFlight
+  document.getElementById('stat-comm').textContent   = comm
+  document.getElementById('stat-budget').textContent = '$'+budget.toLocaleString()
+}
+
+function renderBoard() {
+  const board = document.getElementById('board')
+  board.innerHTML = STAGES.map(stage => {
+    const items = allProjects.filter(p => p.status === stage.key)
+    return `
+    <div class="lane">
+      <div class="lane-header">
+        <div class="lane-title"><span class="lane-dot ${stage.dot}"></span>${esc(stage.label)}</div>
+        <span class="lane-count">${items.length}</span>
+      </div>
+      <div class="lane-body">
+        ${items.length ? items.map(p => renderCard(p)).join('') : '<div class="empty-lane">No projects here</div>'}
+      </div>
+    </div>`
+  }).join('')
+}
+
+function renderCard(p) {
+  const alloc   = p.budget_allocated || 0
+  const spent   = p.budget_spent     || 0
+  const pct     = alloc > 0 ? Math.min(Math.round((spent/alloc)*100), 100) : 0
+  const fillCls = pct >= 100 ? 'fill-over' : pct >= 80 ? 'fill-warn' : 'fill-ok'
+  const nextLabel = ADVANCE_LABEL[p.status]
+  const footerRight = p.commoditized
+    ? `<span class="commodity-badge">✅ Live</span>`
+    : (nextLabel ? `<button class="btn-advance${p.status==='delivered'?' btn-commoditize':''}" onclick="event.stopPropagation();advanceStatus('${esc(p.id)}')">` + esc(nextLabel) + `</button>` : '')
+
+  return `
+  <div class="proj-card${p.commoditized?' commoditized':''}" onclick="openDetail('${esc(p.id)}')">
+    <div class="proj-title">${esc(p.title)}</div>
+    ${p.sponsor ? `<div class="proj-sponsor">👤 ${esc(p.sponsor)}</div>` : ''}
+    ${p.description ? `<div class="proj-desc">${esc(p.description)}</div>` : ''}
+    ${alloc > 0 ? `
+    <div class="budget-bar-wrap">
+      <div class="budget-labels"><span>Budget</span><span>$${spent.toLocaleString()} / $${alloc.toLocaleString()}</span></div>
+      <div class="budget-bar"><div class="budget-fill ${fillCls}" style="width:${pct}%"></div></div>
+    </div>` : ''}
+    <div class="proj-footer">
+      <span class="proj-date">${new Date(p.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>
+      ${footerRight}
+    </div>
+  </div>`
+}
+
+async function advanceStatus(id) {
+  const p = allProjects.find(x => x.id===id)
+  if (!p) return
+  const order = STAGES.map(s=>s.key)
+  const idx   = order.indexOf(p.status)
+  if (idx < 0 || idx >= order.length-1) return
+  const next  = order[idx+1]
+  if (next === 'commoditized') { openDetail(id); return }
+  await patchProject(id, { status: next })
+  await load()
+}
+
+async function patchProject(id, patch) {
+  patch.updated_at = new Date().toISOString()
+  await supa(`/rest/v1/skunkworks_projects?id=eq.${id}`, {
+    method:'PATCH', headers:{'Prefer':'return=minimal'},
+    body: JSON.stringify(patch)
+  })
+}
+
+// ── New modal ──
+function openNewModal() {
+  document.getElementById('new-title').value   = ''
+  document.getElementById('new-desc').value    = ''
+  document.getElementById('new-sponsor').value = ''
+  document.getElementById('new-budget').value  = ''
+  document.getElementById('new-modal').classList.remove('hidden')
+}
+async function submitNew(e) {
+  e.preventDefault()
+  const btn = document.getElementById('new-submit-btn')
+  btn.disabled = true; btn.textContent = 'Pitching…'
+  try {
+    await supa('/rest/v1/skunkworks_projects', {
+      method:'POST', headers:{'Prefer':'return=minimal'},
+      body: JSON.stringify({
+        title:            document.getElementById('new-title').value.trim(),
+        description:      document.getElementById('new-desc').value.trim() || null,
+        sponsor:          document.getElementById('new-sponsor').value.trim() || null,
+        budget_allocated: parseFloat(document.getElementById('new-budget').value)||0,
+        status:           'pitched',
+        commoditized:     false,
+      })
+    })
+    closeModal('new-modal')
+    await load()
+  } catch(err) {
+    alert('Error: '+err.message)
+  } finally {
+    btn.disabled = false; btn.textContent = 'Pitch It →'
+  }
+}
+
+// ── Detail modal ──
+function openDetail(id) {
+  activeId = id
+  const p = allProjects.find(x=>x.id===id)
+  if (!p) return
+  document.getElementById('detail-title').textContent   = p.title
+  document.getElementById('detail-desc').textContent    = p.description || '—'
+  document.getElementById('detail-sponsor').textContent = p.sponsor || '—'
+  document.getElementById('detail-created').textContent = new Date(p.created_at).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})
+  document.getElementById('det-budget-alloc').value     = p.budget_allocated||0
+  document.getElementById('det-budget-spent').value     = p.budget_spent||0
+  const sel = document.getElementById('det-status')
+  const validStatuses = ['pitched','approved','in_progress','qa_review','delivered']
+  sel.value = validStatuses.includes(p.status) ? p.status : 'delivered'
+  if (p.commoditized) {
+    document.getElementById('commoditize-section').classList.add('hidden')
+    document.getElementById('already-commoditized').classList.remove('hidden')
+  } else {
+    document.getElementById('commoditize-section').classList.remove('hidden')
+    document.getElementById('already-commoditized').classList.add('hidden')
+  }
+  document.getElementById('detail-modal').classList.remove('hidden')
+}
+
+async function saveDetail() {
+  if (!activeId) return
+  try {
+    await patchProject(activeId, {
+      status:           document.getElementById('det-status').value,
+      budget_allocated: parseFloat(document.getElementById('det-budget-alloc').value)||0,
+      budget_spent:     parseFloat(document.getElementById('det-budget-spent').value)||0,
+    })
+    closeModal('detail-modal')
+    await load()
+  } catch(err) { alert('Error: '+err.message) }
+}
+
+async function commoditizeProject() {
+  if (!activeId) return
+  const p = allProjects.find(x=>x.id===activeId)
+  if (!p || p.commoditized) return
+  if (!confirm(`Mark "${p.title}" as commoditized and move to the catalog?`)) return
+  try {
+    await patchProject(activeId, {
+      status:           'commoditized',
+      commoditized:     true,
+      commoditized_at:  new Date().toISOString(),
+    })
+    // Seed into commodities table
+    await supa('/rest/v1/commodities', {
+      method:'POST', headers:{'Prefer':'return=minimal'},
+      body: JSON.stringify({
+        name:        p.title,
+        slug:        p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''),
+        description: p.description || null,
+        status:      'coming_soon',
+        category:    'Operations',
+        icon:        '🏭',
+        sort_order:  999,
+      })
+    })
+    closeModal('detail-modal')
+    await load()
+    alert(`✅ "${p.title}" is now seeded in the commodities catalog as Coming Soon. Head to commodities.html to fill in the details.`)
+  } catch(err) { alert('Error: '+err.message) }
+}
+
+// ── Modals ──
+function closeModal(id) { document.getElementById(id).classList.add('hidden') }
+function closeOnBackdrop(e, id) { if (e.target===document.getElementById(id)) closeModal(id) }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') { closeModal('new-modal'); closeModal('detail-modal') } })
+
+load()
+</script>
+</body>
+</html>

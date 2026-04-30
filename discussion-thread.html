@@ -29,7 +29,6 @@
   a:hover { text-decoration: underline; }
   .hidden { display: none !important; }
 
-  /* Nav */
   .nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; gap: 0.75rem; height: 56px; }
   .brand { display: flex; align-items: center; gap: 10px; }
   .brand .logo { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; color: #fff; }
@@ -42,10 +41,8 @@
   .btn-ghost:hover { color: var(--text); }
   .btn-sm { font-size: 0.8rem; }
 
-  /* Layout */
   .page { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem; }
 
-  /* Thread header card */
   .thread-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
   .thread-card.is-pinned { border-left: 4px solid var(--accent); }
   .thread-card.is-closed { border-left: 4px solid var(--border); }
@@ -61,7 +58,6 @@
   .thread-body { font-size: 0.92rem; line-height: 1.7; color: var(--text); white-space: pre-wrap; margin-bottom: 1rem; }
   .thread-meta { font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 0.75rem; flex-wrap: wrap; }
 
-  /* Posts */
   .posts-section { margin-bottom: 1.5rem; }
   .posts-heading { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.75rem; }
   .post-list { display: flex; flex-direction: column; gap: 0.75rem; }
@@ -72,7 +68,6 @@
   .post-date { font-size: 0.78rem; color: var(--text-muted); margin-left: auto; }
   .post-content { font-size: 0.88rem; line-height: 1.65; color: var(--text); white-space: pre-wrap; }
 
-  /* Reply form */
   .reply-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1.5rem; }
   .reply-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
   .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1rem; }
@@ -85,16 +80,12 @@
   .btn-primary:hover { background: var(--accent-light); border-color: var(--accent-light); }
   .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  /* Alert */
   .alert { padding: 11px 14px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1rem; }
   .alert-error   { background: #FEE2E2; border-left: 4px solid var(--danger);  color: #7F1D1D; }
   .alert-success { background: #D1FAE5; border-left: 4px solid var(--success); color: #064E3B; }
   .alert-info    { background: #EFF6FF; border-left: 4px solid var(--accent);  color: #1E3A5F; }
 
-  /* Closed notice */
   .closed-notice { text-align: center; padding: 1.5rem; background: var(--bg); border-radius: var(--radius); border: 1.5px solid var(--border); font-size: 0.875rem; color: var(--text-muted); }
-
-  /* Spinner / empty */
   .spinner { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.875rem; }
   .no-posts { text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.875rem; }
 </style>
@@ -126,7 +117,9 @@
 <script type="module">
 import { fetchThread, fetchPosts, fetchReplies, submitPost, formatDateTime, sourceLabel, replySourceLabel, escHtml } from './js/discussion.js'
 
-const threadId = new URLSearchParams(location.search).get('id')
+const params = new URLSearchParams(location.search)
+// Accept both ?id= (canonical) and ?thread= (legacy)
+const threadId = params.get('id') || params.get('thread')
 
 if (!threadId) {
   document.getElementById('thread-wrap').innerHTML = '<div class="alert alert-error">No thread ID specified. <a href="discussion.html">Back to discussions</a></div>'
@@ -148,7 +141,6 @@ async function init() {
     return
   }
 
-  // Update page title and nav
   document.title = `Alexandria — ${thread.title}`
   document.getElementById('nav-thread-title').textContent = thread.title
 
@@ -179,14 +171,13 @@ function renderThread(t) {
 }
 
 function renderPosts(posts, replies, threadStatus) {
-  // Merge discussion_posts + thread_replies, tag each with its origin
   const merged = [
     ...posts.map(p => ({ ...p, _kind: 'post', _source: sourceLabel(p.source) })),
     ...replies.map(r => ({ ...r, _kind: 'reply', _source: replySourceLabel(r) }))
   ].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
 
   const wrap = document.getElementById('posts-wrap')
-  if (merged.length === 0) {
+  if (!merged.length) {
     wrap.innerHTML = `<div class="no-posts">No replies yet. Be the first to respond.</div>`
     return
   }
@@ -254,10 +245,7 @@ function renderReplyForm(thread) {
     const { error } = await submitPost(threadId, author, content)
     btn.disabled = false; btn.textContent = 'Submit Reply'
 
-    if (error) {
-      setAlert('reply-alert', 'error', 'Failed to submit reply. Please try again.')
-      return
-    }
+    if (error) { setAlert('reply-alert', 'error', 'Failed to submit reply. Please try again.'); return }
 
     document.getElementById('reply-form').classList.add('hidden')
     document.getElementById('reply-confirmed').classList.remove('hidden')

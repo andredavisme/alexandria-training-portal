@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>207 Analytix — Operator Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0d1117; --bg2:#161b22; --bg3:#1c2333;
+    --blue:#60a5fa; --teal:#2dd4bf; --green:#4ade80; --gold:#fbbf24;
+    --coral:#fb7185; --purple:#a78bfa;
+    --text:#e6edf3; --text2:#8b949e; --border:#30363d;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+  a { color: var(--blue); text-decoration: none; }
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,17,23,0.95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem; display: flex; align-items: center; gap: 0.75rem; height: 56px;
+  }
+  .nav-logo { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1rem;
+    background: linear-gradient(135deg, var(--blue), var(--teal));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .nav-spacer { flex: 1; }
+  .nav-link { font-size: 0.82rem; color: var(--text2); padding: 4px 8px; }
+  .role-pill { display: flex; align-items: center; gap: 6px; background: var(--bg2);
+    border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px;
+    font-size: 0.75rem; font-weight: 600; color: var(--blue); }
+  .page { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+  .page-eyebrow { font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--blue); margin-bottom: 0.4rem; }
+  .page-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.75rem; font-weight: 800; margin-bottom: 0.3rem; }
+  .page-sub { font-size: 0.88rem; color: var(--text2); margin-bottom: 1.5rem; }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+  .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; }
+  .stat-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text2); margin-bottom: 0.4rem; }
+  .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 700; color: var(--blue); }
+  .stat-sub { font-size: 0.75rem; color: var(--text2); margin-top: 0.25rem; }
+  .stat-card.green  .stat-value { color: var(--green); }
+  .stat-card.gold   .stat-value { color: var(--gold); }
+  .stat-card.coral  .stat-value { color: var(--coral); }
+  .stat-card.purple .stat-value { color: var(--purple); }
+
+  .section { margin-bottom: 2rem; }
+  .section-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text2); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+
+  .pipeline-table { width: 100%; border-collapse: collapse; }
+  .pipeline-table th { text-align: left; padding: 0.6rem 1rem; font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--text2);
+    background: var(--bg3); border-bottom: 1px solid var(--border); }
+  .pipeline-table td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; color: var(--text2); }
+  .pipeline-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .pipeline-table tr:last-child td { border-bottom: none; }
+
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px;
+    font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+  .badge-active      { background: rgba(74,222,128,0.15);  color: var(--green); }
+  .badge-planning    { background: rgba(96,165,250,0.15);  color: var(--blue); }
+  .badge-commoditized{ background: rgba(251,191,36,0.15);  color: var(--gold); }
+  .badge-paused      { background: rgba(251,113,133,0.15); color: var(--coral); }
+  .badge-pending     { background: rgba(139,148,158,0.15); color: var(--text2); }
+
+  .loading { text-align: center; padding: 2rem; color: var(--text2); font-size: 0.82rem; }
+  .empty   { text-align: center; padding: 3rem; color: var(--text2); font-size: 0.875rem; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* INTAKE QUEUE */
+  .intake-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.25rem 1.5rem; margin-bottom: 0.75rem;
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 0.5rem; align-items: start;
+  }
+  .intake-name { font-weight: 700; color: var(--text); font-size: 0.95rem; }
+  .intake-biz  { font-size: 0.82rem; color: var(--text2); }
+  .intake-meta { font-size: 0.75rem; color: var(--text2); margin-top: 4px; }
+  .intake-meta span { display: inline-block; margin-right: 0.75rem; }
+
+  /* THROUGHPUT GOAL */
+  .throughput-bar {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
+  }
+  .tp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+  .tp-title  { font-weight: 700; font-size: 0.95rem; }
+  .tp-target { font-size: 0.78rem; color: var(--text2); }
+  .tp-track  { height: 8px; background: var(--bg3); border-radius: 99px; overflow: hidden; }
+  .tp-fill   { height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, var(--blue), var(--teal)); transition: width 0.8s ease; }
+</style>
+</head>
+<body>
+
+<nav>
+  <span style="font-size:1.1rem;">&#x26A1;</span>
+  <div class="nav-logo">207 Analytix</div>
+  <span style="color:var(--border);">&rsaquo;</span>
+  <span style="font-size:0.88rem; font-weight:600;">Operator Dashboard</span>
+  <div class="nav-spacer"></div>
+  <div class="role-pill">&#x26A1; Prompt Pilot</div>
+  <a href="index.html" class="nav-link" style="margin-left:0.5rem;">&larr; Portal</a>
+</nav>
+
+<div class="page">
+  <div class="page-eyebrow">207 Analytix &middot; Operator (Prompt Pilot)</div>
+  <div class="page-title">&#x26A1; Delivery &amp; Build Queue</div>
+  <div class="page-sub">Active intake queue, Skunkworks pipeline, and weekly throughput tracking.</div>
+
+  <!-- STAT CARDS -->
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-label">New Intakes</div><div class="stat-value" id="newIntakes">&mdash;</div><div class="stat-sub">Ready to process</div></div>
+    <div class="stat-card green"><div class="stat-label">Active Projects</div><div class="stat-value" id="activeProjects">&mdash;</div><div class="stat-sub">Skunkworks in build</div></div>
+    <div class="stat-card gold"><div class="stat-label">Commoditized</div><div class="stat-value" id="commoditized">&mdash;</div><div class="stat-sub">Products shipped to catalog</div></div>
+    <div class="stat-card coral"><div class="stat-label">Budget Remaining</div><div class="stat-value" id="budgetLeft">&mdash;</div><div class="stat-sub">Skunkworks unspent</div></div>
+  </div>
+
+  <!-- THROUGHPUT GOAL -->
+  <div class="throughput-bar">
+    <div class="tp-header">
+      <div class="tp-title">&#x26A1; Weekly Throughput Goal</div>
+      <div class="tp-target">Target: 3 projects / operator / week &middot; <span id="tpWeekly">0</span> submitted this week</div>
+    </div>
+    <div class="tp-track"><div class="tp-fill" id="tpFill" style="width:0%"></div></div>
+  </div>
+
+  <!-- INTAKE QUEUE -->
+  <div class="section">
+    <div class="section-title">Intake Queue &mdash; Submitted &amp; Awaiting Build</div>
+    <div id="intakeQueue"><div class="loading">Loading&hellip;</div></div>
+  </div>
+
+  <!-- SKUNKWORKS TABLE -->
+  <div class="section">
+    <div class="section-title">Skunkworks Project Pipeline</div>
+    <div class="card">
+      <table class="pipeline-table">
+        <thead>
+          <tr><th>Project</th><th>Type</th><th>Sponsor</th><th>Budget</th><th>Spent</th><th>Status</th></tr>
+        </thead>
+        <tbody id="skBody"><tr><td colspan="6" class="loading">Loading&hellip;</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- GRID: OPERATORS + INTAKE BY INDUSTRY -->
+  <div class="grid-2">
+    <div class="section">
+      <div class="section-title">Operator Seats</div>
+      <div class="card">
+        <table class="pipeline-table">
+          <thead><tr><th>Name</th><th>Status</th></tr></thead>
+          <tbody id="operatorBody"><tr><td colspan="2" class="loading">Loading&hellip;</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Intake by Project Type</div>
+      <div class="card">
+        <table class="pipeline-table">
+          <thead><tr><th>Project Type</th><th>Count</th></tr></thead>
+          <tbody id="typeBody"><tr><td colspan="2" class="loading">Loading&hellip;</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const SUPA_URL = 'https://hhyhulqngdkwsxhymmcd.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoeWh1bHFuZ2Rrd3N4aHltbWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzEyMDEsImV4cCI6MjA5MjcwNzIwMX0.dmSy7Q8Je5lEY4XCFzwvfPnkBYLebPE0yZMhy6Y8czI';
+  const { createClient } = supabase;
+  const db = createClient(SUPA_URL, SUPA_KEY);
+
+  function fmt(n) {
+    if (n === null || n === undefined) return '&mdash;';
+    return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 0 });
+  }
+  function cap(s) {
+    if (!s) return '&mdash;';
+    return s.replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
+  }
+  function fmtDate(iso) {
+    if (!iso) return '&mdash;';
+    return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
+  async function loadAll() {
+    try {
+      const [{ data: leads }, { data: skunk }, { data: operators }] = await Promise.all([
+        db.from('leads').select('*').order('created_at', { ascending: false }),
+        db.from('skunkworks_projects').select('*').order('created_at', { ascending: false }),
+        db.from('team_members').select('name, status').eq('role_type_filter', 'operator')
+          // fallback: get all members and filter client-side
+      ]);
+
+      const allLeads = leads || [];
+      const allSkunk = skunk || [];
+
+      // Stats
+      const newIntakes = allLeads.filter(l => l.status === 'submitted').length;
+      const activeProj = allSkunk.filter(s => s.status === 'active' || s.status === 'planning').length;
+      const commProj   = allSkunk.filter(s => s.commoditized).length;
+      const budgetLeft = allSkunk.reduce((sum, s) =>
+        sum + (parseFloat(s.budget_allocated||0) - parseFloat(s.budget_spent||0)), 0);
+
+      document.getElementById('newIntakes').textContent    = newIntakes;
+      document.getElementById('activeProjects').textContent = activeProj;
+      document.getElementById('commoditized').textContent   = commProj;
+      document.getElementById('budgetLeft').innerHTML       = fmt(budgetLeft);
+
+      // Weekly throughput (submitted this week)
+      const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+      const weeklySubmitted = allLeads.filter(l => new Date(l.created_at) > weekAgo).length;
+      const weeklyTarget = 3 * 3; // 3 operators * 3 projects
+      const tpPct = Math.min(Math.round((weeklySubmitted / weeklyTarget) * 100), 100);
+      document.getElementById('tpWeekly').textContent = weeklySubmitted;
+      document.getElementById('tpFill').style.width = tpPct + '%';
+
+      // Intake queue
+      const queue = allLeads.filter(l => l.status === 'submitted');
+      const qEl = document.getElementById('intakeQueue');
+      if (!queue.length) {
+        qEl.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text2);font-size:0.875rem;">No intakes in queue. Clear inbox &#x2714;</div>';
+      } else {
+        qEl.innerHTML = queue.map(l => `
+          <div class="intake-card">
+            <div>
+              <div class="intake-name">${l.first_name||''} ${l.last_name||''}</div>
+              <div class="intake-biz">${l.business_name||'&mdash;'}</div>
+              <div class="intake-meta">
+                <span>&#x1F4C5; ${fmtDate(l.created_at)}</span>
+                <span>&#x1F3D7; ${cap(l.project_type)}</span>
+                <span>&#x1F4B0; ${cap(l.budget_range)}</span>
+                <span>&#x1F30E; ${l.city||'&mdash;'}</span>
+              </div>
+            </div>
+            <span class="badge badge-active">Queued</span>
+          </div>`).join('');
+      }
+
+      // Skunkworks table
+      document.getElementById('skBody').innerHTML = !allSkunk.length
+        ? '<tr><td colspan="6" class="empty">No projects yet.</td></tr>'
+        : allSkunk.map(s => `<tr>
+            <td style="font-weight:600;color:var(--text);font-size:0.85rem;">${s.title}</td>
+            <td style="font-size:0.78rem;">${s.target_commodity_type || '&mdash;'}</td>
+            <td style="font-size:0.78rem;">${s.sponsor || '&mdash;'}</td>
+            <td>${fmt(s.budget_allocated)}</td>
+            <td>${fmt(s.budget_spent)}</td>
+            <td><span class="badge badge-${s.status || 'planning'}">${cap(s.status)}</span></td>
+          </tr>`).join('');
+
+      // Operator seats (from team_members where role is operator)
+      const opRes = await db.from('team_members')
+        .select('name, status, role_id, team_roles(role_type)')
+        .eq('team_roles.role_type', 'operator');
+      const ops = (opRes.data || []).filter(m => m.team_roles?.role_type === 'operator');
+      document.getElementById('operatorBody').innerHTML = !ops.length
+        ? '<tr><td colspan="2" style="padding:1rem;color:var(--text2);font-size:0.82rem;">3 seats open &mdash; pending hire</td></tr>'
+        : ops.map(o => `<tr><td style="font-weight:600;color:var(--text);">${o.name}</td><td><span class="badge badge-${o.status||'pending'}">${cap(o.status)}</span></td></tr>`).join('');
+
+      // Intake by project type
+      const typeCounts = {};
+      allLeads.forEach(l => { const t = l.project_type || 'unknown'; typeCounts[t] = (typeCounts[t]||0)+1; });
+      document.getElementById('typeBody').innerHTML = Object.entries(typeCounts)
+        .sort((a,b) => b[1]-a[1]).map(([t,n]) =>
+          `<tr><td style="font-size:0.82rem;">${cap(t)}</td><td style="font-weight:700;color:var(--blue);">${n}</td></tr>`
+        ).join('') || '<tr><td colspan="2" class="empty">No data</td></tr>';
+
+    } catch(e) { console.error(e); }
+  }
+
+  loadAll();
+  setInterval(loadAll, 60000);
+</script>
+</body>
+</html>

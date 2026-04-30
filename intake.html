@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>207 Analytix — Get Started</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0d1117; --bg2:#161b22; --bg3:#1c2333;
+    --violet:#7c3aed; --violet-l:#a78bfa;
+    --green:#4ade80; --teal:#2dd4bf; --gold:#fbbf24;
+    --text:#e6edf3; --text2:#8b949e; --border:#30363d;
+  }
+  body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh;
+    display:flex; align-items:center; justify-content:center; padding:2rem; }
+
+  .wrap { width:100%; max-width:520px; }
+
+  /* BRAND */
+  .brand { text-align:center; margin-bottom:2rem; }
+  .brand-logo {
+    width:52px; height:52px; border-radius:14px;
+    background:linear-gradient(135deg,var(--violet),var(--teal));
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-size:1.3rem; font-weight:800; color:#fff;
+    margin-bottom:0.75rem; box-shadow:0 0 0 3px rgba(124,58,237,0.2);
+  }
+  .brand-name { font-family:'Space Grotesk',sans-serif; font-size:1.3rem; font-weight:800;
+    background:linear-gradient(135deg,var(--violet-l),var(--teal));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .brand-sub { font-size:0.8rem; color:var(--text2); margin-top:2px; }
+
+  /* CARD */
+  .card { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:2rem; }
+  .card-title { font-family:'Space Grotesk',sans-serif; font-size:1.25rem; font-weight:800; margin-bottom:0.3rem; }
+  .card-sub   { font-size:0.84rem; color:var(--text2); line-height:1.6; margin-bottom:1.75rem; }
+
+  /* FORM */
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; }
+  @media(max-width:480px){ .form-row { grid-template-columns:1fr; } }
+  .form-group { display:flex; flex-direction:column; gap:5px; margin-bottom:0.9rem; }
+  label { font-size:0.78rem; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:0.05em; }
+  input, select, textarea {
+    width:100%; padding:9px 13px;
+    background:var(--bg3); border:1.5px solid var(--border);
+    border-radius:8px; font-family:'Inter',sans-serif; font-size:0.88rem;
+    color:var(--text); transition:border-color 0.2s;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline:none; border-color:var(--violet); box-shadow:0 0 0 3px rgba(124,58,237,0.12);
+  }
+  select option { background:var(--bg3); color:var(--text); }
+  textarea { resize:vertical; min-height:80px; }
+
+  /* STEPS */
+  .step { display:none; }
+  .step.active { display:block; }
+
+  .step-indicator {
+    display:flex; align-items:center; gap:0.4rem;
+    margin-bottom:1.5rem;
+  }
+  .step-dot {
+    width:8px; height:8px; border-radius:50%;
+    background:var(--border); transition:background 0.2s;
+  }
+  .step-dot.done   { background:var(--violet-l); }
+  .step-dot.active { background:var(--violet); width:24px; border-radius:4px; }
+  .step-label { font-size:0.72rem; color:var(--text2); margin-left:4px; }
+
+  /* TIER CARDS */
+  .tier-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem; margin-bottom:1rem; }
+  @media(max-width:480px){ .tier-grid { grid-template-columns:1fr; } }
+  .tier-card {
+    border:2px solid var(--border); border-radius:12px; padding:1rem;
+    cursor:pointer; text-align:center; transition:all 0.15s;
+    background:var(--bg3);
+  }
+  .tier-card:hover { border-color:var(--violet); }
+  .tier-card.selected { border-color:var(--violet); background:rgba(124,58,237,0.1); }
+  .tier-card input[type=radio] { display:none; }
+  .tier-icon  { font-size:1.4rem; margin-bottom:4px; }
+  .tier-name  { font-size:0.82rem; font-weight:700; color:var(--text); }
+  .tier-price { font-size:0.7rem; color:var(--text2); margin-top:2px; }
+
+  /* BUTTONS */
+  .btn {
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    padding:10px 20px; border-radius:8px; font-size:0.9rem; font-weight:600;
+    cursor:pointer; border:1.5px solid transparent; transition:all 0.2s;
+    font-family:'Inter',sans-serif; width:100%; margin-top:0.4rem;
+  }
+  .btn-primary { background:var(--violet); color:#fff; border-color:var(--violet); }
+  .btn-primary:hover:not(:disabled) { background:var(--violet-l); border-color:var(--violet-l); }
+  .btn-primary:disabled { opacity:0.5; cursor:not-allowed; }
+  .btn-outline { background:transparent; color:var(--text2); border-color:var(--border); margin-top:0.5rem; }
+  .btn-outline:hover { border-color:var(--violet); color:var(--violet-l); }
+
+  /* ALERT */
+  .alert { padding:10px 14px; border-radius:8px; font-size:0.83rem; margin-bottom:1rem; }
+  .alert-error   { background:rgba(239,68,68,0.1);  border-left:3px solid #ef4444; color:#fca5a5; }
+  .alert-success { background:rgba(74,222,128,0.1); border-left:3px solid var(--green); color:var(--green); }
+
+  /* CONFIRMED */
+  .confirmed { text-align:center; padding:1.5rem 0; }
+  .confirmed-icon  { font-size:3rem; margin-bottom:1rem; }
+  .confirmed-title { font-family:'Space Grotesk',sans-serif; font-size:1.3rem; font-weight:800; margin-bottom:0.5rem; }
+  .confirmed-body  { font-size:0.85rem; color:var(--text2); line-height:1.7; }
+  .confirmed-body strong { color:var(--violet-l); }
+
+  .required { color:var(--violet-l); }
+  .hidden { display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <div class="brand-logo">2</div>
+    <div class="brand-name">207 Analytix</div>
+    <div class="brand-sub">Westbrook Business Intelligence</div>
+  </div>
+
+  <div class="card">
+
+    <!-- STEP INDICATOR -->
+    <div class="step-indicator" id="stepIndicator">
+      <div class="step-dot active" id="dot1"></div>
+      <div class="step-dot" id="dot2"></div>
+      <div class="step-dot" id="dot3"></div>
+      <span class="step-label" id="stepLabel">About You</span>
+    </div>
+
+    <div id="alertBox"></div>
+
+    <!-- STEP 1: Contact Info -->
+    <div class="step active" id="step1">
+      <div class="card-title">Let’s Get Started</div>
+      <div class="card-sub">Tell us about yourself and your business. This takes about 2 minutes.</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name <span class="required">*</span></label>
+          <input type="text" id="firstName" placeholder="Andre" autocomplete="given-name"/>
+        </div>
+        <div class="form-group">
+          <label>Last Name <span class="required">*</span></label>
+          <input type="text" id="lastName" placeholder="Davis" autocomplete="family-name"/>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email <span class="required">*</span></label>
+          <input type="email" id="email" placeholder="you@business.com" autocomplete="email"/>
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" id="phone" placeholder="(207) 555-0100" autocomplete="tel"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Business Name <span class="required">*</span></label>
+        <input type="text" id="businessName" placeholder="Your LLC or DBA"/>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>City</label>
+          <input type="text" id="city" placeholder="Westbrook"/>
+        </div>
+        <div class="form-group">
+          <label>Neighborhood</label>
+          <select id="neighborhood">
+            <option value="">Select area…</option>
+            <option value="downtown">Downtown</option>
+            <option value="industrial">Industrial District</option>
+            <option value="rural">Rural / Trades</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="btn-step1">Continue →</button>
+    </div>
+
+    <!-- STEP 2: Business Context -->
+    <div class="step" id="step2">
+      <div class="card-title">Your Business</div>
+      <div class="card-sub">Help us understand what you do and what you’re looking for.</div>
+
+      <div class="form-group">
+        <label>Industry <span class="required">*</span></label>
+        <select id="industry">
+          <option value="">Select industry…</option>
+          <option value="retail">Retail</option>
+          <option value="food_beverage">Food &amp; Beverage</option>
+          <option value="construction">Construction &amp; Trades</option>
+          <option value="manufacturing">Manufacturing &amp; Logistics</option>
+          <option value="professional_services">Professional Services</option>
+          <option value="healthcare">Healthcare</option>
+          <option value="real_estate">Real Estate</option>
+          <option value="technology">Technology</option>
+          <option value="nonprofit">Nonprofit</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Project Type</label>
+        <select id="projectType">
+          <option value="">What are you looking for?…</option>
+          <option value="data_dashboard">Data Dashboard</option>
+          <option value="business_intelligence">Business Intelligence Report</option>
+          <option value="process_automation">Process Automation</option>
+          <option value="market_analysis">Market Analysis</option>
+          <option value="financial_reporting">Financial Reporting</option>
+          <option value="custom">Custom / Not Sure Yet</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Budget Range</label>
+        <select id="budgetRange">
+          <option value="">Select a range…</option>
+          <option value="under_500">Under $500</option>
+          <option value="500_1500">$500 – $1,500</option>
+          <option value="1500_5000">$1,500 – $5,000</option>
+          <option value="5000_plus">$5,000+</option>
+          <option value="not_sure">Not sure yet</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>How did you hear about us?</label>
+        <select id="howHeard">
+          <option value="">Select…</option>
+          <option value="referral">Referral from someone I know</option>
+          <option value="linkedin">LinkedIn</option>
+          <option value="social_media">Social Media</option>
+          <option value="google">Google Search</option>
+          <option value="local_event">Local Event or Meetup</option>
+          <option value="flyer">Flyer or Print</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary" id="btn-step2">Continue →</button>
+      <button class="btn btn-outline" id="btn-back2">← Back</button>
+    </div>
+
+    <!-- STEP 3: Tier + Message -->
+    <div class="step" id="step3">
+      <div class="card-title">Choose Your Tier</div>
+      <div class="card-sub">Pick the engagement level that fits. You can always upgrade later.</div>
+
+      <div class="tier-grid">
+        <label class="tier-card" id="tc-discovery">
+          <input type="radio" name="tier" value="discovery"/>
+          <div class="tier-icon">🔍</div>
+          <div class="tier-name">Discovery</div>
+          <div class="tier-price">Intro scope</div>
+        </label>
+        <label class="tier-card" id="tc-standard">
+          <input type="radio" name="tier" value="standard"/>
+          <div class="tier-icon">📊</div>
+          <div class="tier-name">Standard</div>
+          <div class="tier-price">Core deliverable</div>
+        </label>
+        <label class="tier-card" id="tc-premium">
+          <input type="radio" name="tier" value="premium"/>
+          <div class="tier-icon">🚀</div>
+          <div class="tier-name">Premium</div>
+          <div class="tier-price">Full engagement</div>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Anything else we should know?</label>
+        <textarea id="message" placeholder="Describe your situation, goals, or any specific challenges you’re facing…"></textarea>
+      </div>
+
+      <button class="btn btn-primary" id="btn-submit" disabled>Submit →</button>
+      <button class="btn btn-outline" id="btn-back3">← Back</button>
+    </div>
+
+    <!-- CONFIRMED -->
+    <div class="step" id="stepConfirmed">
+      <div class="confirmed">
+        <div class="confirmed-icon">✅</div>
+        <div class="confirmed-title">You’re in the queue.</div>
+        <p class="confirmed-body">
+          Your intake has been submitted to the 207 Analytix team.<br/><br/>
+          <strong id="confirmedName"></strong>, we’ll review your request and be in touch at <strong id="confirmedEmail"></strong> within a few business days.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const SUPA_URL = 'https://hhyhulqngdkwsxhymmcd.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoeWh1bHFuZ2Rrd3N4aHltbWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzEyMDEsImV4cCI6MjA5MjcwNzIwMX0.dmSy7Q8Je5lEY4XCFzwvfPnkBYLebPE0yZMhy6Y8czI';
+  const { createClient } = supabase;
+  const db = createClient(SUPA_URL, SUPA_KEY);
+
+  // ---- Step nav ----
+  let currentStep = 1;
+  const steps = ['step1','step2','step3','stepConfirmed'];
+  const dots  = ['dot1','dot2','dot3'];
+  const labels = ['About You', 'Your Business', 'Choose Tier'];
+
+  function goTo(n) {
+    steps.forEach((s,i) => document.getElementById(s).classList.toggle('active', i === n-1));
+    dots.forEach((d,i) => {
+      const el = document.getElementById(d);
+      el.className = 'step-dot' + (i < n-1 ? ' done' : i === n-1 ? ' active' : '');
+    });
+    const lbl = document.getElementById('stepLabel');
+    if (n <= 3) lbl.textContent = labels[n-1]; else lbl.textContent = 'Done';
+    document.getElementById('stepIndicator').style.display = n === 4 ? 'none' : 'flex';
+    clearAlert();
+    currentStep = n;
+  }
+
+  function setAlert(type, msg) {
+    document.getElementById('alertBox').innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+  }
+  function clearAlert() { document.getElementById('alertBox').innerHTML = ''; }
+
+  // ---- Tier selection ----
+  let selectedTier = '';
+  document.querySelectorAll('input[name="tier"]').forEach(r => {
+    r.addEventListener('change', () => {
+      selectedTier = r.value;
+      document.querySelectorAll('.tier-card').forEach(c => c.classList.remove('selected'));
+      r.closest('.tier-card').classList.add('selected');
+      document.getElementById('btn-submit').disabled = false;
+    });
+  });
+
+  // ---- Step 1 ----
+  document.getElementById('btn-step1').addEventListener('click', () => {
+    const fn = document.getElementById('firstName').value.trim();
+    const ln = document.getElementById('lastName').value.trim();
+    const em = document.getElementById('email').value.trim();
+    const bn = document.getElementById('businessName').value.trim();
+    if (!fn || !ln) { setAlert('error', 'First and last name are required.'); return; }
+    if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { setAlert('error', 'A valid email is required.'); return; }
+    if (!bn) { setAlert('error', 'Business name is required.'); return; }
+    goTo(2);
+  });
+
+  // ---- Step 2 ----
+  document.getElementById('btn-step2').addEventListener('click', () => {
+    const ind = document.getElementById('industry').value;
+    if (!ind) { setAlert('error', 'Please select your industry.'); return; }
+    goTo(3);
+  });
+  document.getElementById('btn-back2').addEventListener('click', () => goTo(1));
+  document.getElementById('btn-back3').addEventListener('click', () => goTo(2));
+
+  // ---- Submit ----
+  document.getElementById('btn-submit').addEventListener('click', async () => {
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = true; btn.textContent = 'Submitting…';
+
+    const fn = document.getElementById('firstName').value.trim();
+    const ln = document.getElementById('lastName').value.trim();
+    const em = document.getElementById('email').value.trim();
+
+    const payload = {
+      first_name:      fn,
+      last_name:       ln,
+      name:            fn + ' ' + ln,
+      email:           em,
+      phone:           document.getElementById('phone').value.trim() || null,
+      business_name:   document.getElementById('businessName').value.trim(),
+      city:            document.getElementById('city').value.trim() || null,
+      neighborhood:    document.getElementById('neighborhood').value || null,
+      industry:        document.getElementById('industry').value || null,
+      project_type:    document.getElementById('projectType').value || null,
+      budget_range:    document.getElementById('budgetRange').value || null,
+      how_did_you_hear:document.getElementById('howHeard').value || null,
+      service_tier:    selectedTier,
+      message:         document.getElementById('message').value.trim() || null,
+      pitch_type:      'intake_form',
+      status:          'submitted'
+    };
+
+    const { error } = await db.from('leads').insert([payload]);
+
+    if (error) {
+      setAlert('error', 'Something went wrong. Please try again.');
+      btn.disabled = false; btn.textContent = 'Submit →';
+      return;
+    }
+
+    document.getElementById('confirmedName').textContent  = fn;
+    document.getElementById('confirmedEmail').textContent = em;
+    goTo(4);
+  });
+
+  goTo(1);
+</script>
+</body>
+</html>

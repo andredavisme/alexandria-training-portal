@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Alexandria — Classroom Commons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --accent: #16A34A;
+    --accent-light: #4ADE80;
+    --surface: #ffffff;
+    --bg: #F1F5F9;
+    --border: #E2E8F0;
+    --text: #0F172A;
+    --text-muted: #64748B;
+    --font: 'Inter', sans-serif;
+    --radius: 10px;
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.07);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); color: var(--text); background: var(--bg); min-height: 100vh; }
+  a { color: var(--accent); text-decoration: none; }
+  .hidden { display: none !important; }
+
+  /* Nav */
+  .nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; gap: 0.75rem; height: 56px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+  .brand .logo { width: 32px; height: 32px; background: #6366F1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; color: #fff; flex-shrink: 0; }
+  .brand-name { font-weight: 700; font-size: 0.95rem; }
+  .brand-sub  { font-size: 0.72rem; color: var(--text-muted); }
+  .nav-sep    { color: var(--border); }
+  .nav-label  { font-weight: 600; font-size: 0.9rem; color: var(--text-muted); }
+  .nav-spacer { flex: 1; }
+  .btn-ghost  { background: transparent; color: var(--text-muted); border: none; padding: 6px 10px; font-size: 0.85rem; cursor: pointer; font-family: var(--font); text-decoration: none; white-space: nowrap; }
+  .btn-ghost:hover { color: var(--text); }
+
+  /* Layout */
+  .page { max-width: 960px; margin: 0 auto; padding: 2.5rem 1.5rem; display: grid; grid-template-columns: 1fr 320px; gap: 1.5rem; align-items: start; }
+  @media (max-width: 720px) { .page { grid-template-columns: 1fr; } }
+  .col-main { display: flex; flex-direction: column; gap: 1.5rem; }
+  .col-side  { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  /* Hero */
+  .hero { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
+  .hero-stripe { height: 5px; background: var(--accent); }
+  .hero-body   { padding: 1.5rem 1.75rem; }
+  .hero-eyebrow { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent); margin-bottom: 0.35rem; }
+  .hero-title  { font-size: 1.35rem; font-weight: 700; margin-bottom: 0.45rem; }
+  .hero-desc   { font-size: 0.875rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.1rem; }
+  .hero-dq     { font-size: 0.9rem; font-weight: 600; color: var(--text); border-left: 3px solid var(--accent); padding-left: 0.85rem; line-height: 1.5; margin-bottom: 1.1rem; }
+  .hero-actions { display: flex; gap: 0.65rem; flex-wrap: wrap; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; font-family: var(--font); border: none; cursor: pointer; text-decoration: none; background: var(--accent); color: #fff; transition: opacity 0.15s; }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-outline { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 500; font-family: var(--font); border: 1.5px solid var(--border); background: transparent; cursor: pointer; color: var(--text-muted); text-decoration: none; transition: border-color 0.15s, color 0.15s; }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Section label */
+  .section-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.75rem; }
+
+  /* Progress summary cards */
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+  @media (max-width: 480px) { .stats-row { grid-template-columns: 1fr; } }
+  .stat-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1rem 1.1rem; text-align: center; }
+  .stat-value { font-size: 1.6rem; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 0.25rem; }
+  .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; }
+
+  /* Milestones */
+  .milestone-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .milestone-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; border-left: 4px solid var(--border); transition: border-color 0.2s; }
+  .milestone-card.is-current  { border-left-color: var(--accent); }
+  .milestone-card.is-complete { border-left-color: #10B981; }
+
+  .milestone-header { display: flex; align-items: center; gap: 0.9rem; padding: 1rem 1.1rem; cursor: pointer; user-select: none; }
+  .milestone-header:hover { background: #F8FAFC; }
+  .ms-num  { flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; color: var(--text-muted); }
+  .ms-num.active   { background: var(--accent); color: #fff; }
+  .ms-num.complete { background: #10B981; color: #fff; }
+  .ms-info { flex: 1; }
+  .ms-month { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+  .ms-title { font-weight: 700; font-size: 0.9rem; }
+  .ms-status { flex-shrink: 0; }
+  .badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+  .badge-current  { background: #DCFCE7; color: #15803D; }
+  .badge-complete { background: #D1FAE5; color: #065F46; }
+  .badge-upcoming { background: #F1F5F9; color: #94A3B8; }
+  .ms-chevron { font-size: 0.85rem; color: var(--text-muted); transition: transform 0.2s; margin-left: 0.5rem; }
+  .milestone-card.is-open .ms-chevron { transform: rotate(180deg); }
+
+  .milestone-body { border-top: 1px solid var(--border); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.85rem; }
+  .ms-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.65; }
+  .ms-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  @media (max-width: 480px) { .ms-detail-grid { grid-template-columns: 1fr; } }
+  .ms-detail-block { background: #F8FAFC; border-radius: 7px; padding: 0.7rem 0.85rem; }
+  .ms-detail-label { font-size: 0.67rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.3rem; }
+  .ms-detail-text  { font-size: 0.81rem; color: var(--text); line-height: 1.55; }
+  .ms-detail-block.diaspora { grid-column: 1 / -1; border-left: 3px solid var(--accent); }
+
+  /* Log entry form */
+  .log-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1.25rem 1.4rem; }
+  .log-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .log-card p  { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.5; }
+  .form-group { margin-bottom: 0.75rem; }
+  .form-label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.3rem; }
+  .form-input, .form-select, .form-textarea {
+    width: 100%; padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 7px;
+    font-family: var(--font); font-size: 0.85rem; color: var(--text); background: var(--surface);
+    transition: border-color 0.15s; outline: none;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+  .form-textarea { resize: vertical; min-height: 72px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .form-check { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem; }
+  .form-check input { width: 15px; height: 15px; accent-color: var(--accent); }
+  .btn-submit { width: 100%; margin-top: 0.5rem; padding: 10px; border-radius: 8px; background: var(--accent); color: #fff; font-family: var(--font); font-size: 0.88rem; font-weight: 600; border: none; cursor: pointer; transition: opacity 0.15s; }
+  .btn-submit:hover { opacity: 0.88; }
+  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .form-success { background: #D1FAE5; border-radius: 7px; padding: 9px 12px; font-size: 0.82rem; color: #065F46; font-weight: 500; margin-top: 0.5rem; }
+  .form-error   { background: #FEE2E2; border-radius: 7px; padding: 9px 12px; font-size: 0.82rem; color: #7F1D1D; margin-top: 0.5rem; }
+
+  /* Roles */
+  .roles-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1.25rem 1.4rem; }
+  .roles-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .roles-card p  { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.5; }
+  .role-list { display: flex; flex-direction: column; gap: 0.6rem; }
+  .role-row  { display: flex; gap: 0.7rem; padding: 0.65rem 0.8rem; background: #F8FAFC; border-radius: 8px; align-items: flex-start; }
+  .role-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+  .role-name { font-weight: 700; font-size: 0.84rem; margin-bottom: 2px; }
+  .role-count { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; }
+  .role-resp  { font-size: 0.79rem; color: var(--text-muted); line-height: 1.5; margin-top: 2px; }
+
+  /* Log entries */
+  .entries-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1.25rem 1.4rem; }
+  .entries-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; }
+  .entry-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .entry-row  { background: #F8FAFC; border-radius: 8px; padding: 0.7rem 0.85rem; }
+  .entry-top  { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+  .entry-class { font-weight: 600; font-size: 0.83rem; }
+  .entry-month { font-size: 0.72rem; color: var(--text-muted); }
+  .entry-stats { display: flex; gap: 0.75rem; font-size: 0.76rem; color: var(--text-muted); flex-wrap: wrap; }
+  .entry-stats span { display: flex; align-items: center; gap: 3px; }
+  .entry-note { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; font-style: italic; }
+  .entry-complete { font-size: 0.7rem; background: #D1FAE5; color: #065F46; padding: 2px 7px; border-radius: 20px; font-weight: 600; }
+  .no-entries { font-size: 0.83rem; color: var(--text-muted); text-align: center; padding: 1rem 0; }
+
+  /* States */
+  .spinner { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 0.875rem; }
+  .alert-error { background: #FEE2E2; border-left: 4px solid #EF4444; color: #7F1D1D; padding: 11px 14px; border-radius: 8px; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="brand">
+    <div class="logo">A</div>
+    <div>
+      <div class="brand-name">Alexandria</div>
+      <div class="brand-sub">Training Portal</div>
+    </div>
+  </a>
+  <span class="nav-sep">›</span>
+  <span class="nav-label">♻️ Classroom Commons</span>
+  <div class="nav-spacer"></div>
+  <a id="nav-course-link" href="catalog.html" class="btn-ghost">← Course</a>
+</nav>
+
+<div id="page-wrap">
+  <div class="spinner">Loading…</div>
+</div>
+
+<script type="module">
+import { fetchCourseDetail, fetchCommonsRoles, escHtml } from './js/catalog.js'
+import { fetchCommonsThread } from './js/discussion.js'
+
+const SUPABASE_URL = 'https://hhyhulqngdkwsxhymmcd.supabase.co'
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoeWh1bHFuZ2Rrd3N4aHltbWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzEyMDEsImV4cCI6MjA5MjcwNzIwMX0.dmSy7Q8Je5lEY4XCFzwvfPnkBYLebPE0yZMhy6Y8czI'
+const hdrs = () => ({ 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' })
+
+const qp = new URLSearchParams(location.search)
+const courseId = qp.get('course') || 'a1b2c3d4-0001-0001-0001-000000000001'
+
+async function fetchEntries(courseId) {
+  const p = new URLSearchParams({ course_id: `eq.${courseId}`, select: '*', order: 'created_at.desc', limit: '30' })
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/commons_progress?${p}`, { headers: hdrs() })
+  const d = await r.json()
+  return r.ok ? { data: d, error: null } : { data: null, error: d }
+}
+
+async function postEntry(payload) {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/commons_progress`, {
+    method: 'POST', headers: { ...hdrs(), 'Prefer': 'return=representation' },
+    body: JSON.stringify(payload)
+  })
+  const d = await r.json()
+  return r.ok ? { data: Array.isArray(d) ? d[0] : d, error: null } : { data: null, error: d }
+}
+
+const [ {data: course, error}, {data: roles}, {data: commonsThread}, {data: entries} ] = await Promise.all([
+  fetchCourseDetail(courseId),
+  fetchCommonsRoles(),
+  fetchCommonsThread(courseId),
+  fetchEntries(courseId)
+])
+
+if (error || !course) {
+  document.getElementById('page-wrap').innerHTML = '<div style="padding:2rem"><div class="alert-error">Failed to load. <a href="catalog.html">← Back</a></div></div>'
+} else {
+  const courseLink = `course.html?course=${course.id}`
+  document.getElementById('nav-course-link').href = courseLink
+  document.getElementById('nav-course-link').textContent = `← ${course.title}`
+  document.title = `Alexandria — Classroom Commons — ${course.title}`
+
+  // Gather milestones from all modules
+  const milestones = (course.course_modules || []).map(cm => ({
+    month: cm.order_index,
+    label: cm.section_label,
+    milestone: cm.modules?.commons_milestones?.[0] || null,
+    moduleTitle: cm.modules?.title || ''
+  })).filter(m => m.milestone)
+
+  // Compute totals from entries
+  const totalWaste    = (entries || []).reduce((s, e) => s + (e.waste_diverted_g || 0), 0)
+  const totalItems    = (entries || []).reduce((s, e) => s + (e.items_produced || 0), 0)
+  const totalEarnings = (entries || []).reduce((s, e) => s + (e.earnings_cents || 0), 0)
+  const completedMonths = (entries || []).filter(e => e.milestone_completed).map(e => e.month_number)
+
+  document.getElementById('page-wrap').innerHTML = renderPage(course, milestones, roles || [], entries || [], commonsThread, totalWaste, totalItems, totalEarnings, completedMonths)
+  wireUI(course, completedMonths, entries || [])
+}
+
+function renderPage(c, milestones, roles, entries, commonsThread, waste, items, earnings, completedMonths) {
+  const roleIcons = ['\u{1F9FF}','\u{1F4CA}','\u{1F528}','\u{1F3EA}','\u{1F4F0}']
+  return `
+  <div class="page">
+    <div class="col-main">
+
+      <div class="hero">
+        <div class="hero-stripe"></div>
+        <div class="hero-body">
+          <div class="hero-eyebrow">♻️ Course-Long Project — ${escHtml(c.title)}</div>
+          <div class="hero-title">The Classroom Commons</div>
+          <div class="hero-desc">The class operates as a living circular economy — a self-governing community that audits, collects, repurposes, and sells or uses materials from their own classroom. Roles rotate monthly. Every module adds a new layer of responsibility.</div>
+          <div class="hero-dq">“How can our class work together as a community to make sure nothing we use goes to waste?”</div>
+          <div class="hero-actions">
+            ${commonsThread ? `<a class="btn-primary" href="discussion-thread.html?thread=${commonsThread.id}">💬 Commons Discussion</a>` : ''}
+            <a class="btn-outline" href="${escHtml(`course.html?course=${c.id}`)}">← Back to Course</a>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Class Progress Totals</div>
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-value" id="stat-waste">${waste >= 1000 ? (waste/1000).toFixed(1)+'kg' : waste+'g'}</div>
+            <div class="stat-label">♻️ Waste Diverted</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-items">${items}</div>
+            <div class="stat-label">📦 Items Produced</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-earnings">$${(totalEarnings/100).toFixed(2)}</div>
+            <div class="stat-label">💵 Market Earnings</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Monthly Milestones</div>
+        <div class="milestone-list">
+          ${milestones.map(m => renderMilestone(m, completedMonths)).join('')}
+        </div>
+      </div>
+
+      <div class="entries-card">
+        <h3>📝 Progress Log</h3>
+        <div class="entry-list" id="entry-list">
+          ${entries.length === 0
+            ? '<div class="no-entries">No entries yet. Log your first update below →</div>'
+            : entries.map(renderEntry).join('')
+          }
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-side">
+
+      <div class="log-card">
+        <h3>📊 Log Progress</h3>
+        <p>Record your class’s monthly contribution to the Classroom Commons.</p>
+        <form id="log-form" autocomplete="off">
+          <div class="form-group">
+            <label class="form-label" for="class-name">Class Name or Code</label>
+            <input class="form-input" id="class-name" type="text" placeholder="e.g. Ms. Rivera’s Class" required maxlength="80"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="month-sel">Month</label>
+            <select class="form-select" id="month-sel" required>
+              <option value="">Select a month…</option>
+              ${milestones.map(m => `<option value="${m.month}">Month ${m.month} — ${escHtml(m.milestone?.title || '')}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="waste-g">Waste Diverted (grams)</label>
+              <input class="form-input" id="waste-g" type="number" min="0" placeholder="0"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="items-n">Items Produced</label>
+              <input class="form-input" id="items-n" type="number" min="0" placeholder="0"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="earn-cents">Market Earnings (cents)</label>
+            <input class="form-input" id="earn-cents" type="number" min="0" placeholder="0 (e.g. 350 = $3.50)"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="notes">Notes</label>
+            <textarea class="form-textarea" id="notes" placeholder="What happened this month? Any surprises?"></textarea>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" id="ms-complete"/>
+            <label for="ms-complete">Milestone completed this month ✅</label>
+          </div>
+          <button class="btn-submit" type="submit" id="submit-btn">Log Progress</button>
+          <div id="form-msg" class="hidden"></div>
+        </form>
+      </div>
+
+      <div class="roles-card">
+        <h3>👥 Community Roles</h3>
+        <p>Rotate monthly. Every student participates.</p>
+        <div class="role-list">
+          ${roles.map((r, i) => `
+          <div class="role-row">
+            <span class="role-icon">${roleIcons[i] || '👤'}</span>
+            <div>
+              <div class="role-name">${escHtml(r.role_name)}</div>
+              <div class="role-count">${r.student_count_min}–${r.student_count_max} students</div>
+              <div class="role-resp">${escHtml(r.responsibility)}</div>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+
+    </div>
+  </div>`
+}
+
+function renderMilestone(m, completedMonths) {
+  const ms = m.milestone
+  const isComplete = completedMonths.includes(m.month)
+  const numClass   = isComplete ? 'complete' : 'active'
+  const cardClass  = isComplete ? 'is-complete' : 'is-current'
+  const badgeClass = isComplete ? 'badge-complete' : 'badge-current'
+  const badgeText  = isComplete ? '✅ Complete' : `Month ${m.month}`
+  return `
+  <div class="milestone-card ${cardClass}" id="ms-${m.month}">
+    <div class="milestone-header" data-ms="${m.month}">
+      <div class="ms-num ${numClass}">${isComplete ? '✓' : m.month}</div>
+      <div class="ms-info">
+        <div class="ms-month">${escHtml(m.label || '')} — ${escHtml(m.moduleTitle)}</div>
+        <div class="ms-title">${escHtml(ms?.title || '')}</div>
+      </div>
+      <div class="ms-status"><span class="badge ${badgeClass}">${badgeText}</span></div>
+      <span class="ms-chevron">▾</span>
+    </div>
+    <div class="milestone-body hidden">
+      <div class="ms-desc">${escHtml(ms?.description || '')}</div>
+      <div class="ms-detail-grid">
+        ${ms?.commons_activity ? `<div class="ms-detail-block" style="grid-column:1/-1"><div class="ms-detail-label">📦 This Month’s Activity</div><div class="ms-detail-text">${escHtml(ms.commons_activity)}</div></div>` : ''}
+        ${ms?.math_connection  ? `<div class="ms-detail-block"><div class="ms-detail-label">➕ Math Connection</div><div class="ms-detail-text">${escHtml(ms.math_connection)}</div></div>` : ''}
+        ${ms?.diaspora_link    ? `<div class="ms-detail-block diaspora"><div class="ms-detail-label">🌍 Diaspora Link</div><div class="ms-detail-text">${escHtml(ms.diaspora_link)}</div></div>` : ''}
+      </div>
+    </div>
+  </div>`
+}
+
+function renderEntry(e) {
+  const months = ['','Month 1','Month 2','Month 3','Month 4','Month 5','Month 6']
+  const waste = e.waste_diverted_g >= 1000 ? (e.waste_diverted_g/1000).toFixed(1)+'kg' : e.waste_diverted_g+'g'
+  return `
+  <div class="entry-row">
+    <div class="entry-top">
+      <span class="entry-class">${escHtml(e.class_name)}</span>
+      <span class="entry-month">${months[e.month_number] || ''} ${e.milestone_completed ? '<span class="entry-complete">✅ Milestone</span>' : ''}</span>
+    </div>
+    <div class="entry-stats">
+      <span>♻️ ${waste}</span>
+      <span>📦 ${e.items_produced} items</span>
+      <span>💵 $${(e.earnings_cents/100).toFixed(2)}</span>
+    </div>
+    ${e.notes ? `<div class="entry-note">${escHtml(e.notes)}</div>` : ''}
+  </div>`
+}
+
+function wireUI(course, completedMonths, existingEntries) {
+  // Milestone toggles
+  document.querySelectorAll('.milestone-header').forEach(h => {
+    h.addEventListener('click', () => {
+      const card = h.closest('.milestone-card')
+      const body = card.querySelector('.milestone-body')
+      const open = !body.classList.contains('hidden')
+      body.classList.toggle('hidden', open)
+      card.classList.toggle('is-open', !open)
+    })
+  })
+
+  // Log form
+  const form    = document.getElementById('log-form')
+  const msg     = document.getElementById('form-msg')
+  const btn     = document.getElementById('submit-btn')
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault()
+    btn.disabled = true
+    btn.textContent = 'Saving…'
+    msg.className = 'hidden'
+
+    const payload = {
+      course_id:          course.id,
+      class_name:         document.getElementById('class-name').value.trim(),
+      month_number:       parseInt(document.getElementById('month-sel').value),
+      waste_diverted_g:   parseFloat(document.getElementById('waste-g').value)   || 0,
+      items_produced:     parseInt(document.getElementById('items-n').value)      || 0,
+      earnings_cents:     parseInt(document.getElementById('earn-cents').value)   || 0,
+      notes:              document.getElementById('notes').value.trim() || null,
+      milestone_completed: document.getElementById('ms-complete').checked
+    }
+
+    const { data, error } = await postEntry(payload)
+
+    if (error || !data) {
+      msg.textContent = 'Something went wrong. Please try again.'
+      msg.className = 'form-error'
+    } else {
+      msg.textContent = '✅ Progress logged!'
+      msg.className = 'form-success'
+      form.reset()
+      // Prepend new entry to log
+      const list = document.getElementById('entry-list')
+      const noMsg = list.querySelector('.no-entries')
+      if (noMsg) noMsg.remove()
+      list.insertAdjacentHTML('afterbegin', renderEntry(data))
+      // Update stat totals
+      const allEntries = [data, ...existingEntries]
+      const tw = allEntries.reduce((s,x) => s+(x.waste_diverted_g||0),0)
+      const ti = allEntries.reduce((s,x) => s+(x.items_produced||0),0)
+      const te = allEntries.reduce((s,x) => s+(x.earnings_cents||0),0)
+      document.getElementById('stat-waste').textContent    = tw >= 1000 ? (tw/1000).toFixed(1)+'kg' : tw+'g'
+      document.getElementById('stat-items').textContent    = ti
+      document.getElementById('stat-earnings').textContent = '$'+(te/100).toFixed(2)
+      existingEntries.unshift(data)
+    }
+    btn.disabled = false
+    btn.textContent = 'Log Progress'
+  })
+}
+</script>
+</body>
+</html>

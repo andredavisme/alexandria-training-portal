@@ -1,7 +1,7 @@
 // discussion.js — data layer for discussion boards
 
-const SUPABASE_URL = 'https://nmemmfblpzrkwyljpmvp.supabase.co'
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tZW1tZmJscHpya3d5bGpwbXZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDUzNzUsImV4cCI6MjA5MjcyMTM3NX0.iAEq-vnY481qdX0nmsonoDZWNFyFrao02GB_MS5BPzs'
+const SUPABASE_URL = 'https://hhyhulqngdkwsxhymmcd.supabase.co'
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoeWh1bHFuZ2Rrd3N4aHltbWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzEyMDEsImV4cCI6MjA5MjcwNzIwMX0.dmSy7Q8Je5lEY4XCFzwvfPnkBYLebPE0yZMhy6Y8czI'
 
 const headers = () => ({
   'apikey': SUPABASE_KEY,
@@ -29,7 +29,7 @@ export async function fetchCourses() {
 
 /**
  * Fetch discussion threads, optionally filtered by course.
- * Pinned threads are always sorted first client-side.
+ * Pinned threads (welcome + commons) always sort first.
  */
 export async function fetchThreads(courseId = null) {
   const params = new URLSearchParams({
@@ -42,9 +42,44 @@ export async function fetchThreads(courseId = null) {
   const data = await res.json()
   if (!res.ok) return { data: null, error: data }
 
-  // Sort: pinned → open → closed
   data.sort((a, b) => (STATUS_ORDER[a.status] ?? 1) - (STATUS_ORDER[b.status] ?? 1))
   return { data, error: null }
+}
+
+/**
+ * Fetch threads scoped to a specific module.
+ * Returns the module thread plus any student-created threads in the same module.
+ */
+export async function fetchThreadsByModule(courseId, moduleId) {
+  const params = new URLSearchParams({
+    select: 'id,title,body,author_name,author_type,status,source,created_at,updated_at,course_id,module_id',
+    course_id: `eq.${courseId}`,
+    module_id: `eq.${moduleId}`,
+    order: 'updated_at.desc'
+  })
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/discussion_threads?${params}`, { headers: headers() })
+  const data = await res.json()
+  if (!res.ok) return { data: null, error: data }
+  data.sort((a, b) => (STATUS_ORDER[a.status] ?? 1) - (STATUS_ORDER[b.status] ?? 1))
+  return { data, error: null }
+}
+
+/**
+ * Fetch the pinned Classroom Commons thread for a course.
+ */
+export async function fetchCommonsThread(courseId) {
+  const params = new URLSearchParams({
+    select: 'id,title,body,author_name,author_type,status,source,created_at,updated_at,course_id,module_id',
+    course_id: `eq.${courseId}`,
+    module_id: 'is.null',
+    status: 'eq.pinned',
+    title: 'like.*Classroom Commons*',
+    limit: '1'
+  })
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/discussion_threads?${params}`, { headers: headers() })
+  const data = await res.json()
+  if (!res.ok) return { data: null, error: data }
+  return { data: data[0] || null, error: null }
 }
 
 /**
@@ -66,7 +101,6 @@ export async function fetchThread(threadId) {
 
 /**
  * Fetch approved discussion_posts for a thread.
- * These are the primary posts written within the Training Portal.
  */
 export async function fetchPosts(threadId) {
   const params = new URLSearchParams({
@@ -83,8 +117,7 @@ export async function fetchPosts(threadId) {
 
 /**
  * Fetch approved thread_replies for a thread.
- * These may originate from other apps — the linked message carries app_context
- * (e.g. 'lawnscaping', 'training') which we surface as a source badge.
+ * Linked message carries app_context surfaced as a source badge.
  */
 export async function fetchReplies(threadId) {
   const params = new URLSearchParams({
@@ -100,7 +133,7 @@ export async function fetchReplies(threadId) {
 }
 
 /**
- * Submit a new post to a thread (lands in 'pending' status, awaits moderation).
+ * Submit a new post to a thread (lands as 'approved' for classroom use).
  */
 export async function submitPost(threadId, authorName, content) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/discussion_posts`, {
@@ -111,7 +144,8 @@ export async function submitPost(threadId, authorName, content) {
       author_name: authorName,
       content,
       author_type: 'student',
-      source: 'training_portal'
+      source: 'training_portal',
+      status: 'approved'
     })
   })
   const data = await res.json()
@@ -120,14 +154,16 @@ export async function submitPost(threadId, authorName, content) {
 }
 
 /**
- * Submit a new thread (lands in 'open' status).
+ * Submit a new thread (lands as 'open').
+ * Pass moduleId to scope the thread to a specific module.
  */
-export async function submitThread(courseId, title, body, authorName) {
+export async function submitThread(courseId, title, body, authorName, moduleId = null) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/discussion_threads`, {
     method: 'POST',
     headers: { ...headers(), 'Prefer': 'return=representation' },
     body: JSON.stringify({
       course_id: courseId,
+      module_id: moduleId || null,
       title,
       body: body || null,
       author_name: authorName,
@@ -156,7 +192,6 @@ export function formatDateTime(ts) {
 
 /**
  * Returns a human-readable label when a record originates from another app.
- * Returns null for training_portal records (no badge needed).
  */
 export function sourceLabel(source) {
   if (!source || source === 'training_portal') return null
@@ -168,9 +203,6 @@ export function sourceLabel(source) {
   return map[source] || source
 }
 
-/**
- * Derive a source string from a thread_reply's linked message app_context.
- */
 export function replySourceLabel(reply) {
   const ctx = reply?.messages?.app_context
   return sourceLabel(ctx === 'training' ? 'training' : ctx)

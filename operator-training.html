@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>207 Analytix — Team Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --accent: #1D4ED8;
+    --surface: #ffffff;
+    --bg: #F1F5F9;
+    --border: #E2E8F0;
+    --text: #0F172A;
+    --text-muted: #64748B;
+    --font: 'Inter', sans-serif;
+    --radius: 10px;
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.07);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); color: var(--text); background: var(--bg); min-height: 100vh; }
+  a { color: var(--accent); text-decoration: none; }
+  .hidden { display: none !important; }
+
+  /* ── Nav ────────────────────────────────── */
+  .nav {
+    background: #0F172A;
+    border-bottom: 1px solid #1E293B;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-a {
+    width: 32px; height: 32px; background: #6366F1;
+    border-radius: 8px; display: flex; align-items: center;
+    justify-content: center; font-weight: 700; font-size: 1rem; color: #fff; flex-shrink: 0;
+  }
+  .logo-207 {
+    width: 32px; height: 32px; background: #1D4ED8;
+    border-radius: 8px; display: flex; align-items: center;
+    justify-content: center; font-weight: 800; font-size: 0.6rem; color: #fff;
+    flex-shrink: 0; letter-spacing: -0.5px;
+  }
+  .brand-name { font-weight: 700; font-size: 0.95rem; color: #F8FAFC; }
+  .brand-sub  { font-size: 0.72rem; color: #64748B; }
+  .nav-sep    { color: #334155; font-size: 1.1rem; }
+  .nav-spacer { flex: 1; }
+  .btn-ghost-nav { background: transparent; color: #94A3B8; border: none; padding: 6px 10px;
+    font-size: 0.82rem; cursor: pointer; font-family: var(--font); text-decoration: none; white-space: nowrap; }
+  .btn-ghost-nav:hover { color: #F8FAFC; }
+  .nav-badge {
+    font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;
+    background: #1D4ED8; color: #fff; padding: 2px 8px; border-radius: 20px;
+  }
+
+  /* ── Role tabs ──────────────────────────── */
+  .role-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .role-bar::-webkit-scrollbar { display: none; }
+  .role-tab {
+    display: flex; align-items: center; gap: 7px;
+    padding: 0.85rem 1.25rem;
+    font-size: 0.85rem; font-weight: 600;
+    color: var(--text-muted);
+    border-bottom: 3px solid transparent;
+    cursor: pointer; white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+    background: none; border-top: none; border-left: none; border-right: none;
+    font-family: var(--font);
+  }
+  .role-tab:hover { color: var(--text); }
+  .role-tab.active { color: var(--tab-color, #1D4ED8); border-bottom-color: var(--tab-color, #1D4ED8); }
+  .role-tab .tab-icon { font-size: 1rem; }
+  .role-tab .tab-count {
+    font-size: 0.68rem; font-weight: 700;
+    background: var(--border); color: var(--text-muted);
+    padding: 1px 6px; border-radius: 20px;
+  }
+  .role-tab.active .tab-count { background: var(--tab-color, #1D4ED8); color: #fff; }
+
+  /* ── Layout ─────────────────────────────── */
+  .layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    align-items: start;
+    gap: 1.5rem;
+  }
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+  }
+
+  /* ── Sidebar ────────────────────────────── */
+  .sidebar { position: sticky; top: 108px; display: flex; flex-direction: column; gap: 1rem; }
+  .sidebar-card {
+    background: var(--surface); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); overflow: hidden;
+  }
+  .sidebar-header {
+    padding: 0.85rem 1.1rem;
+    font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .section-nav { display: flex; flex-direction: column; }
+  .sec-nav-item {
+    display: flex; align-items: center; gap: 0.65rem;
+    padding: 0.65rem 1.1rem;
+    font-size: 0.82rem; color: var(--text-muted);
+    cursor: pointer; border: none; background: none;
+    font-family: var(--font); text-align: left;
+    transition: background 0.12s, color 0.12s;
+    border-left: 3px solid transparent;
+  }
+  .sec-nav-item:hover { background: #F8FAFC; color: var(--text); }
+  .sec-nav-item.active { color: var(--role-accent); border-left-color: var(--role-accent); background: #F8FAFC; font-weight: 600; }
+  .sec-nav-item.read .sec-check { opacity: 1; }
+  .sec-check { width: 14px; height: 14px; border-radius: 50%; background: #22C55E; color: #fff;
+    font-size: 0.55rem; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; opacity: 0; transition: opacity 0.2s; }
+  .sec-num { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--border); color: var(--text-muted); font-size: 0.65rem;
+    font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .sec-nav-item.active .sec-num { background: var(--role-accent); color: #fff; }
+
+  .member-list { display: flex; flex-direction: column; gap: 0; }
+  .member-row {
+    display: flex; align-items: center; gap: 0.7rem;
+    padding: 0.65rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .member-row:last-child { border-bottom: none; }
+  .member-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .member-name { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+  .member-status {
+    font-size: 0.65rem; font-weight: 600; padding: 1px 6px;
+    border-radius: 20px; margin-left: auto; flex-shrink: 0;
+  }
+  .status-active   { background: #D1FAE5; color: #065F46; }
+  .status-pending  { background: #FEF3C7; color: #92400E; }
+  .status-inactive { background: var(--border); color: var(--text-muted); }
+
+  .commission-box {
+    margin: 0.85rem 1.1rem;
+    background: var(--role-accent-light, #DBEAFE);
+    border-radius: 8px; padding: 0.75rem 0.9rem;
+  }
+  .commission-box .label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 2px; }
+  .commission-box .value { font-size: 1.4rem; font-weight: 800; color: var(--role-accent); }
+  .commission-box .desc  { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+
+  /* ── Main content ───────────────────────── */
+  .main { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  /* Role hero */
+  .role-hero {
+    background: var(--surface); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); overflow: hidden;
+  }
+  .hero-stripe { height: 5px; }
+  .hero-body { padding: 1.5rem 1.75rem; }
+  .hero-eyebrow { font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 0.4rem; }
+  .hero-title { font-size: 1.6rem; font-weight: 800; line-height: 1.2; margin-bottom: 0.3rem; }
+  .hero-tagline { font-size: 1rem; color: var(--text-muted); font-weight: 400;
+    font-style: italic; margin-bottom: 1.1rem; line-height: 1.5; }
+  .hero-meta { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .meta-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 0.75rem; font-weight: 600; padding: 4px 10px;
+    border-radius: 20px; border: 1.5px solid var(--border);
+  }
+
+  /* Ecosystem impact */
+  .impact-card {
+    background: var(--surface); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); overflow: hidden;
+  }
+  .impact-header {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .impact-icon { font-size: 1.3rem; }
+  .impact-header h3 { font-size: 0.88rem; font-weight: 700; }
+  .impact-header p  { font-size: 0.75rem; color: var(--text-muted); margin-top: 1px; }
+  .impact-body {
+    padding: 1.25rem 1.5rem;
+    font-size: 0.88rem; line-height: 1.8;
+    color: var(--text);
+    border-left: 4px solid var(--role-accent);
+    margin: 0 1.5rem 1.25rem;
+    background: #F8FAFC;
+    border-radius: 0 8px 8px 0;
+  }
+
+  /* Section cards */
+  .section-card {
+    background: var(--surface); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); overflow: hidden;
+    scroll-margin-top: 120px;
+    transition: box-shadow 0.2s;
+  }
+  .section-card.highlight { box-shadow: 0 0 0 2px var(--role-accent), var(--shadow-sm); }
+  .section-card-header {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1.1rem 1.5rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.12s;
+  }
+  .section-card-header:hover { background: #F8FAFC; }
+  .section-badge {
+    flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 800; color: #fff;
+  }
+  .section-title-group { flex: 1; }
+  .section-num { font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 2px; }
+  .section-title { font-size: 0.95rem; font-weight: 700; }
+  .section-chevron { color: var(--text-muted); font-size: 0.9rem; transition: transform 0.2s; }
+  .section-card.is-open .section-chevron { transform: rotate(180deg); }
+  .section-read-btn {
+    flex-shrink: 0; font-size: 0.72rem; font-weight: 600;
+    padding: 4px 10px; border-radius: 6px; cursor: pointer;
+    border: 1.5px solid var(--border); background: none;
+    color: var(--text-muted); font-family: var(--font);
+    transition: all 0.15s;
+  }
+  .section-read-btn:hover { border-color: #22C55E; color: #15803D; }
+  .section-read-btn.done { background: #D1FAE5; border-color: #22C55E; color: #15803D; }
+
+  .section-body {
+    border-top: 1px solid var(--border);
+    padding: 1.25rem 1.5rem;
+    font-size: 0.875rem; line-height: 1.85;
+    color: var(--text);
+  }
+
+  /* Progress bar */
+  .progress-bar-wrap {
+    background: var(--surface); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); padding: 1rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .progress-label { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+  .progress-track { flex: 1; height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .progress-fill  { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+  .progress-pct   { font-size: 0.82rem; font-weight: 700; white-space: nowrap; }
+
+  /* States */
+  .spinner { text-align: center; padding: 5rem; color: var(--text-muted); font-size: 0.875rem; }
+  .alert { padding: 11px 14px; border-radius: 8px; font-size: 0.85rem; }
+  .alert-error { background: #FEE2E2; border-left: 4px solid #EF4444; color: #7F1D1D; }
+
+  .empty-pane { text-align: center; padding: 4rem 2rem; color: var(--text-muted); }
+  .empty-pane .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+  .empty-pane p { font-size: 0.88rem; line-height: 1.6; }
+
+  /* Print */
+  @media print {
+    .nav, .role-bar, .sidebar, .section-read-btn, .progress-bar-wrap { display: none !important; }
+    .layout { grid-template-columns: 1fr; padding: 0; }
+    .section-body { display: block !important; }
+    .section-chevron { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav class="nav">
+  <a href="index.html" class="brand">
+    <div class="logo-a">A</div>
+    <div>
+      <div class="brand-name">Alexandria</div>
+      <div class="brand-sub">Training Portal</div>
+    </div>
+  </a>
+  <span class="nav-sep">›</span>
+  <div class="logo-207">207</div>
+  <div style="margin-left:4px;">
+    <div class="brand-name" style="font-size:0.85rem;">207 Analytix</div>
+    <div class="brand-sub">Team Training Manuals</div>
+  </div>
+  <div class="nav-spacer"></div>
+  <span class="nav-badge">Internal</span>
+  <a href="catalog.html" class="btn-ghost-nav" style="margin-left:8px;">← Portal</a>
+</nav>
+
+<!-- ── Role tabs ── -->
+<div class="role-bar" id="role-bar">
+  <div class="spinner" style="padding:1rem 2rem;font-size:0.8rem;">Loading roles…</div>
+</div>
+
+<!-- ── Main layout ── -->
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="spinner" style="padding:2rem 1rem;"></div>
+  </aside>
+  <main class="main" id="main">
+    <div class="spinner">Select a role above to open their training manual.</div>
+  </main>
+</div>
+
+<script>
+// ── Config ───────────────────────────────────────────────────────────────────
+const SUPA_URL = 'https://hhyhulqngdkwsxhymmcd.supabase.co'
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoeWh1bHFuZ2Rrd3N4aHltbWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzEyMDEsImV4cCI6MjA5MjcwNzIwMX0.dmSy7Q8Je5lEY4XCFzwvfPnkBYLebPE0yZMhy6Y8czI'
+
+const ROLE_META = {
+  founder:     { color: '#7C3AED', light: '#F3E8FF', icon: '🏛️',  label: 'Co-Founder'    },
+  operator:    { color: '#1D4ED8', light: '#DBEAFE', icon: '⚡',   label: 'Operator'       },
+  sales_agent: { color: '#047857', light: '#D1FAE5', icon: '🤝',  label: 'Sales Agent'    },
+  accountant:  { color: '#B45309', light: '#FEF3C7', icon: '📊',  label: 'Accountant'     }
+}
+
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+}
+
+async function supa(path) {
+  const r = await fetch(SUPA_URL + path, {
+    headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+  })
+  if (!r.ok) throw new Error(await r.text())
+  return r.json()
+}
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let allRoles = []
+let activeRoleType = null
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+;(async () => {
+  try {
+    allRoles = await supa(
+      '/rest/v1/team_roles?select=*,training_manuals(*),team_members(*)&order=created_at.asc'
+    )
+    renderTabs()
+    // auto-select first role
+    if (allRoles.length) activateRole(allRoles[0].role_type)
+  } catch(e) {
+    document.getElementById('role-bar').innerHTML = `<div class="alert alert-error" style="margin:0.75rem 1.5rem;">Failed to load roles: ${esc(e.message)}</div>`
+    document.getElementById('main').innerHTML = ''
+    document.getElementById('sidebar').innerHTML = ''
+  }
+})()
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+function renderTabs() {
+  const bar = document.getElementById('role-bar')
+  bar.innerHTML = allRoles.map(r => {
+    const m = ROLE_META[r.role_type] || { color: '#64748B', icon: '👤', label: r.role_title }
+    const members = r.team_members || []
+    return `
+    <button class="role-tab" id="tab-${esc(r.role_type)}"
+      style="--tab-color:${m.color}"
+      onclick="activateRole('${esc(r.role_type)}')">
+      <span class="tab-icon">${m.icon}</span>
+      ${esc(r.role_title)}
+      <span class="tab-count">${members.length}</span>
+    </button>`
+  }).join('')
+}
+
+function activateRole(roleType) {
+  activeRoleType = roleType
+  document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'))
+  const tab = document.getElementById('tab-' + roleType)
+  if (tab) tab.classList.add('active')
+
+  const role = allRoles.find(r => r.role_type === roleType)
+  if (!role) return
+
+  const m = ROLE_META[roleType] || { color: '#1D4ED8', light: '#DBEAFE', icon: '👤' }
+  document.documentElement.style.setProperty('--role-accent', m.color)
+  document.documentElement.style.setProperty('--role-accent-light', m.light)
+
+  renderSidebar(role, m)
+  renderMain(role, m)
+}
+
+// ── Sidebar ───────────────────────────────────────────────────────────────────
+function renderSidebar(role, m) {
+  const manual = (role.training_manuals || [])[0]
+  const members = role.team_members || []
+  const sections = manual ? (manual.sections || []) : []
+  const storageKey = 'read_' + role.role_type
+  const readSet = JSON.parse(localStorage.getItem(storageKey) || '[]')
+
+  const sectionNavHtml = sections.length ? `
+    <div class="sidebar-card">
+      <div class="sidebar-header">Manual Sections</div>
+      <div class="section-nav" id="sec-nav">
+        ${sections.map(s => `
+        <button class="sec-nav-item ${readSet.includes(s.section) ? 'read' : ''}"
+          id="snav-${role.role_type}-${s.section}"
+          onclick="scrollToSection('${esc(role.role_type)}', ${s.section})">
+          <span class="sec-num">${s.section}</span>
+          <span style="flex:1;text-align:left;">${esc(s.title)}</span>
+          <span class="sec-check">✓</span>
+        </button>`).join('')}
+      </div>
+    </div>` : ''
+
+  const commissionHtml = role.commission_pct ? `
+    <div class="sidebar-card">
+      <div class="commission-box" style="--role-accent:${m.color};--role-accent-light:${m.light}">
+        <div class="label">Commission Rate</div>
+        <div class="value">${role.commission_pct}%</div>
+        <div class="desc">Per delivered & QA-approved project. Paid from Human OpEx account.</div>
+      </div>
+    </div>` : ''
+
+  const avatarColors = ['#7C3AED','#1D4ED8','#047857','#B45309','#0E7490','#C2410C','#6D28D9']
+  const membersHtml = members.length ? `
+    <div class="sidebar-card">
+      <div class="sidebar-header">Team Members (${members.length})</div>
+      <div class="member-list">
+        ${members.map((mem, i) => {
+          const initials = (mem.name || 'TBD').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase()
+          const bg = avatarColors[i % avatarColors.length]
+          const statusClass = 'status-' + (mem.status || 'pending')
+          return `
+          <div class="member-row">
+            <div class="member-avatar" style="background:${bg}">${esc(initials)}</div>
+            <div>
+              <div class="member-name">${esc(mem.name || 'Open Seat')}</div>
+            </div>
+            <span class="member-status ${statusClass}">${esc(mem.status || 'pending')}</span>
+          </div>`
+        }).join('')}
+      </div>
+    </div>` : ''
+
+  document.getElementById('sidebar').innerHTML = sectionNavHtml + commissionHtml + membersHtml
+}
+
+// ── Main ──────────────────────────────────────────────────────────────────────
+function renderMain(role, m) {
+  const manual = (role.training_manuals || [])[0]
+  const sections = manual ? (manual.sections || []) : []
+  const storageKey = 'read_' + role.role_type
+  const readSet = JSON.parse(localStorage.getItem(storageKey) || '[]')
+  const pct = sections.length ? Math.round((readSet.length / sections.length) * 100) : 0
+
+  const heroHtml = `
+  <div class="role-hero">
+    <div class="hero-stripe" style="background:${m.color}"></div>
+    <div class="hero-body">
+      <div class="hero-eyebrow">207 Analytix · Team Training</div>
+      <div class="hero-title">${m.icon} ${esc(role.role_title)}</div>
+      <div class="hero-tagline">${esc(role.tagline || '')}</div>
+      <div class="hero-meta">
+        <span class="meta-pill">👥 ${role.headcount_target} seat${role.headcount_target !== 1 ? 's' : ''}</span>
+        ${role.commission_pct ? `<span class="meta-pill" style="border-color:${m.color};color:${m.color};">💰 ${role.commission_pct}% commission</span>` : ''}
+        ${role.reports_to ? `<span class="meta-pill">↑ Reports to ${esc(role.reports_to.replace('_',' '))}</span>` : ''}
+        ${manual ? `<span class="meta-pill" style="border-color:#22C55E;color:#15803D;">📄 v${esc(manual.version)}</span>` : ''}
+      </div>
+    </div>
+  </div>`
+
+  const progressHtml = sections.length ? `
+  <div class="progress-bar-wrap">
+    <span class="progress-label">Manual Progress</span>
+    <div class="progress-track">
+      <div class="progress-fill" id="prog-fill-${esc(role.role_type)}" style="width:${pct}%;background:${m.color}"></div>
+    </div>
+    <span class="progress-pct" id="prog-pct-${esc(role.role_type)}" style="color:${m.color}">${pct}%</span>
+  </div>` : ''
+
+  const impactHtml = role.ecosystem_impact ? `
+  <div class="impact-card">
+    <div class="impact-header">
+      <span class="impact-icon">🌐</span>
+      <div>
+        <h3>Your Impact on the 207 Analytix Ecosystem</h3>
+        <p>How this role affects every other part of the organization</p>
+      </div>
+    </div>
+    <div class="impact-body" style="--role-accent:${m.color}">${esc(role.ecosystem_impact)}</div>
+  </div>` : ''
+
+  const responsibilitiesHtml = (role.responsibilities || []).length ? `
+  <div class="impact-card">
+    <div class="impact-header">
+      <span class="impact-icon">✅</span>
+      <div>
+        <h3>Core Responsibilities</h3>
+        <p>What this role is accountable for, every week</p>
+      </div>
+    </div>
+    <div style="padding: 0 1.5rem 1.25rem;">
+      ${role.responsibilities.map(r => `
+      <div style="display:flex;gap:0.65rem;align-items:flex-start;padding:0.55rem 0;border-bottom:1px solid var(--border);font-size:0.875rem;line-height:1.65;">
+        <span style="color:${m.color};font-size:1rem;flex-shrink:0;margin-top:1px;">›</span>
+        <span>${esc(r)}</span>
+      </div>`).join('')}
+    </div>
+  </div>` : ''
+
+  const sectionsHtml = sections.length ? sections.map(s => {
+    const isRead = readSet.includes(s.section)
+    return `
+    <div class="section-card" id="sec-${esc(role.role_type)}-${s.section}">
+      <div class="section-card-header" onclick="toggleSection(this)">
+        <div class="section-badge" style="background:${m.color}">${s.section}</div>
+        <div class="section-title-group">
+          <div class="section-num">Section ${s.section}</div>
+          <div class="section-title">${esc(s.title)}</div>
+        </div>
+        <button class="section-read-btn ${isRead ? 'done' : ''}"
+          id="rbtn-${esc(role.role_type)}-${s.section}"
+          onclick="event.stopPropagation(); markRead('${esc(role.role_type)}', ${s.section})"
+        >${isRead ? '✓ Read' : 'Mark Read'}</button>
+        <span class="section-chevron">▾</span>
+      </div>
+      <div class="section-body hidden">${esc(s.content)}</div>
+    </div>`
+  }).join('') : `
+    <div class="empty-pane">
+      <div class="empty-icon">📭</div>
+      <p>No training manual sections found for this role.</p>
+    </div>`
+
+  const noManualWarning = !manual ? `<div class="alert alert-error">No training manual found for this role yet.</div>` : ''
+
+  document.getElementById('main').innerHTML =
+    heroHtml + progressHtml + noManualWarning + impactHtml + responsibilitiesHtml + sectionsHtml
+}
+
+// ── Interactions ──────────────────────────────────────────────────────────────
+function toggleSection(header) {
+  const card = header.closest('.section-card')
+  const body = card.querySelector('.section-body')
+  const isOpen = !body.classList.contains('hidden')
+  body.classList.toggle('hidden', isOpen)
+  card.classList.toggle('is-open', !isOpen)
+}
+
+function scrollToSection(roleType, num) {
+  const el = document.getElementById('sec-' + roleType + '-' + num)
+  if (!el) return
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  // open it
+  const body = el.querySelector('.section-body')
+  const card = el
+  body.classList.remove('hidden')
+  card.classList.add('is-open')
+  // highlight briefly
+  card.classList.add('highlight')
+  setTimeout(() => card.classList.remove('highlight'), 1200)
+  // mark active in sidebar
+  document.querySelectorAll('.sec-nav-item').forEach(i => i.classList.remove('active'))
+  const navItem = document.getElementById('snav-' + roleType + '-' + num)
+  if (navItem) navItem.classList.add('active')
+}
+
+function markRead(roleType, sectionNum) {
+  const key = 'read_' + roleType
+  const readSet = JSON.parse(localStorage.getItem(key) || '[]')
+  if (!readSet.includes(sectionNum)) readSet.push(sectionNum)
+  localStorage.setItem(key, JSON.stringify(readSet))
+
+  // update read button
+  const btn = document.getElementById('rbtn-' + roleType + '-' + sectionNum)
+  if (btn) { btn.textContent = '✓ Read'; btn.classList.add('done') }
+
+  // update sidebar nav item
+  const navItem = document.getElementById('snav-' + roleType + '-' + sectionNum)
+  if (navItem) navItem.classList.add('read')
+
+  // update progress
+  const role = allRoles.find(r => r.role_type === roleType)
+  const manual = (role?.training_manuals || [])[0]
+  const total = (manual?.sections || []).length
+  const pct = total ? Math.round((readSet.length / total) * 100) : 0
+  const fill = document.getElementById('prog-fill-' + roleType)
+  const pctEl = document.getElementById('prog-pct-' + roleType)
+  if (fill) fill.style.width = pct + '%'
+  if (pctEl) pctEl.textContent = pct + '%'
+}
+</script>
+</body>
+</html>

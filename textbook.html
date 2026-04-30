@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Alexandria — Digital Textbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --accent: #6366F1;
+  --accent-light: #EEF2FF;
+  --green: #16A34A;
+  --green-light: #DCFCE7;
+  --surface: #ffffff;
+  --bg: #F8FAFC;
+  --border: #E2E8F0;
+  --text: #0F172A;
+  --text-muted: #64748B;
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Lora', serif;
+  --radius: 10px;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.07);
+  --sidebar-w: 260px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-sans); color: var(--text); background: var(--bg); min-height: 100vh; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Nav ── */
+.nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; gap: 0.75rem; height: 56px; position: sticky; top: 0; z-index: 100; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+.brand .logo { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; color: #fff; flex-shrink: 0; }
+.brand-name { font-weight: 700; font-size: 0.95rem; }
+.brand-sub  { font-size: 0.7rem; color: var(--text-muted); }
+.nav-sep { color: var(--border); }
+.nav-label { font-weight: 600; font-size: 0.88rem; color: var(--text-muted); }
+.nav-spacer { flex: 1; }
+.btn-ghost { background: transparent; color: var(--text-muted); border: none; padding: 6px 10px; font-size: 0.82rem; cursor: pointer; font-family: var(--font-sans); text-decoration: none; }
+.btn-ghost:hover { color: var(--text); }
+
+/* ── Layout ── */
+.shell { display: flex; min-height: calc(100vh - 56px); }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+  padding: 1.5rem 0;
+}
+.sidebar-heading { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); padding: 0 1.25rem; margin-bottom: 0.5rem; }
+.sidebar-intro { font-size: 0.75rem; color: var(--text-muted); padding: 0 1.25rem 1rem; line-height: 1.55; border-bottom: 1px solid var(--border); margin-bottom: 0.75rem; }
+.nav-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 1.25rem; font-size: 0.82rem; color: var(--text-muted); cursor: pointer; border-left: 3px solid transparent; transition: all 0.15s; text-decoration: none; line-height: 1.35; }
+.nav-item:hover { color: var(--text); background: var(--bg); text-decoration: none; }
+.nav-item.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-light); font-weight: 600; }
+.nav-num { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 700; color: var(--text-muted); }
+.nav-item.active .nav-num { background: var(--accent); color: #fff; }
+
+/* ── Content ── */
+.content { flex: 1; max-width: 820px; padding: 3rem 2.5rem; }
+@media (max-width: 768px) { .shell { flex-direction: column; } .sidebar { width: 100%; height: auto; position: static; } .content { padding: 2rem 1.25rem; } }
+
+/* ── Section ── */
+.tb-section { margin-bottom: 5rem; scroll-margin-top: 70px; }
+.section-eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.4rem; }
+.section-title { font-family: var(--font-serif); font-size: 2rem; font-weight: 600; line-height: 1.25; margin-bottom: 0.5rem; }
+.section-dq { font-family: var(--font-serif); font-size: 1rem; font-style: italic; color: var(--text-muted); border-left: 3px solid var(--accent); padding-left: 0.85rem; margin-bottom: 1.75rem; line-height: 1.6; }
+.section-divider { height: 4px; background: linear-gradient(90deg, var(--accent), transparent); border-radius: 2px; margin-bottom: 1.75rem; }
+
+/* ── Prose ── */
+.prose { font-family: var(--font-serif); font-size: 1rem; line-height: 1.85; color: #1E293B; }
+.prose p { margin-bottom: 1.2rem; }
+.prose h3 { font-family: var(--font-sans); font-size: 1rem; font-weight: 700; margin: 2rem 0 0.6rem; color: var(--text); }
+.prose h4 { font-family: var(--font-sans); font-size: 0.875rem; font-weight: 700; margin: 1.5rem 0 0.4rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.prose strong { font-weight: 600; color: var(--text); }
+.prose em { font-style: italic; }
+
+/* ── Callout boxes ── */
+.callout { border-radius: var(--radius); padding: 1.1rem 1.3rem; margin: 1.5rem 0; font-family: var(--font-sans); font-size: 0.875rem; line-height: 1.65; }
+.callout-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+.callout.vocab  { background: #EFF6FF; border-left: 4px solid #3B82F6; }
+.callout.vocab .callout-label { color: #1D4ED8; }
+.callout.diaspora { background: #FFF7ED; border-left: 4px solid #F97316; }
+.callout.diaspora .callout-label { color: #C2410C; }
+.callout.think  { background: #F0FDF4; border-left: 4px solid #16A34A; }
+.callout.think .callout-label  { color: #15803D; }
+.callout.fact   { background: #FEF9C3; border-left: 4px solid #EAB308; }
+.callout.fact .callout-label   { color: #A16207; }
+
+/* ── Vocab grid ── */
+.vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin: 1.25rem 0; }
+@media (max-width: 500px) { .vocab-grid { grid-template-columns: 1fr; } }
+.vocab-term { background: var(--surface); border: 1.5px solid var(--border); border-radius: 8px; padding: 0.65rem 0.85rem; }
+.vocab-term strong { display: block; font-size: 0.82rem; font-family: var(--font-sans); margin-bottom: 2px; color: var(--accent); }
+.vocab-term span { font-size: 0.78rem; color: var(--text-muted); font-family: var(--font-sans); line-height: 1.45; }
+
+/* ── Figure / image placeholder ── */
+.fig { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 1.5rem; text-align: center; margin: 1.5rem 0; }
+.fig-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+.fig-caption { font-family: var(--font-sans); font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+
+/* ── Section progress tag ── */
+.month-tag { display: inline-flex; align-items: center; gap: 5px; background: var(--accent-light); color: var(--accent); font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.75rem; font-family: var(--font-sans); }
+
+/* ── Cover ── */
+.cover { background: linear-gradient(135deg, #0F172A 0%, #1E3A5F 60%, #1D4ED8 100%); border-radius: 14px; padding: 3rem 2.5rem; margin-bottom: 3rem; color: #fff; }
+.cover-eyebrow { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #93C5FD; margin-bottom: 0.6rem; }
+.cover-title { font-family: var(--font-serif); font-size: 2.4rem; font-weight: 600; line-height: 1.2; margin-bottom: 0.75rem; }
+.cover-sub { font-size: 0.95rem; color: #CBD5E1; line-height: 1.7; max-width: 540px; margin-bottom: 1.5rem; }
+.cover-modules { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.cover-mod { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 12px; font-size: 0.72rem; font-weight: 600; color: #E0F2FE; }
+
+/* ── Section separator ── */
+.section-sep { border: none; border-top: 2px dashed var(--border); margin: 4rem 0; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="brand">
+    <div class="logo">A</div>
+    <div>
+      <div class="brand-name">Alexandria</div>
+      <div class="brand-sub">Training Portal</div>
+    </div>
+  </a>
+  <span class="nav-sep">›</span>
+  <span class="nav-label">📖 Digital Textbook</span>
+  <div class="nav-spacer"></div>
+  <a href="course.html?course=a1b2c3d4-0001-0001-0001-000000000001" class="btn-ghost">← Course</a>
+</nav>
+
+<div class="shell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-heading">Textbook Contents</div>
+    <div class="sidebar-intro">Six modules · Course-aligned · Grades 4–6</div>
+    <a class="nav-item active" href="#module-1" data-section="module-1">
+      <div class="nav-num">1</div>What Is Soil?
+    </a>
+    <a class="nav-item" href="#module-2" data-section="module-2">
+      <div class="nav-num">2</div>Seeds Travel
+    </a>
+    <a class="nav-item" href="#module-3" data-section="module-3">
+      <div class="nav-num">3</div>Water &amp; Weather
+    </a>
+    <a class="nav-item" href="#module-4" data-section="module-4">
+      <div class="nav-num">4</div>Growing Food
+    </a>
+    <a class="nav-item" href="#module-5" data-section="module-5">
+      <div class="nav-num">5</div>Ecosystems &amp; Biodiversity
+    </a>
+    <a class="nav-item" href="#module-6" data-section="module-6">
+      <div class="nav-num">6</div>Caring for Our Earth
+    </a>
+  </aside>
+
+  <!-- Main content -->
+  <main class="content">
+
+    <!-- Cover -->
+    <div class="cover">
+      <div class="cover-eyebrow">Alexandria Training Portal · English Language Arts &amp; Science</div>
+      <div class="cover-title">Our Living World:<br/>Soil, Seeds &amp; Stewardship</div>
+      <div class="cover-sub">A year-long journey through the science of soil, seeds, water, plant growth, ecosystems, and climate — woven together with the stories of diaspora communities who carried this knowledge across the world.</div>
+      <div class="cover-modules">
+        <span class="cover-mod">🌱 Month 1 · Soil</span>
+        <span class="cover-mod">🌾 Month 2 · Seeds</span>
+        <span class="cover-mod">💧 Month 3 · Water</span>
+        <span class="cover-mod">🌻 Month 4 · Plants</span>
+        <span class="cover-mod">🦋 Month 5 · Ecosystems</span>
+        <span class="cover-mod">🌍 Month 6 · Earth</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- MODULE 1 -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <section class="tb-section" id="module-1">
+      <div class="month-tag">📅 Month 1</div>
+      <div class="section-eyebrow">Module 1</div>
+      <h1 class="section-title">What Is Soil?</h1>
+      <div class="section-dq">“Why does soil matter to every living thing?”</div>
+      <div class="section-divider"></div>
+
+      <div class="prose">
+        <p>Beneath your feet, under every sidewalk crack and garden bed, lies one of Earth’s most important and overlooked resources: <strong>soil</strong>. It is not simply “dirt.” Soil is a living, breathing system made of minerals, water, air, organic matter, and billions of microscopic organisms. Without healthy soil, there would be no plants — and without plants, there would be no food, no oxygen, and no life as we know it.</p>
+
+        <h3>What Is Soil Made Of?</h3>
+        <p>Healthy soil is a mixture of four main ingredients. <strong>Minerals</strong> are tiny pieces of broken-down rock. They provide the physical structure of soil and supply plants with nutrients like potassium and calcium. <strong>Organic matter</strong> is made from the decomposed remains of plants, animals, and fungi. It gives soil its dark color and rich, earthy smell. <strong>Water</strong> fills the spaces between soil particles, carrying dissolved nutrients to plant roots. And <strong>air</strong> fills the remaining pore spaces, providing the oxygen that soil organisms and roots need to breathe.</p>
+
+        <div class="callout fact">
+          <div class="callout-label">⭐ Did You Know?</div>
+          A single teaspoon of healthy garden soil contains more microorganisms — bacteria, fungi, and other tiny living things — than there are people on Earth. These invisible creatures break down organic matter, recycle nutrients, and help plants grow.
+        </div>
+
+        <h3>The Layers of Soil</h3>
+        <p>If you could slice into the ground and look sideways, you would see distinct horizontal layers called <strong>soil horizons</strong>. Scientists use these layers to understand how soil formed and how healthy it is.</p>
+        <p>The top layer, called the <strong>O horizon</strong> (O for organic), is made of decomposing leaves, twigs, and plant matter. Just below it is the <strong>A horizon</strong>, or <em>topsoil</em> — the dark, nutrient-rich layer where most plants grow and most soil life lives. Farmers and gardeners prize this layer above all others. The <strong>B horizon</strong>, or <em>subsoil</em>, is lighter in color and contains fewer nutrients, but it stores water and minerals that slowly move up into the topsoil. Finally, the <strong>C horizon</strong> at the bottom is made of partially broken-down bedrock — the raw material from which all soil eventually forms.</p>
+
+        <div class="fig">
+          <div class="fig-icon">🪴</div>
+          <div class="fig-caption"><strong>Figure 1.1:</strong> A soil profile showing the O, A, B, and C horizons. Each layer has a different color, texture, and amount of organic matter. Topsoil (A horizon) is where most plant roots and living organisms are found.</div>
+        </div>
+
+        <h3>Types of Soil</h3>
+        <p>Not all soil is the same. The <strong>texture</strong> of soil — how coarse or fine its mineral particles are — greatly affects how well it supports plant growth.</p>
+        <p><strong>Sandy soil</strong> has large particles with big spaces between them. Water drains through it quickly, which means it dries out fast and may not hold nutrients well. <strong>Clay soil</strong> has extremely tiny, flat particles that pack tightly together. It holds water and nutrients well but can become waterlogged or crack when dry, making it difficult for roots to grow. <strong>Silt</strong> has medium-sized particles and feels smooth and silky. <strong>Loam</strong> is the ideal blend: roughly equal parts sand, silt, and clay. It drains well, holds moisture and nutrients, and allows air to reach roots — making it the most productive soil for farming.</p>
+
+        <div class="vocab-grid">
+          <div class="vocab-term"><strong>Soil horizon</strong><span>A distinct layer of soil that differs in color, texture, and composition from the layers above and below it.</span></div>
+          <div class="vocab-term"><strong>Organic matter</strong><span>Material made from the remains of living things that has been broken down by decomposers.</span></div>
+          <div class="vocab-term"><strong>Decomposer</strong><span>An organism (like a bacterium, fungus, or earthworm) that breaks down dead plant and animal material.</span></div>
+          <div class="vocab-term"><strong>Loam</strong><span>A balanced mix of sand, silt, and clay considered ideal for growing most plants.</span></div>
+          <div class="vocab-term"><strong>Nutrient</strong><span>A chemical substance that living things need to grow and function.</span></div>
+          <div class="vocab-term"><strong>Topsoil</strong><span>The uppermost layer of soil (A horizon), richest in organic matter and living organisms.</span></div>
+        </div>
+
+        <h3>Soil’s Living Community</h3>
+        <p>Soil is not just minerals and water — it is alive. <strong>Earthworms</strong> tunnel through soil, loosening it so air and water can move freely. As they eat and digest organic matter, they produce castings (worm droppings) that are extraordinarily rich in plant nutrients. <strong>Fungi</strong> form vast underground networks that connect plant roots, helping them share water and nutrients. <strong>Bacteria</strong> break down dead material and convert nitrogen from the air into a form plants can use — a process called <strong>nitrogen fixation</strong>. <strong>Insects, mites, and nematodes</strong> complete millions of tiny cycles of eating, decomposing, and dying that keep nutrients moving.</p>
+
+        <h3>Threats to Soil Health</h3>
+        <p><strong>Erosion</strong> is one of the greatest threats to soil. When rain or wind strips away topsoil faster than it can form, the land loses its ability to grow food. A single inch of topsoil can take 500 to 1,000 years to form naturally. Farming practices like plowing bare fields, removing trees, and overgrazing animals all accelerate erosion. <strong>Compaction</strong> — when heavy machinery or animal hooves press soil particles together — reduces the pore spaces that roots and organisms need. <strong>Chemical pollution</strong> from pesticides or industrial waste can kill the microorganisms that keep soil alive.</p>
+
+        <div class="callout think">
+          <div class="callout-label">🧠 Think About It</div>
+          Farmers say that taking care of the soil is like taking care of a bank account: if you always withdraw nutrients without ever depositing organic matter back, the account runs dry. What are some ways that farmers and communities could “deposit” back into the soil?
+        </div>
+
+        <div class="callout diaspora">
+          <div class="callout-label">🌍 Diaspora Connection</div>
+          Many West African farming traditions relied on deep knowledge of soil to sustain communities for thousands of years. Practices like <strong>mulching</strong> (covering soil with organic material), <strong>intercropping</strong> (growing multiple crops together), and <strong>fallowing</strong> (resting fields so they can recover) protected topsoil long before modern soil science gave them names. When enslaved Africans were forced to the Americas, they carried this agricultural knowledge with them — knowledge that shaped farming throughout the Caribbean and the American South.
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-sep"/>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- MODULE 2 -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <section class="tb-section" id="module-2">
+      <div class="month-tag">📅 Month 2</div>
+      <div class="section-eyebrow">Module 2</div>
+      <h1 class="section-title">Seeds Travel</h1>
+      <div class="section-dq">“How do seeds move — and why does it matter?”</div>
+      <div class="section-divider"></div>
+
+      <div class="prose">
+        <p>Every tree in a forest, every wildflower in a meadow, every vegetable in a garden began its life as a seed. Seeds are one of nature’s most remarkable inventions — compact packages that contain everything a new plant needs to begin its life. And they travel. Seeds move through air, water, animals, and human hands, carrying plant life to new places across the globe.</p>
+
+        <h3>Inside a Seed</h3>
+        <p>A seed is made of three main parts. The <strong>embryo</strong> is the tiny, undeveloped plant inside — it contains the beginnings of the root, stem, and first leaves. The <strong>endosperm</strong> (or seed leaves, called cotyledons) surrounds the embryo and stores food energy that the seedling will use before its leaves can photosynthesize. The <strong>seed coat</strong> is the tough outer covering that protects the embryo from drying out, temperature extremes, and being digested by animals.</p>
+
+        <h3>How Seeds Move</h3>
+        <p>Plants cannot walk, so they have evolved extraordinary strategies to disperse their seeds far from the parent plant — reducing competition for light, water, and nutrients.</p>
+        <p><strong>Wind dispersal:</strong> Dandelion seeds float on feathery parachutes. Maple seeds spin like helicopter blades. The tiny seeds of orchids are so light they drift on air currents for miles.</p>
+        <p><strong>Water dispersal:</strong> Coconuts are famous for floating across oceans. The thick, buoyant husk protects the seed inside while it drifts on ocean currents for months before washing ashore on a distant beach.</p>
+        <p><strong>Animal dispersal:</strong> Juicy fruits like berries attract animals that eat them and later deposit the undigested seeds far away in their droppings. Burrs and sticky seeds attach to fur or feathers and hitchhike to new places.</p>
+        <p><strong>Explosive dispersal:</strong> Some plants, like squirting cucumbers and witch hazel, build up pressure in their seed pods and launch seeds outward when ripe.</p>
+        <p><strong>Human dispersal:</strong> For thousands of years, humans have been the most powerful seed movers on Earth. Through trade, migration, and — tragically — forced movement, people have carried seeds across continents, transforming agriculture and food cultures everywhere.</p>
+
+        <div class="callout fact">
+          <div class="callout-label">⭐ Did You Know?</div>
+          The coco de mer palm produces the largest seed in the plant kingdom — a single nut can weigh up to 25 kilograms (55 pounds). It is found naturally only on two islands in the Seychelles.
+        </div>
+
+        <h3>Germination: A Seed Wakes Up</h3>
+        <p>A seed can remain dormant — alive but inactive — for years, waiting for the right conditions. When warmth, moisture, and oxygen are present, the seed <strong>germinates</strong>: the embryo begins to grow. The first root, called the <strong>radicle</strong>, pushes downward into the soil. The first shoot, called the <strong>plumule</strong>, pushes upward toward the light. The stored food in the endosperm fuels this early growth until the seedling’s leaves can begin capturing sunlight.</p>
+
+        <div class="vocab-grid">
+          <div class="vocab-term"><strong>Embryo</strong><span>The tiny undeveloped plant inside a seed, containing the beginnings of roots, stems, and leaves.</span></div>
+          <div class="vocab-term"><strong>Germination</strong><span>The process by which a seed begins to grow into a new plant when conditions are right.</span></div>
+          <div class="vocab-term"><strong>Dispersal</strong><span>The movement of seeds away from the parent plant.</span></div>
+          <div class="vocab-term"><strong>Dormancy</strong><span>A state of rest in which a seed’s growth is temporarily paused, waiting for the right conditions.</span></div>
+          <div class="vocab-term"><strong>Cotyledon</strong><span>A seed leaf that stores nutrients to feed the seedling before it can photosynthesize.</span></div>
+          <div class="vocab-term"><strong>Seed coat</strong><span>The protective outer covering of a seed.</span></div>
+        </div>
+
+        <h3>Seed Saving: An Ancient Practice</h3>
+        <p>For more than 10,000 years, farmers and communities have practiced <strong>seed saving</strong> — carefully selecting the best seeds from the healthiest plants each harvest and storing them for the following year’s planting. This was not simply practical; it was cultural. Seeds were gifts, heirlooms, and expressions of identity. Communities developed hundreds of varieties of the same crop, each adapted to their local soil, climate, and taste.</p>
+
+        <div class="callout diaspora">
+          <div class="callout-label">🌍 Diaspora Connection</div>
+          When Africans were enslaved and transported to the Americas beginning in the 1500s, many carried seeds hidden in their hair, clothing, and the small provisions allowed on ships. <strong>Black-eyed peas, okra, sorghum, watermelon, sesame (benne), and rice</strong> all traveled this way. These crops did not just nourish enslaved communities — they became foundational to the cuisines and economies of the American South and the Caribbean. Today, seed libraries and community gardens across the United States work to preserve the <em>heirloom varieties</em> of these crops, honoring the people who carried them across the Atlantic.
+        </div>
+
+        <h3>Why Seed Diversity Matters</h3>
+        <p>When farmers grow only one variety of a crop — called a <strong>monoculture</strong> — the entire crop is vulnerable to a single disease, pest, or change in climate. The Irish Potato Famine of the 1840s killed over a million people because Ireland had become dependent on a single potato variety. When a fungal disease struck, there was no resistant variety to fall back on. <strong>Biodiversity in seeds</strong> is an insurance policy for humanity. The more varieties we preserve, the more options we have when conditions change.</p>
+
+        <div class="callout think">
+          <div class="callout-label">🧠 Think About It</div>
+          Imagine you are a seed. What strategy would you use to travel as far as possible? Draw or describe your design, including what features would protect you during the journey.
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-sep"/>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- MODULE 3 -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <section class="tb-section" id="module-3">
+      <div class="month-tag">📅 Month 3</div>
+      <div class="section-eyebrow">Module 3</div>
+      <h1 class="section-title">Water &amp; Weather</h1>
+      <div class="section-dq">“How does water connect farmers across the world?”</div>
+      <div class="section-divider"></div>
+
+      <div class="prose">
+        <p>Of all the resources on Earth, water is the most essential. Every living cell requires it. Every crop depends on it. Every farming civilization has been shaped by it. Understanding water — where it comes from, where it goes, and how it moves through the atmosphere and land — is fundamental to understanding life itself.</p>
+
+        <h3>The Water Cycle</h3>
+        <p>Earth’s water does not disappear — it moves in a continuous loop called the <strong>water cycle</strong> (also called the hydrological cycle). The same water molecules that fell as rain on ancient Egyptian wheat fields may have once quenched a dinosaur’s thirst, and may one day fall as snow on a mountain you have yet to visit.</p>
+        <p><strong>Evaporation</strong> is the first step: energy from the sun heats liquid water in oceans, lakes, and rivers, turning it into water vapor that rises into the atmosphere. Plants contribute to this process through <strong>transpiration</strong> — releasing water vapor through tiny pores in their leaves called stomata. Together, evaporation and transpiration are called <em>evapotranspiration</em>.</p>
+        <p><strong>Condensation</strong> occurs as water vapor rises and cools, turning back into tiny liquid droplets that cluster around dust particles to form clouds. <strong>Precipitation</strong> happens when these droplets combine and grow heavy enough to fall as rain, snow, sleet, or hail. Water that falls on land either runs off into rivers and streams (<strong>runoff</strong>) or soaks into the ground to become <strong>groundwater</strong>. Eventually, this water evaporates again, and the cycle continues.</p>
+
+        <div class="fig">
+          <div class="fig-icon">💧</div>
+          <div class="fig-caption"><strong>Figure 3.1:</strong> The water cycle. Water evaporates from the ocean, condenses into clouds, falls as precipitation, and flows back through rivers and groundwater to the ocean. Plants participate through transpiration.</div>
+        </div>
+
+        <h3>Weather vs. Climate</h3>
+        <p><strong>Weather</strong> describes what is happening in the atmosphere right now or over a short period: today it is cloudy and rainy; tomorrow will be sunny. <strong>Climate</strong> describes the typical weather patterns of a region over a long period — usually at least 30 years. A desert has a dry climate even if it rains on a particular day. The distinction matters for farmers: weather affects day-to-day decisions, while climate shapes what crops can be grown at all.</p>
+
+        <h3>How Water Reaches Farms</h3>
+        <p>In regions with reliable rainfall, farmers depend on precipitation to water their crops. But in dry regions, or during dry seasons, farmers must bring water to their fields through <strong>irrigation</strong>. Irrigation has shaped civilizations for thousands of years.</p>
+        <p>The ancient Egyptians built a sophisticated system of canals and <em>shadufs</em> (a weighted pole and bucket device) to lift Nile water to their fields. The Mesopotamians (in modern-day Iraq) engineered the world’s first large-scale canal networks as early as 6000 BCE. In the Americas, the Hohokam people of the Sonoran Desert built hundreds of miles of irrigation canals more than 2,000 years ago, turning desert land into productive farmland.</p>
+
+        <div class="vocab-grid">
+          <div class="vocab-term"><strong>Water cycle</strong><span>The continuous movement of water through evaporation, condensation, precipitation, and collection.</span></div>
+          <div class="vocab-term"><strong>Transpiration</strong><span>The release of water vapor by plants through small pores in their leaves called stomata.</span></div>
+          <div class="vocab-term"><strong>Precipitation</strong><span>Any form of water — rain, snow, sleet, or hail — that falls from clouds to Earth’s surface.</span></div>
+          <div class="vocab-term"><strong>Groundwater</strong><span>Fresh water found underground in rock and soil layers, which can be reached by wells and springs.</span></div>
+          <div class="vocab-term"><strong>Irrigation</strong><span>The practice of supplying water to crops through artificial channels, pipes, or sprinklers.</span></div>
+          <div class="vocab-term"><strong>Climate</strong><span>The typical long-term weather patterns of a region, including average temperature and rainfall.</span></div>
+        </div>
+
+        <h3>Water and Farming Decisions</h3>
+        <p>Farmers must constantly read the weather and manage water carefully. Too little water causes crops to wilt and die — a condition called <strong>drought stress</strong>. Too much water can drown roots (plants need oxygen in the soil), cause fungal diseases, and erode topsoil. Modern farmers use weather forecasts, soil moisture sensors, and <strong>drip irrigation</strong> — a system that delivers water directly to plant roots drop by drop — to use water as efficiently as possible.</p>
+
+        <div class="callout diaspora">
+          <div class="callout-label">🌍 Diaspora Connection</div>
+          Irrigation knowledge traveled with people. When Arab scholars, traders, and farmers expanded across North Africa and into Spain between the 8th and 15th centuries, they brought with them sophisticated water management systems including <strong>qanats</strong> (underground aqueducts), <strong>norias</strong> (water wheels), and advanced canal networks. These technologies transformed dry Spanish landscapes into productive farmland and were later carried to the Americas. In West Africa, rice farmers along the Senegal and Niger Rivers had developed flood-recession farming — planting crops as seasonal floodwaters retreated. Enslaved Africans from these rice-growing regions brought this expertise to the American South, where their knowledge made South Carolina and Georgia’s rice plantations commercially viable.
+        </div>
+
+        <div class="callout think">
+          <div class="callout-label">🧠 Think About It</div>
+          If you had to design a system to collect and store rainwater for a small school garden, what would it look like? What challenges might you face in a very dry summer versus a very rainy spring?
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-sep"/>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- MODULE 4 -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <section class="tb-section" id="module-4">
+      <div class="month-tag">📅 Month 4</div>
+      <div class="section-eyebrow">Module 4</div>
+      <h1 class="section-title">Growing Food</h1>
+      <div class="section-dq">“What does a plant need, and how do farmers care for it?”</div>
+      <div class="section-divider"></div>
+
+      <div class="prose">
+        <p>Plants are the foundation of nearly all food on Earth. Whether you eat vegetables, fruit, meat, or dairy, you are ultimately eating sunlight — energy captured by plants from the sun and stored as sugar, starch, and protein. Understanding how plants grow helps us understand farming, nutrition, and our place in the living world.</p>
+
+        <h3>Plant Anatomy: The Parts of a Plant</h3>
+        <p><strong>Roots</strong> anchor the plant in soil and absorb water and dissolved minerals. They also store food in many plants (think carrots, beets, and potatoes). <strong>Stems</strong> support the plant and act as highways, carrying water and nutrients up from roots and sugar down from leaves. <strong>Leaves</strong> are the plant’s food factories — their flat shape maximizes the surface area exposed to sunlight. <strong>Flowers</strong> are reproductive structures that attract pollinators and produce seeds. <strong>Fruits</strong> develop from flowers and contain seeds, often attracting animals that disperse them.</p>
+
+        <h3>Photosynthesis: Capturing the Sun</h3>
+        <p>The most important chemical reaction on Earth — the one that makes almost all other life possible — is <strong>photosynthesis</strong>. In leaves, cells containing a green pigment called <strong>chlorophyll</strong> absorb energy from sunlight. That energy is used to combine <strong>carbon dioxide</strong> (CO₂) from the air with <strong>water</strong> (H₂O) from the soil to produce <strong>glucose</strong> (a simple sugar) and <strong>oxygen</strong> (O₂).</p>
+
+        <div class="callout vocab">
+          <div class="callout-label">🔬 The Photosynthesis Equation</div>
+          <strong>Carbon dioxide + Water + Light energy → Glucose + Oxygen</strong><br/><br/>
+          CO₂ + H₂O + light → C₆H₁₂O₆ + O₂<br/><br/>
+          The glucose is used by the plant for energy and growth. The oxygen is released into the air — and that is the oxygen we breathe.
+        </div>
+
+        <h3>The Plant Life Cycle</h3>
+        <p>Most flowering plants go through the same basic stages of life. A <strong>seed</strong> germinates and becomes a <strong>seedling</strong> with its first true leaves. As the plant grows, it develops a full root system and leafy stem, becoming a mature <strong>plant</strong>. When conditions are right, it produces <strong>flowers</strong>, which are pollinated by wind or animals. Pollinated flowers develop into <strong>fruit</strong>, which contain new seeds — and the cycle begins again.</p>
+        <p>Some plants complete this cycle in a single growing season and are called <strong>annuals</strong> (like tomatoes, corn, and basil). Others, called <strong>biennials</strong>, take two years. <strong>Perennials</strong> live for many years, returning each spring (like apple trees, asparagus, and lavender).</p>
+
+        <div class="vocab-grid">
+          <div class="vocab-term"><strong>Photosynthesis</strong><span>The process by which plants use sunlight, water, and CO₂ to produce sugar and oxygen.</span></div>
+          <div class="vocab-term"><strong>Chlorophyll</strong><span>The green pigment in plant cells that absorbs light energy for photosynthesis.</span></div>
+          <div class="vocab-term"><strong>Pollination</strong><span>The transfer of pollen from the male to female part of a flower, enabling fertilization and seed production.</span></div>
+          <div class="vocab-term"><strong>Annual</strong><span>A plant that completes its entire life cycle — germinating, growing, flowering, and seeding — in one year.</span></div>
+          <div class="vocab-term"><strong>Nutrients (NPK)</strong><span>Nitrogen (N), Phosphorus (P), and Potassium (K) are the three main nutrients plants need from soil to grow.</span></div>
+          <div class="vocab-term"><strong>Pollinator</strong><span>An animal (bee, butterfly, bird, bat) that carries pollen between flowers, enabling reproduction.</span></div>
+        </div>
+
+        <h3>What Farmers Do</h3>
+        <p>Farming is applied plant science. Farmers choose which crops to grow based on their climate, soil, and market. They prepare soil by tilling, composting, or cover cropping. They time their planting around the last frost date in spring and first frost date in fall. They manage pests by rotating crops, introducing beneficial insects, or applying pesticides. They harvest at peak ripeness and store or sell their crops.</p>
+        <p>Good farmers are also scientists, economists, ecologists, and forecasters — constantly balancing what the land can give with what their community needs.</p>
+
+        <div class="callout diaspora">
+          <div class="callout-label">🌍 Diaspora Connection: Crops That Changed the World</div>
+          Many of the world’s most important staple crops originated in the Americas and were spread globally after 1492 through the <strong>Columbian Exchange</strong> — the transfer of plants, animals, and people between the Old and New Worlds. <strong>Maize (corn)</strong>, domesticated by Indigenous peoples in Mexico 9,000 years ago, now feeds billions of people and animals worldwide. <strong>Potatoes</strong> from the Andes became a staple in Ireland, Germany, and Russia. <strong>Tomatoes</strong>, also from the Andes, are now inseparable from Italian and Spanish cuisine. <strong>Cassava</strong> (yuca), originating in South America, became a critical food security crop across sub-Saharan Africa. These plants traveled because people traveled — and the communities who carried them shaped food cultures everywhere they went.
+        </div>
+
+        <div class="callout think">
+          <div class="callout-label">🧠 Think About It</div>
+          Choose one food you eat regularly. Research where it originally came from. How did it travel from its place of origin to your plate? Who were the people and communities involved in that journey?
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-sep"/>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- MODULE 5 -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <section class="tb-section" id="module-5">
+      <div class="month-tag">📅 Month 5</div>
+      <div class="section-eyebrow">Module 5</div>
+      <h1 class="section-title">Ecosystems &amp; Biodiversity</h1>
+      <div class="section-dq">“Why does variety in nature make everything stronger?”</div>
+      <div class="section-divider"></div>
+
+      <div class="prose">
+        <p>No living thing exists in isolation. Every plant, animal, fungus, and microorganism is part of a web of relationships with other living things and with the non-living world around them. These webs of relationships form <strong>ecosystems</strong> — and understanding them is essential for understanding how life on Earth survives, adapts, and thrives.</p>
+
+        <h3>What Is an Ecosystem?</h3>
+        <p>An ecosystem includes all of the living organisms in an area (<strong>biotic factors</strong>) and all of the non-living elements — sunlight, water, soil, temperature, and air — that affect them (<strong>abiotic factors</strong>). Ecosystems can be vast, like the Amazon rainforest or the Pacific Ocean, or small, like a single pond or a backyard garden. What makes an area an ecosystem is not its size, but the network of interactions within it.</p>
+
+        <h3>Food Chains and Food Webs</h3>
+        <p>Energy flows through ecosystems in predictable patterns. <strong>Producers</strong> (plants and algae) capture energy from the sun through photosynthesis and store it as sugar. <strong>Primary consumers</strong> (herbivores like rabbits, caterpillars, and deer) eat producers. <strong>Secondary consumers</strong> (carnivores and omnivores like foxes, frogs, and birds) eat primary consumers. <strong>Tertiary consumers</strong> (top predators like eagles or sharks) eat secondary consumers. <strong>Decomposers</strong> (fungi and bacteria) break down the dead remains of all other organisms, recycling nutrients back into the soil.</p>
+        <p>A simple, linear sequence of who eats whom is called a <strong>food chain</strong>. In reality, most organisms eat many different things and are eaten by many others — forming a complex <strong>food web</strong>. The more connections in a food web, the more stable the ecosystem: if one species disappears, others can compensate.</p>
+
+        <div class="fig">
+          <div class="fig-icon">🦋</div>
+          <div class="fig-caption"><strong>Figure 5.1:</strong> A simplified food web showing energy flowing from producers (plants) through primary consumers (insects, rabbits) to secondary consumers (frogs, foxes) to tertiary consumers (hawks). Decomposers return nutrients to the soil at every level.</div>
+        </div>
+
+        <h3>Biodiversity: Nature’s Strength</h3>
+        <p><strong>Biodiversity</strong> refers to the variety of life in an ecosystem — the number of different species of plants, animals, fungi, and microorganisms. High biodiversity is a sign of a healthy, resilient ecosystem. When one species declines, others can fill its role. When a disease strikes one crop variety, resistant varieties survive. Biodiversity is nature’s insurance policy.</p>
+        <p>Low biodiversity makes ecosystems fragile. A cornfield planted in a single variety is technically an ecosystem, but an impoverished one. It requires constant human intervention — fertilizers, pesticides, irrigation — because it has lost the natural services that a diverse ecosystem provides for free.</p>
+
+        <div class="vocab-grid">
+          <div class="vocab-term"><strong>Ecosystem</strong><span>A community of living organisms interacting with each other and their non-living environment.</span></div>
+          <div class="vocab-term"><strong>Biodiversity</strong><span>The variety of different species of living things in an ecosystem or on Earth.</span></div>
+          <div class="vocab-term"><strong>Producer</strong><span>An organism (like a plant) that makes its own food through photosynthesis.</span></div>
+          <div class="vocab-term"><strong>Consumer</strong><span>An organism that gets energy by eating other organisms.</span></div>
+          <div class="vocab-term"><strong>Food web</strong><span>A complex network of feeding relationships among organisms in an ecosystem.</span></div>
+          <div class="vocab-term"><strong>Keystone species</strong><span>A species that has an unusually large effect on its ecosystem relative to its abundance.</span></div>
+        </div>
+
+        <h3>Ecosystem Services</h3>
+        <p>Healthy ecosystems provide services that humans depend on, often without realizing it. <strong>Pollination</strong> by bees and other insects enables the reproduction of about 75% of flowering plant species, including most of our fruits, vegetables, and nuts. <strong>Water filtration</strong> by wetlands and soil removes pollutants from drinking water. <strong>Carbon storage</strong> by forests and oceans slows climate change. <strong>Pest control</strong> by birds, spiders, and predatory insects protects crops. These services would cost trillions of dollars to replicate artificially — and many cannot be replicated at all.</p>
+
+        <div class="callout diaspora">
+          <div class="callout-label">🌍 Diaspora Connection: Polyculture and the Three Sisters</div>
+          Indigenous peoples of North America developed one of the most sophisticated polyculture systems in history: the <strong>Three Sisters</strong>. Corn (maize), beans, and squash were planted together in the same mound. The corn grew tall, providing a trellis for the beans. The beans fixed nitrogen from the air, fertilizing the soil for all three plants. The squash’s broad leaves shaded the ground, keeping the soil moist and suppressing weeds. Together, they produced a nutritionally complete diet: corn provides carbohydrates, beans provide protein and amino acids, and squash provides vitamins and minerals. This system was not discovered by accident — it was the product of thousands of years of careful observation, experimentation, and knowledge passed across generations. When Indigenous communities were displaced and their agricultural systems disrupted, this knowledge was nearly lost. Today, organizations across North America work to revive Three Sisters gardening as both a food sovereignty practice and an act of cultural preservation.
+        </div>
+
+        <div class="callout think">
+          <div class="callout-label">🧠 Think About It</div>
+          Think of an ecosystem near your school or home — a park, a garden, a patch of trees, even a sidewalk crack with plants growing in it. What producers, consumers, and decomposers can you find? How are they connected?
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-sep"/>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- MODULE 6 -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <section class="tb-section" id="module-6">
+      <div class="month-tag">📅 Month 6</div>
+      <div class="section-eyebrow">Module 6</div>
+      <h1 class="section-title">Caring for Our Earth</h1>
+      <div class="section-dq">“What can we do today to protect our environment for the future?”</div>
+      <div class="section-divider"></div>
+
+      <div class="prose">
+        <p>Every module in this course has built toward the same question: how do we live on Earth in a way that sustains life — not just for ourselves today, but for everyone who comes after us? The science of climate, soil, water, plants, and ecosystems all point toward the same answer: we must care for the systems that care for us.</p>
+
+        <h3>What Is Climate Change?</h3>
+        <p>Earth’s climate has always changed naturally — over millions of years, the planet has experienced ice ages and warm periods. But over the last 200 years, human activities have been changing the climate far faster than any natural process. The main driver is the burning of <strong>fossil fuels</strong> (coal, oil, and natural gas), which releases carbon dioxide and other <strong>greenhouse gases</strong> into the atmosphere.</p>
+        <p>Greenhouse gases work like the glass in a greenhouse: they trap heat from the sun that would otherwise escape into space. This <strong>greenhouse effect</strong> is natural and necessary — without it, Earth would be frozen. But humans have dramatically increased the concentration of greenhouse gases, causing the planet to warm faster than plants, animals, and ecosystems can adapt.</p>
+
+        <div class="callout fact">
+          <div class="callout-label">⭐ Key Facts About Climate Change</div>
+          • Global average temperature has risen about 1.1°C (2°F) since pre-industrial times.<br/>
+          • The last decade (2011–2020) was the warmest on record.<br/>
+          • Sea levels are rising as glaciers and ice sheets melt.<br/>
+          • Extreme weather events — droughts, floods, heat waves, and intense storms — are becoming more frequent and severe.<br/>
+          • Agriculture is both a contributor to climate change and among its most affected sectors.
+        </div>
+
+        <h3>How Climate Change Affects Farming</h3>
+        <p>Farmers feel the effects of climate change directly and immediately. Changing rainfall patterns mean some regions face more frequent droughts while others experience more intense flooding. Warmer temperatures shift growing seasons and allow pests and diseases to spread into new areas. Extreme heat reduces crop yields — for every 1°C rise in temperature, global wheat yields are estimated to fall by about 6%. Coastal farming communities face saltwater intrusion into their freshwater supplies as sea levels rise.</p>
+        <p>Smallholder farmers in the Global South — the regions least responsible for greenhouse gas emissions — are often the most severely affected. This is a profound issue of <strong>climate justice</strong>.</p>
+
+        <h3>Composting: Returning to the Soil</h3>
+        <p><strong>Composting</strong> is one of the most powerful things any individual or community can do for both soil health and climate. When organic waste (food scraps, leaves, yard trimmings) is sent to landfill, it decomposes without oxygen, producing <strong>methane</strong> — a greenhouse gas about 80 times more potent than CO₂ over 20 years. When the same material is composted, it decomposes aerobically (with oxygen), producing carbon dioxide but also generating rich <strong>humus</strong> — stable organic matter that improves soil fertility, holds water, and actually stores carbon in the ground.</p>
+        <p>A well-managed compost pile requires four things: <strong>browns</strong> (carbon-rich materials like dead leaves, cardboard, and wood chips), <strong>greens</strong> (nitrogen-rich materials like food scraps, fresh grass, and coffee grounds), <strong>water</strong> (enough to keep the pile moist but not soggy), and <strong>air</strong> (turning the pile regularly introduces oxygen). In 6–12 weeks, a pile of kitchen and yard waste transforms into dark, crumbly compost that gardeners call “black gold.”</p>
+
+        <div class="vocab-grid">
+          <div class="vocab-term"><strong>Greenhouse effect</strong><span>The warming of Earth’s surface caused by gases in the atmosphere trapping heat from the sun.</span></div>
+          <div class="vocab-term"><strong>Carbon footprint</strong><span>The total amount of greenhouse gases produced by an individual, organization, or activity.</span></div>
+          <div class="vocab-term"><strong>Composting</strong><span>The controlled decomposition of organic matter into nutrient-rich humus used to improve soil.</span></div>
+          <div class="vocab-term"><strong>Sustainable farming</strong><span>Agricultural practices that meet current food needs without depleting resources needed by future generations.</span></div>
+          <div class="vocab-term"><strong>Climate justice</strong><span>The principle that climate change impacts and solutions should be addressed fairly, considering who is most affected and least responsible.</span></div>
+          <div class="vocab-term"><strong>Regenerative agriculture</strong><span>Farming practices that restore soil health, increase biodiversity, and sequester carbon, going beyond sustainability.</span></div>
+        </div>
+
+        <h3>Sustainable Farming Practices</h3>
+        <p><strong>Cover cropping</strong> means planting crops specifically to protect and enrich the soil between main growing seasons — not to harvest. Legumes like clover and vetch fix nitrogen, while grasses add organic matter when tilled under. <strong>Crop rotation</strong> prevents the depletion of any single nutrient by alternating what is grown in each field each year. <strong>No-till farming</strong> leaves the soil undisturbed, preserving its structure, water retention, and the life within it. <strong>Agroforestry</strong> integrates trees into farmland, providing shade, preventing erosion, and creating habitat for beneficial wildlife.</p>
+
+        <div class="callout diaspora">
+          <div class="callout-label">🌍 Diaspora Connection: Stewardship as Cultural Practice</div>
+          For Indigenous and diaspora communities around the world, environmental stewardship is not a modern concept — it is an ancient one, embedded in culture, spirituality, and survival. The Akan proverb from West Africa — <em>“When you eat a mango, remember that someone else planted the tree.”</em> — captures a relationship with the land that extends across time. Many Indigenous languages contain specific terms for the reciprocal obligations between human communities and the ecosystems they inhabit. Today, environmental justice movements led by Indigenous, Black, and immigrant communities are at the forefront of climate advocacy — fighting not just to reduce emissions, but to restore the land, protect food sovereignty, and honor the ecological knowledge that has been threatened by displacement and colonization.
+        </div>
+
+        <h3>Your Community Impact Report</h3>
+        <p>At the end of this course, you will bring everything you have learned together in a <strong>Community Impact Report</strong>. This is your opportunity to identify one environmental challenge in your community — related to soil, water, plants, biodiversity, or climate — and propose a realistic, science-based solution. The best reports will draw on evidence from all six modules, connect to local history and community, and include an action plan that you and your classmates could actually implement.</p>
+        <p>You are not too young to make a difference. Communities change because people — often young people — decide to act. This report is your starting point.</p>
+
+        <div class="callout think">
+          <div class="callout-label">🧠 Final Reflection</div>
+          Look back at everything you have learned this year: the living soil beneath your feet, the seeds that traveled across oceans, the water cycle that connects every farmer on Earth, the plants that feed us, the ecosystems that sustain us, and the climate that is changing around us. What is the most important thing you learned? What will you do differently because of it? What will you teach someone else?
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom padding -->
+    <div style="height: 4rem;"></div>
+
+  </main>
+</div>
+
+<script>
+// Highlight active sidebar item on scroll
+const sections = document.querySelectorAll('.tb-section')
+const navItems = document.querySelectorAll('.nav-item[data-section]')
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navItems.forEach(n => n.classList.remove('active'))
+      const active = document.querySelector(`.nav-item[data-section="${entry.target.id}"]`)
+      if (active) active.classList.add('active')
+    }
+  })
+}, { rootMargin: '-20% 0px -70% 0px' })
+
+sections.forEach(s => observer.observe(s))
+</script>
+</body>
+</html>

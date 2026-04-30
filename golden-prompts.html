@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Golden Prompts — 207 Analytix</title>
+<link rel="icon" href="data:,"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --accent:  #F59E0B;
+  --accent2: #6366F1;
+  --green:   #22C55E;
+  --red:     #EF4444;
+  --bg:      #0F172A;
+  --card-bg: #1E293B;
+  --border:  #334155;
+  --text:    #F8FAFC;
+  --muted:   #94A3B8;
+  --font:    'Inter', sans-serif;
+  --radius:  10px;
+  --shadow:  0 4px 20px rgba(0,0,0,0.4);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+a { color: var(--accent); text-decoration: none; }
+.hidden { display: none !important; }
+
+/* Nav */
+.nav { background: #0B1120; border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; gap: 0.75rem; height: 56px; position: sticky; top: 0; z-index: 100; }
+.logo-gp { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.brand-name { font-weight: 700; font-size: 0.95rem; }
+.brand-sub  { font-size: 0.7rem; color: var(--muted); }
+.nav-sep    { color: var(--border); }
+.nav-spacer { flex: 1; }
+.btn-ghost-nav { background: transparent; color: var(--muted); border: none; padding: 6px 10px; font-size: 0.82rem; cursor: pointer; font-family: var(--font); text-decoration: none; white-space: nowrap; }
+.btn-ghost-nav:hover { color: var(--text); }
+.btn-primary-nav { background: var(--accent); color: #0B1120; border: none; padding: 7px 14px; border-radius: 7px; font-size: 0.82rem; font-weight: 800; cursor: pointer; font-family: var(--font); white-space: nowrap; transition: opacity 0.15s; }
+.btn-primary-nav:hover { opacity: 0.85; }
+
+/* Toolbar */
+.toolbar { padding: 1.5rem 1.5rem 0; max-width: 1200px; margin: 0 auto; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+.search-wrap { flex: 1; min-width: 200px; position: relative; }
+.search-wrap input { width: 100%; padding: 9px 12px 9px 36px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--card-bg); color: var(--text); font-size: 0.875rem; font-family: var(--font); }
+.search-wrap input:focus { outline: none; border-color: var(--accent); }
+.search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.85rem; pointer-events: none; }
+.filter-select { padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--card-bg); color: var(--text); font-size: 0.82rem; font-family: var(--font); cursor: pointer; }
+.filter-select:focus { outline: none; border-color: var(--accent); }
+.toggle-inactive { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--muted); cursor: pointer; white-space: nowrap; }
+.toggle-inactive input { accent-color: var(--accent); width: 14px; height: 14px; cursor: pointer; }
+
+/* Stats bar */
+.stats-bar { padding: 1rem 1.5rem; max-width: 1200px; margin: 0 auto; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.stat-pill { font-size: 0.75rem; color: var(--muted); }
+.stat-pill strong { color: var(--text); font-weight: 700; }
+.stat-pill.gold strong { color: var(--accent); }
+
+/* Grid */
+.grid-wrap { padding: 0 1.5rem 3rem; max-width: 1200px; margin: 0 auto; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1rem; }
+
+/* Prompt card */
+.prompt-card { background: var(--card-bg); border: 1.5px solid var(--border); border-radius: var(--radius); display: flex; flex-direction: column; transition: border-color 0.15s; overflow: hidden; }
+.prompt-card:hover { border-color: var(--accent); }
+.prompt-card.inactive { opacity: 0.5; }
+.card-header { padding: 1rem 1rem 0.6rem; }
+.card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.4rem; }
+.card-title { font-size: 0.9rem; font-weight: 700; line-height: 1.3; flex: 1; }
+.version-badge { font-size: 0.65rem; font-weight: 700; background: #1e3a5f; color: #93C5FD; padding: 2px 7px; border-radius: 5px; white-space: nowrap; flex-shrink: 0; }
+.inactive-badge { font-size: 0.65rem; font-weight: 700; background: #3f3f46; color: #a1a1aa; padding: 2px 7px; border-radius: 5px; }
+.card-category { font-size: 0.7rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+.card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 0.6rem; }
+.tag { font-size: 0.65rem; background: #1E293B; border: 1px solid var(--border); color: var(--muted); padding: 2px 7px; border-radius: 4px; cursor: pointer; transition: border-color 0.15s; }
+.tag:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Prompt body preview */
+.card-body { padding: 0 1rem; flex: 1; }
+.prompt-preview { font-size: 0.75rem; color: #94A3B8; line-height: 1.6; font-family: 'Courier New', monospace; background: #0F172A; border-radius: 6px; padding: 0.75rem; max-height: 100px; overflow: hidden; position: relative; white-space: pre-wrap; word-break: break-word; }
+.prompt-preview::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 32px; background: linear-gradient(transparent, #0F172A); border-radius: 0 0 6px 6px; }
+
+/* Card footer */
+.card-footer { padding: 0.75rem 1rem; display: flex; gap: 0.5rem; align-items: center; border-top: 1px solid var(--border); margin-top: 0.75rem; }
+.btn-card { font-size: 0.7rem; font-weight: 700; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border); background: none; color: var(--muted); cursor: pointer; font-family: var(--font); transition: all 0.15s; white-space: nowrap; }
+.btn-card:hover { border-color: var(--accent2); color: var(--accent2); }
+.btn-copy { border-color: var(--accent); color: var(--accent); }
+.btn-copy:hover { background: rgba(245,158,11,0.1); border-color: var(--accent); color: var(--accent); }
+.btn-copy.copied { background: rgba(34,197,94,0.1); border-color: var(--green); color: var(--green); }
+.card-meta { margin-left: auto; font-size: 0.65rem; color: var(--muted); }
+
+/* Empty / loading */
+.state-wrap { text-align: center; padding: 5rem 2rem; color: var(--muted); grid-column: 1/-1; }
+.spinner-ring { display: inline-block; width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 1rem; animation: fadeIn 0.18s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal { background: #1E293B; border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); width: 100%; max-width: 620px; max-height: 90vh; overflow-y: auto; animation: slideUp 0.2s ease; }
+@keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: #1E293B; z-index: 1; }
+.modal-header h2 { font-size: 1rem; font-weight: 700; }
+.modal-close { background: none; border: none; color: var(--muted); font-size: 1.3rem; cursor: pointer; line-height: 1; padding: 2px 6px; }
+.modal-close:hover { color: var(--text); }
+.modal-body { padding: 1.5rem; }
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--muted); margin-bottom: 0.3rem; }
+.form-group input, .form-group textarea, .form-group select {
+  width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px;
+  font-size: 0.875rem; font-family: var(--font); color: var(--text); background: #0F172A;
+  transition: border-color 0.15s;
+}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--accent); }
+.form-group textarea { resize: vertical; }
+.prompt-textarea { min-height: 180px; font-family: 'Courier New', monospace !important; font-size: 0.8rem !important; line-height: 1.6; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.form-hint { font-size: 0.68rem; color: var(--muted); margin-top: 4px; }
+.char-count { text-align: right; font-size: 0.68rem; color: var(--muted); margin-top: 3px; }
+.modal-footer { display: flex; gap: 0.75rem; align-items: center; padding-top: 0.5rem; }
+.btn-submit { flex: 1; padding: 11px; border-radius: 9px; font-size: 0.9rem; font-weight: 700; background: var(--accent); color: #0B1120; border: none; cursor: pointer; font-family: var(--font); transition: opacity 0.15s; }
+.btn-submit:hover { opacity: 0.85; }
+.btn-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-ghost-modal { padding: 11px 18px; border-radius: 9px; font-size: 0.85rem; font-weight: 600; background: none; color: var(--muted); border: 1.5px solid var(--border); cursor: pointer; font-family: var(--font); transition: border-color 0.15s; }
+.btn-ghost-modal:hover { border-color: var(--text); color: var(--text); }
+.btn-danger-modal { padding: 11px 18px; border-radius: 9px; font-size: 0.85rem; font-weight: 600; background: none; color: #FCA5A5; border: 1.5px solid #991B1B; cursor: pointer; font-family: var(--font); }
+.btn-danger-modal:hover { background: #7F1D1D; }
+
+/* View modal */
+.full-prompt-body { font-family: 'Courier New', monospace; font-size: 0.8rem; line-height: 1.7; color: #CBD5E1; background: #0F172A; border-radius: 8px; padding: 1rem; white-space: pre-wrap; word-break: break-word; max-height: 400px; overflow-y: auto; border: 1px solid var(--border); }
+.view-meta-row { display: flex; gap: 1.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.view-meta { font-size: 0.75rem; }
+.view-meta .lbl { color: var(--muted); margin-bottom: 2px; }
+.view-meta .val { font-weight: 600; }
+.view-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 1rem; }
+.btn-copy-full { width: 100%; margin-top: 1rem; padding: 11px; border-radius: 9px; font-size: 0.875rem; font-weight: 700; background: rgba(245,158,11,0.1); color: var(--accent); border: 1.5px solid var(--accent); cursor: pointer; font-family: var(--font); transition: background 0.15s; }
+.btn-copy-full:hover { background: rgba(245,158,11,0.2); }
+.btn-copy-full.copied { background: rgba(34,197,94,0.1); border-color: var(--green); color: var(--green); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="logo-gp">✨</div>
+  <div>
+    <div class="brand-name">Golden Prompts</div>
+    <div class="brand-sub">207 Analytix Prompt Library</div>
+  </div>
+  <span class="nav-sep">|</span>
+  <div class="nav-spacer"></div>
+  <a href="skunkworks.html" class="btn-ghost-nav">🦨 Skunk Works</a>
+  <a href="index.html" class="btn-ghost-nav">← Portal</a>
+  <button class="btn-primary-nav" onclick="openNewModal()">+ New Prompt</button>
+</nav>
+
+<div class="toolbar">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search-input" placeholder="Search prompts…" oninput="applyFilters()"/>
+  </div>
+  <select class="filter-select" id="filter-category" onchange="applyFilters()">
+    <option value="">All Categories</option>
+  </select>
+  <label class="toggle-inactive">
+    <input type="checkbox" id="show-inactive" onchange="applyFilters()"/> Show Inactive
+  </label>
+</div>
+
+<div class="stats-bar" id="stats-bar">
+  <span class="stat-pill gold"><strong id="stat-total">0</strong> prompts</span>
+  <span class="stat-pill"><strong id="stat-active">0</strong> active</span>
+  <span class="stat-pill"><strong id="stat-cats">0</strong> categories</span>
+</div>
+
+<div class="grid-wrap">
+  <div class="grid" id="grid">
+    <div class="state-wrap"><div class="spinner-ring"></div><p style="margin-top:1rem">Loading prompts…</p></div>
+  </div>
+</div>
+
+<!-- New / Edit Modal -->
+<div class="modal-overlay hidden" id="edit-modal" onclick="closeOnBackdrop(event,'edit-modal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="edit-modal-title">✨ New Golden Prompt</h2>
+      <button class="modal-close" onclick="closeModal('edit-modal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group" style="grid-column:1/-1"><label>Title *</label><input type="text" id="f-title" required placeholder="e.g. Spec Writer — Commodity Deep Dive"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category</label>
+          <input type="text" id="f-category" placeholder="e.g. Research, Build, QA" list="category-list"/>
+          <datalist id="category-list"></datalist>
+        </div>
+        <div class="form-group">
+          <label>Tags <span style="font-weight:400">(comma-separated)</span></label>
+          <input type="text" id="f-tags" placeholder="e.g. spec, research, agent"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Prompt Body *</label>
+        <textarea class="prompt-textarea" id="f-body" required placeholder="Write the full prompt here. Use {{placeholders}} for dynamic values."
+          oninput="updateCharCount()"></textarea>
+        <div class="char-count" id="char-count">0 characters</div>
+        <div class="form-hint">Use <code style="color:var(--accent)">{{variable}}</code> syntax for dynamic slots operators will fill in.</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Created By</label>
+          <input type="text" id="f-created-by" placeholder="Your name or handle"/>
+        </div>
+        <div class="form-group">
+          <label>Active</label>
+          <select id="f-active">
+            <option value="true">Yes — Live in library</option>
+            <option value="false">No — Draft / retired</option>
+          </select>
+        </div>
+      </div>
+      <input type="hidden" id="f-id"/>
+      <input type="hidden" id="f-version" value="1"/>
+      <div class="modal-footer">
+        <button class="btn-danger-modal hidden" id="btn-deactivate" onclick="toggleActive()">Deactivate</button>
+        <button class="btn-ghost-modal" onclick="closeModal('edit-modal')">Cancel</button>
+        <button class="btn-submit" id="edit-submit-btn" onclick="submitPrompt()">Save Prompt</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- View Modal -->
+<div class="modal-overlay hidden" id="view-modal" onclick="closeOnBackdrop(event,'view-modal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="view-title">Prompt</h2>
+      <button class="modal-close" onclick="closeModal('view-modal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="view-meta-row">
+        <div class="view-meta"><div class="lbl">Category</div><div class="val" id="view-category">—</div></div>
+        <div class="view-meta"><div class="lbl">Version</div><div class="val" id="view-version">—</div></div>
+        <div class="view-meta"><div class="lbl">Created by</div><div class="val" id="view-created-by">—</div></div>
+        <div class="view-meta"><div class="lbl">Status</div><div class="val" id="view-status">—</div></div>
+      </div>
+      <div class="view-tags" id="view-tags"></div>
+      <div class="full-prompt-body" id="view-body"></div>
+      <button class="btn-copy-full" id="btn-copy-full" onclick="copyFull()">Copy Prompt</button>
+      <div style="display:flex;gap:0.75rem;margin-top:0.75rem">
+        <button class="btn-ghost-modal" style="flex:1" onclick="closeModal('view-modal')">Close</button>
+        <button class="btn-submit" style="flex:1" onclick="editFromView()">Edit Prompt</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPA_URL = 'https://hhyhulqngdkwsxhymmcd.supabase.co'
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoeWh1bHFuZ2Rrd3N4aHltbWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzEyMDEsImV4cCI6MjA5MjcwNzIwMX0.dmSy7Q8Je5lEY4XCFzwvfPnkBYLebPE0yZMhy6Y8czI'
+
+function esc(s) { return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+
+async function supa(path, opts={}) {
+  const { headers: extraHeaders, ...restOpts } = opts
+  const r = await fetch(SUPA_URL + path, {
+    headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', ...(extraHeaders||{}) },
+    ...restOpts
+  })
+  if (!r.ok) throw new Error(await r.text())
+  const txt = await r.text()
+  return txt ? JSON.parse(txt) : null
+}
+
+let allPrompts  = []
+let activeViewId = null
+
+async function load() {
+  try {
+    allPrompts = await supa('/rest/v1/golden_prompts?select=*&order=created_at.desc')
+    buildCategoryFilter()
+    applyFilters()
+    renderStats()
+  } catch(e) {
+    document.getElementById('grid').innerHTML = `<div class="state-wrap">⚠️ ${esc(e.message)}</div>`
+  }
+}
+
+function buildCategoryFilter() {
+  const cats = [...new Set(allPrompts.map(p=>p.category).filter(Boolean))].sort()
+  const sel  = document.getElementById('filter-category')
+  sel.innerHTML = '<option value="">All Categories</option>' +
+    cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')
+  // also populate datalist for edit form
+  document.getElementById('category-list').innerHTML =
+    cats.map(c=>`<option value="${esc(c)}"/>`).join('')
+}
+
+function renderStats() {
+  const cats = new Set(allPrompts.map(p=>p.category).filter(Boolean))
+  document.getElementById('stat-total').textContent  = allPrompts.length
+  document.getElementById('stat-active').textContent = allPrompts.filter(p=>p.active).length
+  document.getElementById('stat-cats').textContent   = cats.size
+}
+
+function applyFilters() {
+  const q       = document.getElementById('search-input').value.toLowerCase()
+  const cat     = document.getElementById('filter-category').value
+  const showAll = document.getElementById('show-inactive').checked
+  let list = allPrompts
+  if (!showAll) list = list.filter(p => p.active)
+  if (cat)      list = list.filter(p => p.category === cat)
+  if (q)        list = list.filter(p =>
+    p.title.toLowerCase().includes(q) ||
+    (p.prompt_body||'').toLowerCase().includes(q) ||
+    (p.tags||[]).some(t=>t.toLowerCase().includes(q))
+  )
+  renderGrid(list)
+}
+
+function renderGrid(list) {
+  const grid = document.getElementById('grid')
+  if (!list.length) {
+    grid.innerHTML = '<div class="state-wrap">✨ No prompts match — <button onclick="openNewModal()" style="color:var(--accent);background:none;border:none;cursor:pointer;font-size:inherit;font-family:inherit">add one</button></div>'
+    return
+  }
+  grid.innerHTML = list.map(p => renderCard(p)).join('')
+}
+
+function renderCard(p) {
+  const tags = (p.tags||[]).map(t=>`<span class="tag" onclick="event.stopPropagation();filterByTag('${esc(t)}')">${esc(t)}</span>`).join('')
+  const preview = (p.prompt_body||'').slice(0,300)
+  return `
+  <div class="prompt-card${p.active?'':' inactive'}" onclick="openView('${esc(p.id)}')">
+    <div class="card-header">
+      <div class="card-top">
+        <div class="card-title">${esc(p.title)}</div>
+        <div style="display:flex;gap:4px;flex-shrink:0">
+          ${p.active?'':'<span class="inactive-badge">Inactive</span>'}
+          <span class="version-badge">v${p.version||1}</span>
+        </div>
+      </div>
+      ${p.category?`<div class="card-category">${esc(p.category)}</div>`:''}
+      ${tags?`<div class="card-tags">${tags}</div>`:''}
+    </div>
+    <div class="card-body">
+      <div class="prompt-preview">${esc(preview)}</div>
+    </div>
+    <div class="card-footer">
+      <button class="btn-card btn-copy" onclick="event.stopPropagation();copyPrompt('${esc(p.id)}',this)">Copy</button>
+      <button class="btn-card" onclick="event.stopPropagation();openEdit('${esc(p.id)}')">Edit</button>
+      <span class="card-meta">${new Date(p.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
+    </div>
+  </div>`
+}
+
+function filterByTag(tag) {
+  document.getElementById('search-input').value = tag
+  applyFilters()
+}
+
+// ── Copy ──
+function copyPrompt(id, btn) {
+  const p = allPrompts.find(x=>x.id===id)
+  if (!p) return
+  navigator.clipboard.writeText(p.prompt_body||'').then(()=>{
+    btn.textContent = '✓ Copied'
+    btn.classList.add('copied')
+    setTimeout(()=>{ btn.textContent='Copy'; btn.classList.remove('copied') }, 2000)
+  })
+}
+function copyFull() {
+  const p = allPrompts.find(x=>x.id===activeViewId)
+  if (!p) return
+  const btn = document.getElementById('btn-copy-full')
+  navigator.clipboard.writeText(p.prompt_body||'').then(()=>{
+    btn.textContent = '✓ Copied to clipboard!'
+    btn.classList.add('copied')
+    setTimeout(()=>{ btn.textContent='Copy Prompt'; btn.classList.remove('copied') }, 2000)
+  })
+}
+
+// ── View modal ──
+function openView(id) {
+  activeViewId = id
+  const p = allPrompts.find(x=>x.id===id)
+  if (!p) return
+  document.getElementById('view-title').textContent      = p.title
+  document.getElementById('view-category').textContent   = p.category || '—'
+  document.getElementById('view-version').textContent    = 'v' + (p.version||1)
+  document.getElementById('view-created-by').textContent = p.created_by || '—'
+  document.getElementById('view-status').textContent     = p.active ? '✅ Active' : '⚪ Inactive'
+  document.getElementById('view-body').textContent       = p.prompt_body || ''
+  document.getElementById('view-tags').innerHTML         = (p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')
+  document.getElementById('btn-copy-full').textContent   = 'Copy Prompt'
+  document.getElementById('btn-copy-full').classList.remove('copied')
+  document.getElementById('view-modal').classList.remove('hidden')
+}
+function editFromView() {
+  closeModal('view-modal')
+  openEdit(activeViewId)
+}
+
+// ── Edit / New modal ──
+function openNewModal() {
+  document.getElementById('edit-modal-title').textContent = '✨ New Golden Prompt'
+  document.getElementById('f-id').value       = ''
+  document.getElementById('f-version').value  = '1'
+  document.getElementById('f-title').value    = ''
+  document.getElementById('f-category').value = ''
+  document.getElementById('f-tags').value     = ''
+  document.getElementById('f-body').value     = ''
+  document.getElementById('f-created-by').value = ''
+  document.getElementById('f-active').value   = 'true'
+  document.getElementById('btn-deactivate').classList.add('hidden')
+  document.getElementById('edit-submit-btn').textContent = 'Save Prompt'
+  updateCharCount()
+  document.getElementById('edit-modal').classList.remove('hidden')
+}
+function openEdit(id) {
+  const p = allPrompts.find(x=>x.id===id)
+  if (!p) return
+  document.getElementById('edit-modal-title').textContent = '✏️ Edit Prompt'
+  document.getElementById('f-id').value        = p.id
+  document.getElementById('f-version').value   = p.version || 1
+  document.getElementById('f-title').value     = p.title
+  document.getElementById('f-category').value  = p.category || ''
+  document.getElementById('f-tags').value      = (p.tags||[]).join(', ')
+  document.getElementById('f-body').value      = p.prompt_body || ''
+  document.getElementById('f-created-by').value= p.created_by || ''
+  document.getElementById('f-active').value    = p.active ? 'true' : 'false'
+  document.getElementById('btn-deactivate').classList.remove('hidden')
+  document.getElementById('btn-deactivate').textContent = p.active ? 'Deactivate' : 'Re-activate'
+  document.getElementById('edit-submit-btn').textContent = 'Save Changes'
+  updateCharCount()
+  document.getElementById('edit-modal').classList.remove('hidden')
+}
+
+function updateCharCount() {
+  const len = document.getElementById('f-body').value.length
+  document.getElementById('char-count').textContent = len.toLocaleString() + ' characters'
+}
+
+async function submitPrompt() {
+  const id      = document.getElementById('f-id').value
+  const title   = document.getElementById('f-title').value.trim()
+  const body    = document.getElementById('f-body').value.trim()
+  if (!title || !body) { alert('Title and prompt body are required.'); return }
+  const btn = document.getElementById('edit-submit-btn')
+  btn.disabled = true; btn.textContent = 'Saving…'
+  const tagsRaw = document.getElementById('f-tags').value
+  const tags    = tagsRaw ? tagsRaw.split(',').map(t=>t.trim()).filter(Boolean) : []
+  const payload = {
+    title,
+    prompt_body:  body,
+    category:     document.getElementById('f-category').value.trim() || null,
+    tags:         tags.length ? tags : null,
+    created_by:   document.getElementById('f-created-by').value.trim() || null,
+    active:       document.getElementById('f-active').value === 'true',
+    updated_at:   new Date().toISOString(),
+  }
+  try {
+    if (id) {
+      // bump version on body change
+      const orig = allPrompts.find(x=>x.id===id)
+      if (orig && orig.prompt_body !== body) payload.version = (orig.version||1) + 1
+      await supa(`/rest/v1/golden_prompts?id=eq.${id}`, {
+        method: 'PATCH', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify(payload)
+      })
+    } else {
+      payload.version = 1
+      await supa('/rest/v1/golden_prompts', {
+        method: 'POST', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify(payload)
+      })
+    }
+    closeModal('edit-modal')
+    await load()
+  } catch(err) {
+    alert('Error: ' + err.message)
+  } finally {
+    btn.disabled = false
+    btn.textContent = id ? 'Save Changes' : 'Save Prompt'
+  }
+}
+
+async function toggleActive() {
+  const id = document.getElementById('f-id').value
+  if (!id) return
+  const p  = allPrompts.find(x=>x.id===id)
+  if (!p) return
+  if (!confirm(`${p.active?'Deactivate':'Re-activate'} "${p.title}"?`)) return
+  try {
+    await supa(`/rest/v1/golden_prompts?id=eq.${id}`, {
+      method: 'PATCH', headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ active: !p.active, updated_at: new Date().toISOString() })
+    })
+    closeModal('edit-modal')
+    await load()
+  } catch(err) { alert('Error: ' + err.message) }
+}
+
+// ── Modals ──
+function closeModal(id) { document.getElementById(id).classList.add('hidden') }
+function closeOnBackdrop(e, id) { if (e.target === document.getElementById(id)) closeModal(id) }
+document.addEventListener('keydown', e => { if (e.key==='Escape') { closeModal('edit-modal'); closeModal('view-modal') } })
+
+load()
+</script>
+</body>
+</html>

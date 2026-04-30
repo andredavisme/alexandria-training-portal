@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>207 Analytix — André Davis | Command Center</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0d1117; --bg2:#161b22; --bg3:#1c2333;
+    --violet:#7c3aed; --violet-l:#a78bfa;
+    --green:#4ade80; --teal:#2dd4bf; --gold:#fbbf24;
+    --coral:#fb7185; --blue:#60a5fa;
+    --text:#e6edf3; --text2:#8b949e; --border:#30363d;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+  a { color: var(--violet-l); text-decoration: none; }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,17,23,0.96); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem; display: flex; align-items: center; gap: 0.75rem; height: 56px;
+  }
+  .nav-logo {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: 1rem;
+    background: linear-gradient(135deg, var(--violet-l), var(--blue));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .nav-spacer { flex: 1; }
+  .nav-link { font-size: 0.82rem; color: var(--text2); padding: 4px 8px; }
+  .role-pill {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.4);
+    border-radius: 20px; padding: 4px 14px;
+    font-size: 0.75rem; font-weight: 700; color: var(--violet-l);
+  }
+
+  /* ── PAGE ── */
+  .page { max-width: 1140px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(96,165,250,0.07));
+    border: 1px solid rgba(124,58,237,0.25);
+    border-radius: 16px; padding: 1.75rem 2rem;
+    margin-bottom: 1.75rem;
+    display: flex; align-items: center; gap: 1.5rem;
+  }
+  .hero-avatar {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--violet), var(--blue));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; font-weight: 800; color: #fff; flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.3);
+  }
+  .hero-info { flex: 1; }
+  .hero-name { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 800; margin-bottom: 2px; }
+  .hero-title { font-size: 0.88rem; color: var(--violet-l); font-weight: 600; margin-bottom: 6px; }
+  .hero-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .hero-tag {
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 3px 10px; border-radius: 20px;
+    background: rgba(124,58,237,0.15); color: var(--violet-l); border: 1px solid rgba(124,58,237,0.3);
+  }
+  .hero-tag.covering { background: rgba(251,191,36,0.1); color: var(--gold); border-color: rgba(251,191,36,0.3); }
+  .hero-li {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 0.78rem; color: #0077B5; font-weight: 600;
+    padding: 5px 12px; border-radius: 20px;
+    background: rgba(0,119,181,0.1); border: 1px solid rgba(0,119,181,0.2);
+    text-decoration: none; transition: opacity 0.15s; flex-shrink: 0;
+  }
+  .hero-li:hover { opacity: 0.75; }
+
+  /* ── PRE-DAY-0 BANNER ── */
+  .day0-banner {
+    background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(251,113,133,0.05));
+    border: 1px solid rgba(251,191,36,0.3); border-radius: 12px;
+    padding: 1rem 1.5rem; margin-bottom: 1.75rem;
+    display: flex; align-items: flex-start; gap: 0.75rem;
+  }
+  .day0-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+  .day0-text { font-size: 0.85rem; line-height: 1.6; color: var(--text2); }
+  .day0-text strong { color: var(--gold); }
+
+  /* ── STAT GRID ── */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1.75rem; }
+  .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.4rem; }
+  .stat-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text2); margin-bottom: 0.4rem; }
+  .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 1.9rem; font-weight: 800; color: var(--violet-l); }
+  .stat-sub { font-size: 0.72rem; color: var(--text2); margin-top: 3px; line-height: 1.4; }
+  .stat-card.green  .stat-value { color: var(--green); }
+  .stat-card.gold   .stat-value { color: var(--gold); }
+  .stat-card.coral  .stat-value { color: var(--coral); }
+  .stat-card.teal   .stat-value { color: var(--teal); }
+  .stat-card.blue   .stat-value { color: var(--blue); }
+
+  /* ── DOMAIN COLUMNS ── */
+  .domain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 1.75rem; }
+  @media (max-width: 900px) { .domain-grid { grid-template-columns: 1fr; } }
+
+  .domain-col { display: flex; flex-direction: column; gap: 1rem; }
+  .domain-header {
+    border-radius: 10px; padding: 0.9rem 1.1rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .domain-icon { font-size: 1.1rem; }
+  .domain-title { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.9rem; }
+  .domain-owner { font-size: 0.72rem; font-weight: 600; margin-top: 1px; }
+
+  .d-loo   .domain-header { background: rgba(96,165,250,0.1); border: 1px solid rgba(96,165,250,0.2); }
+  .d-loo   .domain-title  { color: var(--blue); }
+  .d-loo   .domain-owner  { color: rgba(96,165,250,0.7); }
+
+  .d-lmo   .domain-header { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.2); }
+  .d-lmo   .domain-title  { color: var(--green); }
+  .d-lmo   .domain-owner  { color: rgba(74,222,128,0.7); }
+
+  .d-ldev  .domain-header { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.2); }
+  .d-ldev  .domain-title  { color: var(--gold); }
+  .d-ldev  .domain-owner  { color: rgba(251,191,36,0.7); }
+
+  /* ── CARDS ── */
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .card-header {
+    padding: 0.8rem 1.1rem; border-bottom: 1px solid var(--border);
+    font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--text2);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-count {
+    background: var(--bg3); border-radius: 20px; padding: 1px 8px;
+    font-size: 0.68rem; font-weight: 700; color: var(--text2);
+  }
+
+  /* ── MINI TABLES ── */
+  .mini-table { width: 100%; border-collapse: collapse; }
+  .mini-table td { padding: 0.65rem 1.1rem; border-bottom: 1px solid var(--border); font-size: 0.8rem; color: var(--text2); }
+  .mini-table tr:last-child td { border-bottom: none; }
+  .mini-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* ── BADGES ── */
+  .badge { display: inline-block; padding: 2px 7px; border-radius: 20px;
+    font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+  .badge-submitted   { background: rgba(251,113,133,0.15); color: var(--coral); }
+  .badge-reviewed    { background: rgba(251,191,36,0.15);  color: var(--gold); }
+  .badge-converted   { background: rgba(74,222,128,0.15);  color: var(--green); }
+  .badge-commoditized{ background: rgba(251,191,36,0.15);  color: var(--gold); }
+  .badge-active      { background: rgba(74,222,128,0.15);  color: var(--green); }
+  .badge-planning    { background: rgba(96,165,250,0.15);  color: var(--blue); }
+  .badge-pending     { background: rgba(139,148,158,0.15); color: var(--text2); }
+  .badge-started     { background: rgba(167,139,250,0.15); color: var(--violet-l); }
+  .badge-discovery   { background: rgba(45,212,191,0.15);  color: var(--teal); }
+
+  /* ── SECTION (full-width) ── */
+  .section { margin-bottom: 1.75rem; }
+  .section-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text2); margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+
+  .full-table { width: 100%; border-collapse: collapse; }
+  .full-table th { text-align: left; padding: 0.6rem 1rem; font-size: 0.68rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--text2);
+    background: var(--bg3); border-bottom: 1px solid var(--border); }
+  .full-table td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.83rem; color: var(--text2); }
+  .full-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .full-table tr:last-child td { border-bottom: none; }
+
+  /* ── PROFIT FIRST BARS ── */
+  .pf-mini { display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem 1.1rem; }
+  .pf-row { display: flex; align-items: center; gap: 0.6rem; }
+  .pf-name { font-size: 0.78rem; color: var(--text); width: 140px; flex-shrink: 0; }
+  .pf-track { flex: 1; height: 4px; background: var(--bg3); border-radius: 99px; overflow: hidden; }
+  .pf-fill  { height: 100%; border-radius: 99px; }
+  .pf-pct   { font-size: 0.72rem; font-weight: 700; color: var(--text2); width: 36px; text-align: right; }
+
+  /* ── ROSTER ── */
+  .roster-row {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.6rem 1.1rem; border-bottom: 1px solid var(--border);
+  }
+  .roster-row:last-child { border-bottom: none; }
+  .r-avatar {
+    width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 800; color: #fff;
+  }
+  .r-name  { font-size: 0.82rem; font-weight: 600; color: var(--text); flex: 1; }
+  .r-role  { font-size: 0.72rem; color: var(--text2); }
+
+  /* ── SCARCITY METER ── */
+  .scarcity-wrap { padding: 1rem 1.1rem; }
+  .sc-label { font-size: 0.72rem; color: var(--text2); margin-bottom: 0.4rem;
+    display: flex; justify-content: space-between; }
+  .sc-track { height: 8px; background: var(--bg3); border-radius: 99px; overflow: hidden; }
+  .sc-fill  { height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, var(--green), var(--teal)); transition: width 1s ease; }
+  .sc-sub   { font-size: 0.7rem; color: var(--text2); margin-top: 5px; }
+
+  .loading { text-align: center; padding: 1.5rem; color: var(--text2); font-size: 0.8rem; }
+  .empty   { text-align: center; padding: 2rem;   color: var(--text2); font-size: 0.8rem; }
+
+  #toast {
+    position: fixed; bottom: 1.5rem; right: 1.5rem;
+    background: var(--bg2); border: 1px solid var(--violet);
+    border-radius: 10px; padding: 0.75rem 1.25rem;
+    color: var(--violet-l); font-weight: 600; font-size: 0.85rem;
+    transform: translateY(60px); opacity: 0;
+    transition: all .35s ease; z-index: 999;
+  }
+  #toast.show { transform: translateY(0); opacity: 1; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <span style="font-size:1.1rem;">&#x1F3DB;&#xFE0F;</span>
+  <div class="nav-logo">207 Analytix</div>
+  <span style="color:var(--border);">&rsaquo;</span>
+  <span style="font-size:0.88rem;font-weight:600;">Command Center</span>
+  <div class="nav-spacer"></div>
+  <div class="role-pill">&#x1F3DB;&#xFE0F; Co-Founder</div>
+  <a href="index.html" class="nav-link" style="margin-left:0.5rem;">&larr; Portal</a>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-avatar">AD</div>
+    <div class="hero-info">
+      <div class="hero-name">Andr&eacute; Davis</div>
+      <div class="hero-title">Co-Founder &middot; Lead Operating Officer</div>
+      <div class="hero-tags">
+        <span class="hero-tag">&#x1F3DB;&#xFE0F; Co-Founder</span>
+        <span class="hero-tag">&#x26A1; Lead Operating Officer</span>
+        <span class="hero-tag covering">&#x1F6A7; Pre-Day 0 Facilitator</span>
+        <span class="hero-tag covering">Covering: LOO + LMO + Lead Dev</span>
+      </div>
+    </div>
+    <a class="hero-li" href="https://www.linkedin.com/in/andre-davis-b5205a396/" target="_blank" rel="noopener">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="#0077B5"><path d="M20.447 20.452H16.893V14.883C16.893 13.555 16.866 11.846 15.041 11.846C13.188 11.846 12.905 13.291 12.905 14.785V20.452H9.351V9H12.765V10.561H12.811C13.288 9.661 14.448 8.711 16.181 8.711C19.782 8.711 20.448 11.081 20.448 14.166V20.452H20.447ZM5.337 7.433C4.193 7.433 3.274 6.507 3.274 5.368C3.274 4.23 4.194 3.305 5.337 3.305C6.477 3.305 7.401 4.23 7.401 5.368C7.401 6.507 6.476 7.433 5.337 7.433ZM7.119 20.452H3.555V9H7.119V20.452ZM22.225 0H1.771C0.792 0 0 0.774 0 1.729V22.271C0 23.227 0.792 24 1.771 24H22.222C23.2 24 24 23.227 24 22.271V1.729C24 0.774 23.2 0 22.222 0H22.225Z"/></svg>
+      LinkedIn
+    </a>
+  </div>
+
+  <!-- PRE-DAY-0 BANNER -->
+  <div class="day0-banner">
+    <div class="day0-icon">&#x1F6A7;</div>
+    <div class="day0-text">
+      <strong>Pre-Day 0 Mode &mdash; Full Facilitation Active.</strong> Andr&eacute; is covering all three founder domains until Jacob (LMO) and Eraj (Lead Dev) are onboarded. This dashboard surfaces all org activity in one view. Domain ownership tags will separate once the team is seated.
+    </div>
+  </div>
+
+  <!-- ORG STATS -->
+  <div class="stat-grid">
+    <div class="stat-card blue"><div class="stat-label">Total Leads</div><div class="stat-value" id="sTotal">&mdash;</div><div class="stat-sub">All intake submissions</div></div>
+    <div class="stat-card coral"><div class="stat-label">Submitted</div><div class="stat-value" id="sSubmitted">&mdash;</div><div class="stat-sub">Awaiting operator build</div></div>
+    <div class="stat-card gold"><div class="stat-label">Reviewed</div><div class="stat-value" id="sReviewed">&mdash;</div><div class="stat-sub">In founder queue</div></div>
+    <div class="stat-card green"><div class="stat-label">Converted</div><div class="stat-value" id="sConverted">&mdash;</div><div class="stat-sub">Active clients</div></div>
+    <div class="stat-card"><div class="stat-label">Skunkworks</div><div class="stat-value" id="sSkunk">&mdash;</div><div class="stat-sub">Projects in pipeline</div></div>
+    <div class="stat-card teal"><div class="stat-label">Scarcity %</div><div class="stat-value" id="sScarcity">&mdash;</div><div class="stat-sub">Westbrook 1300</div></div>
+  </div>
+
+  <!-- THREE DOMAIN COLUMNS -->
+  <div class="domain-grid">
+
+    <!-- LOO COLUMN -->
+    <div class="domain-col d-loo">
+      <div class="domain-header">
+        <span class="domain-icon">&#x26A1;</span>
+        <div>
+          <div class="domain-title">Lead Operating Officer</div>
+          <div class="domain-owner">Andr&eacute; Davis &middot; Active</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Intake Queue <span class="card-count" id="queueCount">0</span></div>
+        <div id="looQueue"><div class="loading">Loading&hellip;</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Operator Seats</div>
+        <div id="operatorSeats"><div class="loading">Loading&hellip;</div></div>
+      </div>
+    </div>
+
+    <!-- LMO COLUMN -->
+    <div class="domain-col d-lmo">
+      <div class="domain-header">
+        <span class="domain-icon">&#x1F4CA;</span>
+        <div>
+          <div class="domain-title">Lead Marketing Officer</div>
+          <div class="domain-owner">Jacob Hutton &middot; Onboarding</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Westbrook 1300</div>
+        <div class="scarcity-wrap">
+          <div class="sc-label">
+            <span>Market Saturation</span>
+            <span id="scFrac">0 / 1,300</span>
+          </div>
+          <div class="sc-track"><div class="sc-fill" id="scFill" style="width:0%"></div></div>
+          <div class="sc-sub" id="scSub">Calculating&hellip;</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Recent Leads <span class="card-count" id="leadCount">0</span></div>
+        <table class="mini-table" id="leadMiniTable">
+          <tbody><tr><td colspan="2" class="loading">Loading&hellip;</td></tr></tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Tier Breakdown</div>
+        <table class="mini-table" id="tierMini">
+          <tbody><tr><td class="loading">Loading&hellip;</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- LEAD DEV COLUMN -->
+    <div class="domain-col d-ldev">
+      <div class="domain-header">
+        <span class="domain-icon">&#x1F9EC;</span>
+        <div>
+          <div class="domain-title">Lead Developer</div>
+          <div class="domain-owner">Eraj Ismatulloev &middot; Onboarding</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Skunkworks Pipeline <span class="card-count" id="skCount">0</span></div>
+        <table class="mini-table" id="skMini">
+          <tbody><tr><td class="loading">Loading&hellip;</td></tr></tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Profit First Health</div>
+        <div class="pf-mini" id="pfMini"><div class="loading">Loading&hellip;</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FULL ORG LEAD TABLE -->
+  <div class="section">
+    <div class="section-title">Full Lead Pipeline</div>
+    <div class="card">
+      <table class="full-table">
+        <thead>
+          <tr><th>Date</th><th>Name</th><th>Business</th><th>Industry</th><th>City</th><th>Tier</th><th>Status</th></tr>
+        </thead>
+        <tbody id="fullLeadBody"><tr><td colspan="7" class="loading">Loading&hellip;</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FULL TEAM ROSTER -->
+  <div class="section">
+    <div class="section-title">Team Roster</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">Co-Founders</div>
+        <div id="founderRoster"><div class="loading">Loading&hellip;</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header">Support Seats</div>
+        <div id="supportRoster"><div class="loading">Loading&hellip;</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const SUPA_URL = 'https://hhyhulqngdkwsxhymmcd.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoeWh1bHFuZ2Rrd3N4aHltbWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzEyMDEsImV4cCI6MjA5MjcwNzIwMX0.dmSy7Q8Je5lEY4XCFzwvfPnkBYLebPE0yZMhy6Y8czI';
+  const { createClient } = supabase;
+  const db = createClient(SUPA_URL, SUPA_KEY);
+
+  const AVATAR_COLORS = ['#7c3aed','#1d4ed8','#047857','#b45309','#0e7490','#c2410c'];
+  const PF_COLORS = ['#ef4444','#2dd4bf','#8b949e','#fbbf24','#a78bfa','#4ade80'];
+
+  function cap(s) { return !s ? '&mdash;' : s.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); }
+  function fmtDate(iso) {
+    if (!iso) return '&mdash;';
+    return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  }
+  function fmt$(n) { return '$'+Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  function initials(name) { return (name||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
+
+  function rosterHtml(members, colors) {
+    return members.map((m,i)=> `
+      <div class="roster-row">
+        <div class="r-avatar" style="background:${colors[i%colors.length]}">${initials(m.name)}</div>
+        <div>
+          <div class="r-name">${m.name||'Open Seat'}</div>
+          <div class="r-role">${cap(m.role_type)}</div>
+        </div>
+        <span class="badge badge-${m.status||'pending'}">${m.status||'pending'}</span>
+      </div>`).join('');
+  }
+
+  async function loadAll() {
+    try {
+      const [{ data: leads }, { data: skunk }, { data: accounts }, { data: businesses, count: bizCount }, { data: members }] = await Promise.all([
+        db.from('leads').select('*').order('created_at',{ascending:false}),
+        db.from('skunkworks_projects').select('*').order('created_at',{ascending:false}),
+        db.from('financial_accounts').select('*').order('priority'),
+        db.from('businesses').select('id',{count:'exact'}).eq('is_active',true),
+        db.from('team_members').select('name,status,role_id,team_roles(role_type,role_title)').order('created_at')
+      ]);
+
+      const allLeads   = leads   || [];
+      const allSkunk   = skunk   || [];
+      const allAccts   = accounts|| [];
+      const allMembers = members || [];
+      const filled     = bizCount || 0;
+
+      // ── TOP STATS ──
+      const submitted = allLeads.filter(l=>l.status==='submitted').length;
+      const reviewed  = allLeads.filter(l=>l.status==='reviewed').length;
+      const converted = allLeads.filter(l=>l.status==='converted').length;
+      const scPct     = ((filled/1300)*100).toFixed(1);
+
+      document.getElementById('sTotal').textContent     = allLeads.length;
+      document.getElementById('sSubmitted').textContent = submitted;
+      document.getElementById('sReviewed').textContent  = reviewed;
+      document.getElementById('sConverted').textContent = converted;
+      document.getElementById('sSkunk').textContent     = allSkunk.length;
+      document.getElementById('sScarcity').textContent  = scPct+'%';
+
+      // ── LOO: INTAKE QUEUE ──
+      const queue = allLeads.filter(l=>l.status==='submitted');
+      document.getElementById('queueCount').textContent = queue.length;
+      document.getElementById('looQueue').innerHTML = !queue.length
+        ? '<div class="empty">Queue clear &#x2714;</div>'
+        : queue.slice(0,5).map(l=>`
+          <table class="mini-table"><tr>
+            <td style="font-weight:600;color:var(--text);">${l.first_name||''} ${l.last_name||''}</td>
+            <td>${l.business_name||'&mdash;'}</td>
+            <td><span class="badge badge-${l.service_tier||'discovery'}">${cap(l.service_tier)}</span></td>
+          </tr></table>`).join('');
+
+      // ── LOO: OPERATOR SEATS ──
+      const operators = allMembers.filter(m=>m.team_roles?.role_type==='operator');
+      const opPlaceholders = ['Operator 1','Operator 2','Operator 3'];
+      const opDisplay = opPlaceholders.map(name => {
+        const found = operators.find(o => o.name === name);
+        return { name, status: found ? found.status : 'pending' };
+      });
+      document.getElementById('operatorSeats').innerHTML = opDisplay.map(o=>`
+        <div class="roster-row">
+          <div class="r-avatar" style="background:#1d4ed8;">PP</div>
+          <div class="r-name">${o.name}</div>
+          <span class="badge badge-${o.status}">${o.status}</span>
+        </div>`).join('');
+
+      // ── LMO: SCARCITY ──
+      document.getElementById('scFrac').textContent = filled+' / 1,300';
+      document.getElementById('scFill').style.width = Math.min(parseFloat(scPct),100)+'%';
+      document.getElementById('scSub').textContent = `${filled} businesses in ecosystem. ${1300-filled} slots remain.`;
+
+      // ── LMO: RECENT LEADS ──
+      document.getElementById('leadCount').textContent = allLeads.length;
+      document.getElementById('leadMiniTable').querySelector('tbody').innerHTML =
+        !allLeads.length ? '<tr><td colspan="2" class="empty">No leads yet.</td></tr>'
+        : allLeads.slice(0,6).map(l=>`<tr>
+            <td style="font-weight:600;color:var(--text);">${l.first_name||''} ${l.last_name||''} &middot; <span style="font-weight:400;">${l.business_name||'&mdash;'}</span></td>
+            <td><span class="badge badge-${l.status||'started'}">${cap(l.status)}</span></td>
+          </tr>`).join('');
+
+      // ── LMO: TIER BREAKDOWN ──
+      const tierCounts = {};
+      allLeads.forEach(l=>{ const t=l.service_tier||'unknown'; tierCounts[t]=(tierCounts[t]||0)+1; });
+      document.getElementById('tierMini').querySelector('tbody').innerHTML =
+        Object.entries(tierCounts).sort((a,b)=>b[1]-a[1]).map(([t,n])=>`
+          <tr><td><span class="badge badge-${t}">${cap(t)}</span></td><td style="font-weight:700;color:var(--green);">${n}</td></tr>
+        `).join('') || '<tr><td class="empty">No data</td></tr>';
+
+      // ── LEAD DEV: SKUNKWORKS ──
+      document.getElementById('skCount').textContent = allSkunk.length;
+      document.getElementById('skMini').querySelector('tbody').innerHTML =
+        !allSkunk.length ? '<tr><td class="empty">No projects yet.</td></tr>'
+        : allSkunk.map(s=>`<tr>
+            <td style="font-weight:600;color:var(--text);font-size:0.78rem;">${s.title}</td>
+            <td><span class="badge badge-${s.status||'planning'}">${cap(s.status)}</span></td>
+          </tr>`).join('');
+
+      // ── LEAD DEV: PROFIT FIRST ──
+      document.getElementById('pfMini').innerHTML = allAccts.map((a,i)=>`
+        <div class="pf-row">
+          <div class="pf-name">${a.name}</div>
+          <div class="pf-track"><div class="pf-fill" style="width:${Math.min(a.allocation_pct*2,100)}%;background:${PF_COLORS[i]}"></div></div>
+          <div class="pf-pct">${a.allocation_pct}%</div>
+        </div>`).join('') || '<div class="empty">No accounts.</div>';
+
+      // ── FULL LEAD TABLE ──
+      document.getElementById('fullLeadBody').innerHTML = !allLeads.length
+        ? '<tr><td colspan="7" class="empty">No leads yet.</td></tr>'
+        : allLeads.map(l=>`<tr>
+            <td style="font-size:0.75rem;">${fmtDate(l.created_at)}</td>
+            <td style="font-weight:600;color:var(--text);">${l.first_name||''} ${l.last_name||''}</td>
+            <td>${l.business_name||'&mdash;'}</td>
+            <td style="font-size:0.78rem;">${cap(l.industry)}</td>
+            <td>${l.city||'&mdash;'}</td>
+            <td><span class="badge badge-${l.service_tier||'discovery'}">${cap(l.service_tier)}</span></td>
+            <td><span class="badge badge-${l.status||'started'}">${cap(l.status)}</span></td>
+          </tr>`).join('');
+
+      // ── TEAM ROSTER ──
+      const founders = allMembers.filter(m=>m.team_roles?.role_type==='founder');
+      const support  = allMembers.filter(m=>m.team_roles?.role_type!=='founder');
+      document.getElementById('founderRoster').innerHTML = founders.length
+        ? rosterHtml(founders.map(m=>({...m, role_type:m.team_roles?.role_type})), AVATAR_COLORS)
+        : '<div class="empty">No founders seeded.</div>';
+      document.getElementById('supportRoster').innerHTML = support.length
+        ? rosterHtml(support.map(m=>({...m, role_type:m.team_roles?.role_type})), AVATAR_COLORS)
+        : '<div class="empty">All support seats open.</div>';
+
+    } catch(e) {
+      console.error(e);
+      const t=document.getElementById('toast');
+      t.textContent='Error: '+e.message; t.classList.add('show');
+      setTimeout(()=>t.classList.remove('show'),4000);
+    }
+  }
+
+  loadAll();
+  setInterval(loadAll, 60000);
+</script>
+</body>
+</html>

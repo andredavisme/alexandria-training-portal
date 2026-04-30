@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>207 Analytix — Eraj Ismatulloev | Dev Command</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0d1117; --bg2:#161b22; --bg3:#1c2333;
+    --gold:#fbbf24; --gold-d:#92400e; --amber:#f59e0b;
+    --green:#4ade80; --teal:#2dd4bf; --blue:#60a5fa;
+    --coral:#fb7185; --purple:#a78bfa;
+    --text:#e6edf3; --text2:#8b949e; --border:#30363d;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+  a { color: var(--gold); text-decoration: none; }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,17,23,0.96); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem; display: flex; align-items: center; gap: 0.75rem; height: 56px;
+  }
+  .nav-logo { font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1rem;
+    background: linear-gradient(135deg, var(--gold), var(--amber));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .nav-spacer { flex:1; }
+  .nav-link { font-size:0.82rem; color:var(--text2); padding:4px 8px; }
+  .role-pill { display:flex; align-items:center; gap:6px;
+    background:rgba(251,191,36,0.1); border:1px solid rgba(251,191,36,0.3);
+    border-radius:20px; padding:4px 14px;
+    font-size:0.75rem; font-weight:700; color:var(--gold); }
+
+  .page { max-width:1100px; margin:0 auto; padding:2rem 1.5rem; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, rgba(251,191,36,0.09), rgba(245,158,11,0.05));
+    border: 1px solid rgba(251,191,36,0.2); border-radius:16px;
+    padding:1.75rem 2rem; margin-bottom:1.75rem;
+    display:flex; align-items:center; gap:1.5rem;
+  }
+  .hero-avatar {
+    width:64px; height:64px; border-radius:50%;
+    background: linear-gradient(135deg, #92400e, var(--gold));
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.4rem; font-weight:800; color:#0d1117; flex-shrink:0;
+    box-shadow:0 0 0 3px rgba(251,191,36,0.25);
+  }
+  .hero-info { flex:1; }
+  .hero-name { font-family:'Space Grotesk',sans-serif; font-size:1.5rem; font-weight:800; margin-bottom:2px; }
+  .hero-title { font-size:0.88rem; color:var(--gold); font-weight:600; margin-bottom:6px; }
+  .hero-tags { display:flex; gap:0.5rem; flex-wrap:wrap; }
+  .hero-tag { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;
+    padding:3px 10px; border-radius:20px;
+    background:rgba(251,191,36,0.1); color:var(--gold); border:1px solid rgba(251,191,36,0.25); }
+  .hero-li { display:inline-flex; align-items:center; gap:5px;
+    font-size:0.78rem; color:#0077B5; font-weight:600;
+    padding:5px 12px; border-radius:20px;
+    background:rgba(0,119,181,0.1); border:1px solid rgba(0,119,181,0.2);
+    text-decoration:none; transition:opacity 0.15s; flex-shrink:0; }
+  .hero-li:hover { opacity:0.75; }
+
+  /* ===== SKUNKWORKS CENTREPIECE ===== */
+  .sk-centrepiece {
+    background: var(--bg2);
+    border: 1px solid rgba(251,191,36,0.3);
+    border-radius:16px; padding:2rem;
+    margin-bottom:1.75rem;
+    position:relative; overflow:hidden;
+  }
+  .sk-glow {
+    position:absolute; top:-80px; right:-80px;
+    width:280px; height:280px; border-radius:50%;
+    background:radial-gradient(circle, rgba(251,191,36,0.1), transparent 70%);
+    pointer-events:none;
+  }
+  .sk-eyebrow { font-size:0.68rem; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.12em; color:var(--gold); margin-bottom:0.4rem; }
+  .sk-headline { font-family:'Space Grotesk',sans-serif; font-size:1.2rem;
+    font-weight:800; margin-bottom:0.2rem; }
+  .sk-sub { font-size:0.82rem; color:var(--text2); margin-bottom:1.75rem; }
+
+  /* STATUS SUMMARY ROW */
+  .sk-status-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:1rem; margin-bottom:1.75rem; }
+  .sk-status-cell {
+    background:var(--bg3); border-radius:12px; padding:1rem 1.1rem;
+    border:1px solid var(--border); text-align:center;
+  }
+  .sk-status-icon { font-size:1.4rem; margin-bottom:0.3rem; }
+  .sk-status-label { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text2); margin-bottom:0.2rem; }
+  .sk-status-count { font-family:'Space Grotesk',sans-serif; font-size:2rem; font-weight:800; }
+  .c-planning    { color:var(--blue); }
+  .c-active      { color:var(--green); }
+  .c-commoditized{ color:var(--gold); }
+  .c-archived    { color:var(--text2); }
+  .c-total       { color:var(--gold); text-shadow:0 0 30px rgba(251,191,36,0.2); }
+
+  /* PROJECT KANBAN-STYLE CARDS */
+  .sk-kanban { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.25rem; }
+
+  .sk-col-header {
+    font-size:0.72rem; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.08em; padding:0 0 0.6rem;
+    border-bottom:2px solid; margin-bottom:0.75rem;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .sk-col-header.planning    { color:var(--blue);   border-color:var(--blue); }
+  .sk-col-header.active      { color:var(--green);  border-color:var(--green); }
+  .sk-col-header.commoditized{ color:var(--gold);   border-color:var(--gold); }
+  .sk-col-header.archived    { color:var(--text2);  border-color:var(--border); }
+
+  .sk-project-card {
+    background:var(--bg3); border:1px solid var(--border);
+    border-radius:10px; padding:1rem 1.1rem;
+    margin-bottom:0.75rem; transition:border-color 0.15s;
+  }
+  .sk-project-card:hover { border-color:rgba(251,191,36,0.3); }
+  .sk-project-title { font-size:0.88rem; font-weight:700; color:var(--text); margin-bottom:4px; }
+  .sk-project-desc  { font-size:0.75rem; color:var(--text2); line-height:1.5; margin-bottom:8px; }
+  .sk-project-meta  { font-size:0.68rem; color:var(--text2); }
+  .sk-empty { font-size:0.8rem; color:var(--text2); text-align:center; padding:1.5rem 0; }
+
+  /* STAT GRID */
+  .stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1rem; margin-bottom:1.75rem; }
+  .stat-card { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:1.1rem 1.3rem; }
+  .stat-label { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--text2); margin-bottom:0.35rem; }
+  .stat-value { font-family:'Space Grotesk',sans-serif; font-size:1.8rem; font-weight:800; color:var(--gold); }
+  .stat-sub   { font-size:0.72rem; color:var(--text2); margin-top:3px; }
+  .stat-card.green  .stat-value { color:var(--green); }
+  .stat-card.blue   .stat-value { color:var(--blue); }
+  .stat-card.coral  .stat-value { color:var(--coral); }
+  .stat-card.teal   .stat-value { color:var(--teal); }
+  .stat-card.purple .stat-value { color:var(--purple); }
+
+  /* PROFIT FIRST */
+  .pf-wrap { padding:1.25rem 1.4rem; display:flex; flex-direction:column; gap:0.85rem; }
+  .pf-row  { display:grid; align-items:center; gap:0.75rem; grid-template-columns:180px 1fr 60px 80px; }
+  @media(max-width:700px) { .pf-row { grid-template-columns:120px 1fr 50px; } .pf-balance { display:none; } }
+  .pf-name    { font-size:0.82rem; font-weight:600; color:var(--text); }
+  .pf-track   { height:6px; background:var(--bg3); border-radius:99px; overflow:hidden; }
+  .pf-fill    { height:100%; border-radius:99px; transition:width 1s ease; }
+  .pf-pct     { font-size:0.78rem; font-weight:700; color:var(--text2); text-align:right; }
+  .pf-balance { font-size:0.78rem; font-weight:700; color:var(--gold); text-align:right; }
+
+  /* SECTION */
+  .section { margin-bottom:1.75rem; }
+  .section-title { font-size:0.78rem; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.08em; color:var(--text2); margin-bottom:0.75rem;
+    padding-bottom:0.5rem; border-bottom:1px solid var(--border); }
+  .card { background:var(--bg2); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+
+  /* OPERATOR THROUGHPUT */
+  .op-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+  @media(max-width:600px){ .op-grid { grid-template-columns:1fr; } }
+  .op-card { background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:1.1rem 1.2rem; }
+  .op-name  { font-size:0.82rem; font-weight:700; color:var(--text); margin-bottom:2px; }
+  .op-role  { font-size:0.7rem; color:var(--text2); margin-bottom:0.75rem; }
+  .op-target-label { display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text2); margin-bottom:4px; }
+  .op-bar   { height:6px; background:var(--bg2); border-radius:99px; overflow:hidden; margin-bottom:6px; }
+  .op-fill  { height:100%; border-radius:99px; background:linear-gradient(90deg,var(--gold),var(--amber)); }
+  .op-count { font-family:'Space Grotesk',sans-serif; font-size:1.5rem; font-weight:800; color:var(--gold); }
+  .op-unit  { font-size:0.7rem; color:var(--text2); }
+
+  .badge { display:inline-block; padding:2px 8px; border-radius:20px;
+    font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; }
+  .badge-planning    { background:rgba(96,165,250,0.15);  color:var(--blue); }
+  .badge-active      { background:rgba(74,222,128,0.15);  color:var(--green); }
+  .badge-commoditized{ background:rgba(251,191,36,0.15);  color:var(--gold); }
+  .badge-archived    { background:rgba(139,148,158,0.15); color:var(--text2); }
+  .badge-submitted   { background:rgba(251,113,133,0.15); color:var(--coral); }
+  .badge-reviewed    { background:rgba(251,191,36,0.15);  color:var(--gold); }
+  .badge-converted   { background:rgba(74,222,128,0.15);  color:var(--green); }
+
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
+  @media(max-width:768px) { .grid-2 { grid-template-columns:1fr; } }
+
+  .loading { text-align:center; padding:2rem; color:var(--text2); font-size:0.82rem; }
+  .empty   { text-align:center; padding:2.5rem; color:var(--text2); font-size:0.82rem; }
+
+  /* INTAKE TABLE */
+  .full-table { width:100%; border-collapse:collapse; }
+  .full-table th { text-align:left; padding:0.6rem 1rem; font-size:0.68rem; font-weight:700;
+    text-transform:uppercase; letter-spacing:0.06em; color:var(--text2);
+    background:var(--bg3); border-bottom:1px solid var(--border); }
+  .full-table td { padding:0.8rem 1rem; border-bottom:1px solid var(--border); font-size:0.82rem; color:var(--text2); }
+  .full-table tr:hover td { background:rgba(255,255,255,0.02); }
+  .full-table tr:last-child td { border-bottom:none; }
+</style>
+</head>
+<body>
+
+<nav>
+  <span style="font-size:1.1rem;">🧬</span>
+  <div class="nav-logo">207 Analytix</div>
+  <span style="color:var(--border);">&rsaquo;</span>
+  <span style="font-size:0.88rem;font-weight:600;">Dev Command</span>
+  <div class="nav-spacer"></div>
+  <div class="role-pill">🏛️ Co-Founder · Lead Dev</div>
+  <a href="index.html" class="nav-link" style="margin-left:0.5rem;">← Portal</a>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-avatar">EI</div>
+    <div class="hero-info">
+      <div class="hero-name">Eraj Ismatulloev</div>
+      <div class="hero-title">Co-Founder · Lead Developer</div>
+      <div class="hero-tags">
+        <span class="hero-tag">🏛️ Co-Founder</span>
+        <span class="hero-tag">🧬 Lead Developer</span>
+        <span class="hero-tag">🛠️ Skunkworks Director</span>
+        <span class="hero-tag">💰 Profit First Steward</span>
+      </div>
+    </div>
+    <a class="hero-li" href="https://www.linkedin.com/in/eraj-ismatulloev-b0700b211/" target="_blank" rel="noopener">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="#0077B5"><path d="M20.447 20.452H16.893V14.883C16.893 13.555 16.866 11.846 15.041 11.846C13.188 11.846 12.905 13.291 12.905 14.785V20.452H9.351V9H12.765V10.561H12.811C13.288 9.661 14.448 8.711 16.181 8.711C19.782 8.711 20.448 11.081 20.448 14.166V20.452H20.447ZM5.337 7.433C4.193 7.433 3.274 6.507 3.274 5.368C3.274 4.23 4.194 3.305 5.337 3.305C6.477 3.305 7.401 4.23 7.401 5.368C7.401 6.507 6.476 7.433 5.337 7.433ZM7.119 20.452H3.555V9H7.119V20.452ZM22.225 0H1.771C0.792 0 0 0.774 0 1.729V22.271C0 23.227 0.792 24 1.771 24H22.222C23.2 24 24 23.227 24 22.271V1.729C24 0.774 23.2 0 22.222 0H22.225Z"/></svg>
+      LinkedIn
+    </a>
+  </div>
+
+  <!-- ===== SKUNKWORKS CENTREPIECE ===== -->
+  <div class="sk-centrepiece">
+    <div class="sk-glow"></div>
+    <div class="sk-eyebrow">🛠️ Skunkworks — Primary Dev Domain</div>
+    <div class="sk-headline">Project Pipeline Command</div>
+    <div class="sk-sub">Every deliverable built for a 207 Analytix client flows through Skunkworks. Eraj owns intake-to-delivery architecture, operator throughput, and product infrastructure.</div>
+
+    <!-- STATUS SUMMARY -->
+    <div class="sk-status-row">
+      <div class="sk-status-cell">
+        <div class="sk-status-icon">⚙️</div>
+        <div class="sk-status-label">Total</div>
+        <div class="sk-status-count c-total" id="skTotal">0</div>
+      </div>
+      <div class="sk-status-cell">
+        <div class="sk-status-icon">📝</div>
+        <div class="sk-status-label">Planning</div>
+        <div class="sk-status-count c-planning" id="skPlanning">0</div>
+      </div>
+      <div class="sk-status-cell">
+        <div class="sk-status-icon">⚡</div>
+        <div class="sk-status-label">Active</div>
+        <div class="sk-status-count c-active" id="skActive">0</div>
+      </div>
+      <div class="sk-status-cell">
+        <div class="sk-status-icon">📦</div>
+        <div class="sk-status-label">Commoditized</div>
+        <div class="sk-status-count c-commoditized" id="skComm">0</div>
+      </div>
+      <div class="sk-status-cell">
+        <div class="sk-status-icon">🗄️</div>
+        <div class="sk-status-label">Archived</div>
+        <div class="sk-status-count c-archived" id="skArch">0</div>
+      </div>
+    </div>
+
+    <!-- KANBAN COLUMNS -->
+    <div class="sk-kanban">
+      <div>
+        <div class="sk-col-header planning">Planning <span id="skPlanCount">0</span></div>
+        <div id="colPlanning"><div class="sk-empty">None in planning.</div></div>
+      </div>
+      <div>
+        <div class="sk-col-header active">Active <span id="skActCount">0</span></div>
+        <div id="colActive"><div class="sk-empty">None active.</div></div>
+      </div>
+      <div>
+        <div class="sk-col-header commoditized">Commoditized <span id="skCommCount">0</span></div>
+        <div id="colCommoditized"><div class="sk-empty">None commoditized yet.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEV STATS -->
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-label">Total Projects</div><div class="stat-value" id="sTotalP">&mdash;</div><div class="stat-sub">All Skunkworks entries</div></div>
+    <div class="stat-card green"><div class="stat-label">Intake Queue</div><div class="stat-value" id="sQueue">&mdash;</div><div class="stat-sub">Submitted leads to build</div></div>
+    <div class="stat-card blue"><div class="stat-label">Operator Seats</div><div class="stat-value" id="sOps">&mdash;</div><div class="stat-sub">Active / target: 3</div></div>
+    <div class="stat-card teal"><div class="stat-label">Weekly Target</div><div class="stat-value">3</div><div class="stat-sub">Projects / operator / week</div></div>
+    <div class="stat-card coral"><div class="stat-label">PF Accounts</div><div class="stat-value" id="sPF">&mdash;</div><div class="stat-sub">Profit First buckets</div></div>
+    <div class="stat-card purple"><div class="stat-label">Total Leads</div><div class="stat-value" id="sLeads">&mdash;</div><div class="stat-sub">Org-wide pipeline</div></div>
+  </div>
+
+  <!-- OPERATOR THROUGHPUT -->
+  <div class="section">
+    <div class="section-title">Operator Throughput — Weekly Target: 3 Projects / Operator</div>
+    <div class="op-grid" id="opGrid">
+      <div class="op-card"><div class="op-name">Operator 1</div><div class="op-role">Seat Open</div><div class="op-target-label"><span>0 / 3 this week</span><span>0%</span></div><div class="op-bar"><div class="op-fill" style="width:0%"></div></div></div>
+      <div class="op-card"><div class="op-name">Operator 2</div><div class="op-role">Seat Open</div><div class="op-target-label"><span>0 / 3 this week</span><span>0%</span></div><div class="op-bar"><div class="op-fill" style="width:0%"></div></div></div>
+      <div class="op-card"><div class="op-name">Operator 3</div><div class="op-role">Seat Open</div><div class="op-target-label"><span>0 / 3 this week</span><span>0%</span></div><div class="op-bar"><div class="op-fill" style="width:0%"></div></div></div>
+    </div>
+  </div>
+
+  <!-- PROFIT FIRST + INTAKE QUEUE -->
+  <div class="grid-2">
+    <div class="section">
+      <div class="section-title">Profit First Accounts</div>
+      <div class="card">
+        <div class="pf-wrap" id="pfWrap"><div class="loading">Loading&hellip;</div></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Intake Queue — Ready to Build</div>
+      <div class="card">
+        <table class="full-table">
+          <thead><tr><th>Name</th><th>Business</th><th>Tier</th><th>Status</th></tr></thead>
+          <tbody id="intakeBody"><tr><td colspan="4" class="loading">Loading&hellip;</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const SUPA_URL = 'https://hhyhulqngdkwsxhymmcd.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoeWh1bHFuZ2Rrd3N4aHltbWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzEyMDEsImV4cCI6MjA5MjcwNzIwMX0.dmSy7Q8Je5lEY4XCFzwvfPnkBYLebPE0yZMhy6Y8czI';
+  const { createClient } = supabase;
+  const db = createClient(SUPA_URL, SUPA_KEY);
+
+  const PF_COLORS = ['#ef4444','#2dd4bf','#8b949e','#fbbf24','#a78bfa','#4ade80'];
+
+  function cap(s) { return !s ? '&mdash;' : s.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); }
+  function fmtDate(iso) { if(!iso) return '&mdash;'; return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+  function fmt$(n) { return '$'+Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+  function skCard(p) {
+    return `<div class="sk-project-card">
+      <div class="sk-project-title">${p.title||p.name||'Untitled'}</div>
+      ${ p.description ? `<div class="sk-project-desc">${p.description}</div>` : '' }
+      <div class="sk-project-meta">Added ${fmtDate(p.created_at)}</div>
+    </div>`;
+  }
+
+  async function loadAll() {
+    try {
+      const [{ data: skunk }, { data: accounts }, { data: leads }, { data: members }] = await Promise.all([
+        db.from('skunkworks_projects').select('*').order('created_at', { ascending: false }),
+        db.from('financial_accounts').select('*').order('priority'),
+        db.from('leads').select('*').order('created_at', { ascending: false }),
+        db.from('team_members').select('name,status,team_roles(role_type)').order('created_at')
+      ]);
+
+      const allSkunk   = skunk   || [];
+      const allAccts   = accounts|| [];
+      const allLeads   = leads   || [];
+      const allMembers = members || [];
+
+      // ── STATUS COUNTS ──
+      const byStatus = s => allSkunk.filter(p => p.status === s).length;
+      document.getElementById('skTotal').textContent    = allSkunk.length;
+      document.getElementById('skPlanning').textContent = byStatus('planning');
+      document.getElementById('skActive').textContent   = byStatus('active');
+      document.getElementById('skComm').textContent     = byStatus('commoditized');
+      document.getElementById('skArch').textContent     = byStatus('archived');
+
+      // ── KANBAN COLUMNS ──
+      const planningP    = allSkunk.filter(p => p.status === 'planning');
+      const activeP      = allSkunk.filter(p => p.status === 'active');
+      const commoditizedP= allSkunk.filter(p => p.status === 'commoditized');
+
+      document.getElementById('skPlanCount').textContent = planningP.length;
+      document.getElementById('skActCount').textContent  = activeP.length;
+      document.getElementById('skCommCount').textContent = commoditizedP.length;
+
+      document.getElementById('colPlanning').innerHTML =
+        planningP.length ? planningP.map(skCard).join('') : '<div class="sk-empty">None in planning.</div>';
+      document.getElementById('colActive').innerHTML =
+        activeP.length ? activeP.map(skCard).join('') : '<div class="sk-empty">None active yet.</div>';
+      document.getElementById('colCommoditized').innerHTML =
+        commoditizedP.length ? commoditizedP.map(skCard).join('') : '<div class="sk-empty">None commoditized yet.</div>';
+
+      // ── DEV STATS ──
+      const queueLen = allLeads.filter(l => l.status === 'submitted').length;
+      const operators = allMembers.filter(m => m.team_roles?.role_type === 'operator').length;
+      document.getElementById('sTotalP').textContent  = allSkunk.length;
+      document.getElementById('sQueue').textContent   = queueLen;
+      document.getElementById('sOps').textContent     = operators + ' / 3';
+      document.getElementById('sPF').textContent      = allAccts.length;
+      document.getElementById('sLeads').textContent   = allLeads.length;
+
+      // ── PROFIT FIRST ──
+      document.getElementById('pfWrap').innerHTML = allAccts.length ? allAccts.map((a,i) => `
+        <div class="pf-row">
+          <div class="pf-name">${a.name}</div>
+          <div class="pf-track"><div class="pf-fill" style="width:${Math.min(a.allocation_pct * 2, 100)}%;background:${PF_COLORS[i%PF_COLORS.length]}"></div></div>
+          <div class="pf-pct">${a.allocation_pct}%</div>
+          <div class="pf-balance">${fmt$(a.current_balance)}</div>
+        </div>`).join('') : '<div class="empty">No accounts configured.</div>';
+
+      // ── INTAKE QUEUE ──
+      const queue = allLeads.filter(l => l.status === 'submitted');
+      document.getElementById('intakeBody').innerHTML = queue.length
+        ? queue.map(l => `<tr>
+            <td style="font-weight:600;color:var(--text);">${l.first_name||''} ${l.last_name||''}</td>
+            <td>${l.business_name||'&mdash;'}</td>
+            <td><span class="badge badge-${l.service_tier||'discovery'}">${cap(l.service_tier)}</span></td>
+            <td><span class="badge badge-${l.status}">Queued</span></td>
+          </tr>`).join('')
+        : '<tr><td colspan="4" class="empty">Queue clear ✔</td></tr>';
+
+    } catch(e) { console.error(e); }
+  }
+
+  loadAll();
+  setInterval(loadAll, 60000);
+</script>
+</body>
+</html>

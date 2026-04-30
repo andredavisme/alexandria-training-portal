@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Alexandria — My Progress</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --accent: #6366F1;
+  --green: #16A34A;
+  --surface: #ffffff;
+  --bg: #F1F5F9;
+  --border: #E2E8F0;
+  --text: #0F172A;
+  --text-muted: #64748B;
+  --font: 'Inter', sans-serif;
+  --radius: 10px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.07);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); color: var(--text); background: var(--bg); min-height: 100vh; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.hidden { display: none !important; }
+.nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; gap: 0.75rem; height: 56px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+.brand .logo { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; color: #fff; flex-shrink: 0; }
+.brand-name { font-weight: 700; font-size: 0.95rem; }
+.brand-sub  { font-size: 0.72rem; color: var(--text-muted); }
+.nav-sep { color: var(--border); }
+.nav-label { font-weight: 600; font-size: 0.9rem; color: var(--text-muted); }
+.nav-spacer { flex: 1; }
+.btn-ghost { background: transparent; color: var(--text-muted); border: none; padding: 6px 10px; font-size: 0.85rem; cursor: pointer; font-family: var(--font); text-decoration: none; white-space: nowrap; }
+.btn-ghost:hover { color: var(--text); }
+.page { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+.tabs { display: flex; gap: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 2rem; box-shadow: var(--shadow-sm); }
+.tab-btn { flex: 1; padding: 0.85rem 1rem; font-size: 0.88rem; font-weight: 600; font-family: var(--font); border: none; background: transparent; cursor: pointer; color: var(--text-muted); border-bottom: 3px solid transparent; transition: all 0.15s; }
+.tab-btn:hover { color: var(--text); background: var(--bg); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); background: #EEF2FF; }
+.name-bar { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1rem 1.4rem; display: flex; align-items: center; gap: 1rem; margin-bottom: 1.75rem; flex-wrap: wrap; }
+.name-bar label { font-size: 0.82rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+.name-input { flex: 1; min-width: 180px; padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 7px; font-family: var(--font); font-size: 0.88rem; color: var(--text); outline: none; transition: border-color 0.15s; }
+.name-input:focus { border-color: var(--accent); }
+.name-greeting { font-size: 0.85rem; color: var(--text-muted); }
+.name-greeting strong { color: var(--text); }
+.section-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 0.85rem; }
+.module-list { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; }
+.mod-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; border-left: 4px solid var(--border); transition: border-color 0.2s; }
+.mod-card.status-in-progress { border-left-color: #F59E0B; }
+.mod-card.status-done { border-left-color: #10B981; }
+.mod-top { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem; }
+.mod-num { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); }
+.mod-num.in-progress { background: #FEF3C7; color: #B45309; }
+.mod-num.done { background: #D1FAE5; color: #065F46; }
+.mod-info { flex: 1; }
+.mod-month { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+.mod-title { font-weight: 700; font-size: 0.92rem; }
+.mod-dq { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+.mod-status-pills { display: flex; gap: 0.4rem; flex-shrink: 0; flex-wrap: wrap; }
+.pill-btn { padding: 4px 11px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; font-family: var(--font); border: 1.5px solid var(--border); background: transparent; cursor: pointer; color: var(--text-muted); transition: all 0.15s; }
+.pill-btn:hover { border-color: var(--accent); color: var(--accent); }
+.pill-btn.sel-not-started { border-color: var(--border); background: var(--bg); color: var(--text-muted); }
+.pill-btn.sel-in-progress { border-color: #F59E0B; background: #FFFBEB; color: #B45309; }
+.pill-btn.sel-done { border-color: #10B981; background: #ECFDF5; color: #065F46; }
+.mod-body { border-top: 1px solid var(--border); padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.peer-panel { background: #EEF2FF; border-radius: 8px; padding: 0.85rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
+.peer-panel.no-peers { background: #F8FAFC; }
+.peer-text { font-size: 0.82rem; color: var(--text); line-height: 1.5; }
+.peer-text strong { color: var(--accent); }
+.peer-text.muted { color: var(--text-muted); }
+.peer-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.btn-sm-primary { display: inline-flex; align-items: center; gap: 5px; padding: 6px 13px; border-radius: 7px; font-size: 0.78rem; font-weight: 600; font-family: var(--font); border: none; cursor: pointer; text-decoration: none; background: var(--accent); color: #fff; transition: opacity 0.15s; white-space: nowrap; }
+.btn-sm-primary:hover { opacity: 0.88; text-decoration: none; }
+.btn-sm-outline { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 7px; font-size: 0.78rem; font-weight: 500; font-family: var(--font); border: 1.5px solid var(--border); background: transparent; cursor: pointer; color: var(--text-muted); text-decoration: none; transition: border-color 0.15s, color 0.15s; white-space: nowrap; }
+.btn-sm-outline:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+.notes-area { width: 100%; padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 7px; font-family: var(--font); font-size: 0.82rem; color: var(--text); resize: vertical; min-height: 56px; outline: none; transition: border-color 0.15s; }
+.notes-area:focus { border-color: var(--accent); }
+.notes-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.3rem; }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.75rem; }
+@media (max-width: 600px) { .stats-grid { grid-template-columns: 1fr 1fr; } }
+.stat-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1rem 1.1rem; text-align: center; }
+.stat-val { font-size: 1.7rem; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 0.2rem; }
+.stat-lbl { font-size: 0.73rem; color: var(--text-muted); font-weight: 500; }
+.teacher-modules { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+.t-mod-row { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.t-mod-num { flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; }
+.t-mod-info { flex: 1; min-width: 160px; }
+.t-mod-title { font-weight: 700; font-size: 0.88rem; }
+.t-mod-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 1px; }
+.t-mod-stats { display: flex; gap: 1rem; flex-wrap: wrap; }
+.t-stat { text-align: center; }
+.t-stat-val { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+.t-stat-lbl { font-size: 0.68rem; color: var(--text-muted); }
+.t-mod-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.prog-bar-wrap { height: 5px; background: var(--border); border-radius: 3px; margin-top: 0.5rem; }
+.prog-bar { height: 5px; background: var(--green); border-radius: 3px; transition: width 0.4s; }
+.spinner { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 0.875rem; }
+.callout-info { background: #EEF2FF; border-left: 4px solid var(--accent); border-radius: 8px; padding: 0.9rem 1.1rem; font-size: 0.83rem; color: var(--text); line-height: 1.6; margin-bottom: 1.5rem; }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="brand">
+    <div class="logo">A</div>
+    <div>
+      <div class="brand-name">Alexandria</div>
+      <div class="brand-sub">Training Portal</div>
+    </div>
+  </a>
+  <span class="nav-sep">›</span>
+  <span class="nav-label">📊 My Progress</span>
+  <div class="nav-spacer"></div>
+  <a href="course.html?course=a1b2c3d4-0001-0001-0001-000000000001" class="btn-ghost">← Course</a>
+</nav>
+<div class="page">
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="student">👤 My Journey</button>
+    <button class="tab-btn" data-tab="teacher">🏫 Teacher Overview</button>
+  </div>
+  <div id="tab-student">
+    <div class="name-bar">
+      <label for="student-name">Your name:</label>
+      <input class="name-input" id="student-name" type="text" placeholder="Enter your name…" maxlength="60"/>
+      <span class="name-greeting" id="name-greeting"></span>
+    </div>
+    <div class="callout-info">💬 <strong>This isn’t a race.</strong> Use this page to track where you are — and to find classmates who have been through a module and might be able to help. Every module has a discussion thread where you can ask questions and share what you discovered.</div>
+    <div class="section-label">Your Module Journey</div>
+    <div class="module-list" id="student-module-list"><div class="spinner">Loading…</div></div>
+  </div>
+  <div id="tab-teacher" class="hidden">
+    <div class="section-label">Class Commons Overview</div>
+    <div class="stats-grid" id="teacher-stats"><div class="spinner" style="grid-column:1/-1">Loading…</div></div>
+    <div class="section-label">Per-Module Activity</div>
+    <div class="teacher-modules" id="teacher-modules"><div class="spinner">Loading…</div></div>
+  </div>
+</div>
+<script type="module">
+const SUPABASE_URL = 'https://hhyhulqngdkwsxhymmcd.supabase.co'
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoeWh1bHFuZ2Rrd3N4aHltbWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzEyMDEsImV4cCI6MjA5MjcwNzIwMX0.dmSy7Q8Je5lEY4XCFzwvfPnkBYLebPE0yZMhy6Y8czI'
+const hdrs = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+const COURSE_ID = 'a1b2c3d4-0001-0001-0001-000000000001'
+const MODULES = [
+  { num: 1, label: 'Month 1', title: 'What Is Soil?', threadId: '811a050f-21c7-4ffb-a8a0-8bb88d9ba572', dq: 'Why does soil matter to every living thing?' },
+  { num: 2, label: 'Month 2', title: 'Seeds Travel', threadId: 'b417f513-00ac-4d87-b6b5-1286e3c48882', dq: 'How do seeds move — and why does it matter?' },
+  { num: 3, label: 'Month 3', title: 'Water & Weather', threadId: '95241b02-2636-4aea-b272-b206f67ceb43', dq: 'How does water connect farmers across the world?' },
+  { num: 4, label: 'Month 4', title: 'Growing Food', threadId: 'b5821a64-50f9-4d27-9233-fc4ed610945a', dq: 'What does a plant need, and how do farmers care for it?' },
+  { num: 5, label: 'Month 5', title: 'Ecosystems & Biodiversity', threadId: 'de42d2ac-25e3-45e3-8a70-b5729eb9caad', dq: 'Why does variety in nature make everything stronger?' },
+  { num: 6, label: 'Month 6', title: 'Caring for Our Earth', threadId: '672ef7dc-30ca-4373-ace2-a994f0a5164c', dq: 'What can we do today to protect our environment?' }
+]
+function getProgress(){ try { return JSON.parse(localStorage.getItem('alex_progress') || '{}') } catch { return {} } }
+function saveProgress(p){ localStorage.setItem('alex_progress', JSON.stringify(p)) }
+function getStudentName(){ return localStorage.getItem('alex_name') || '' }
+function saveStudentName(n){ localStorage.setItem('alex_name', n) }
+document.querySelectorAll('.tab-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); const t = btn.dataset.tab; document.getElementById('tab-student').classList.toggle('hidden', t !== 'student'); document.getElementById('tab-teacher').classList.toggle('hidden', t !== 'teacher'); }) })
+const nameInput = document.getElementById('student-name')
+const nameGreeting = document.getElementById('name-greeting')
+const saved = getStudentName(); if (saved) { nameInput.value = saved; updateGreeting(saved) }
+nameInput.addEventListener('input', () => { saveStudentName(nameInput.value.trim()); updateGreeting(nameInput.value.trim()) })
+function updateGreeting(n){ nameGreeting.innerHTML = n ? `Welcome, <strong>${n}</strong> — your progress is saved on this device.` : '' }
+async function fetchEntryCountsByMonth(){ const p = new URLSearchParams({ course_id: `eq.${COURSE_ID}`, select: 'month_number,milestone_completed' }); const r = await fetch(`${SUPABASE_URL}/rest/v1/commons_progress?${p}`, { headers: hdrs }); const d = await r.json(); if (!r.ok) return {}; const counts = {}; for (const e of d) { const m = e.month_number; if (!counts[m]) counts[m] = { entries: 0, milestones: 0 }; counts[m].entries++; if (e.milestone_completed) counts[m].milestones++; } return counts }
+async function fetchAllEntries(){ const p = new URLSearchParams({ course_id: `eq.${COURSE_ID}`, select: '*' }); const r = await fetch(`${SUPABASE_URL}/rest/v1/commons_progress?${p}`, { headers: hdrs }); const d = await r.json(); return r.ok ? d : [] }
+async function renderStudent(){ const counts = await fetchEntryCountsByMonth(); const progress = getProgress(); const list = document.getElementById('student-module-list'); list.innerHTML = MODULES.map(m => { const status = progress[`m${m.num}`]?.status || 'not-started'; const notes = progress[`m${m.num}`]?.notes || ''; const count = counts[m.num]?.entries || 0; const msCount = counts[m.num]?.milestones || 0; const numClass = status === 'done' ? 'done' : status === 'in-progress' ? 'in-progress' : ''; const cardClass = status === 'done' ? 'status-done' : status === 'in-progress' ? 'status-in-progress' : ''; const peerHTML = count > 0 ? `<div class="peer-panel"><div class="peer-text"><strong>${count} class log${count !== 1 ? 's' : ''}</strong> exist for this month${msCount > 0 ? ` · ${msCount} milestone${msCount !== 1 ? 's' : ''} completed` : ''}.<br/><span style="font-size:0.78rem;color:var(--text-muted)">Classmates who’ve worked here may be able to help you.</span></div><div class="peer-actions"><a class="btn-sm-primary" href="discussion-thread.html?id=${m.threadId}">💬 Join the Discussion</a><a class="btn-sm-outline" href="textbook.html?course=${COURSE_ID}#module-${m.num}">📖 Read Module</a></div></div>` : `<div class="peer-panel no-peers"><div class="peer-text muted">No class logs yet for this month. Be the first to share in the discussion!</div><div class="peer-actions"><a class="btn-sm-primary" href="discussion-thread.html?id=${m.threadId}">💬 Start the Conversation</a><a class="btn-sm-outline" href="textbook.html?course=${COURSE_ID}#module-${m.num}">📖 Read Module</a></div></div>`; return `<div class="mod-card ${cardClass}" id="mc-${m.num}"><div class="mod-top"><div class="mod-num ${numClass}">${status === 'done' ? '✓' : m.num}</div><div class="mod-info"><div class="mod-month">${m.label}</div><div class="mod-title">${m.title}</div><div class="mod-dq">${m.dq}</div></div><div class="mod-status-pills"><button class="pill-btn ${status === 'not-started' ? 'sel-not-started' : ''}" data-mod="${m.num}" data-val="not-started">○ Not started</button><button class="pill-btn ${status === 'in-progress' ? 'sel-in-progress' : ''}" data-mod="${m.num}" data-val="in-progress">◔ In progress</button><button class="pill-btn ${status === 'done' ? 'sel-done' : ''}" data-mod="${m.num}" data-val="done">✓ Done</button></div></div><div class="mod-body">${peerHTML}<div><div class="notes-label">My notes on this module</div><textarea class="notes-area" data-mod="${m.num}" placeholder="What did you discover? What questions do you still have?…">${notes}</textarea></div></div></div>` }).join(''); list.querySelectorAll('.pill-btn').forEach(btn => { btn.addEventListener('click', () => { const mod = btn.dataset.mod; const val = btn.dataset.val; const p = getProgress(); if (!p[`m${mod}`]) p[`m${mod}`] = {}; p[`m${mod}`].status = val; saveProgress(p); const card = document.getElementById(`mc-${mod}`); card.className = `mod-card ${val === 'done' ? 'status-done' : val === 'in-progress' ? 'status-in-progress' : ''}`; const numEl = card.querySelector('.mod-num'); numEl.className = `mod-num ${val === 'done' ? 'done' : val === 'in-progress' ? 'in-progress' : ''}`; numEl.textContent = val === 'done' ? '✓' : mod; card.querySelectorAll('.pill-btn').forEach(b => { b.className = 'pill-btn'; if (b.dataset.val === val) { b.classList.add(val === 'not-started' ? 'sel-not-started' : val === 'in-progress' ? 'sel-in-progress' : 'sel-done') } }) }) }); list.querySelectorAll('.notes-area').forEach(ta => { ta.addEventListener('input', () => { const mod = ta.dataset.mod; const p = getProgress(); if (!p[`m${mod}`]) p[`m${mod}`] = {}; p[`m${mod}`].notes = ta.value; saveProgress(p) }) }) }
+async function renderTeacher(){ const entries = await fetchAllEntries(); const totalWaste = entries.reduce((s, e) => s + (e.waste_diverted_g || 0), 0); const totalEarnings = entries.reduce((s, e) => s + (e.earnings_cents || 0), 0); const totalMilestones = entries.filter(e => e.milestone_completed).length; document.getElementById('teacher-stats').innerHTML = `<div class="stat-card"><div class="stat-val">${entries.length}</div><div class="stat-lbl">📝 Total Log Entries</div></div><div class="stat-card"><div class="stat-val">${totalMilestones}</div><div class="stat-lbl">✅ Milestones Done</div></div><div class="stat-card"><div class="stat-val">${totalWaste >= 1000 ? (totalWaste/1000).toFixed(1)+'kg' : totalWaste+'g'}</div><div class="stat-lbl">♻️ Waste Diverted</div></div><div class="stat-card"><div class="stat-val">$${(totalEarnings/100).toFixed(2)}</div><div class="stat-lbl">💵 Market Earnings</div></div>`; const byMonth = {}; entries.forEach(e => { const m = e.month_number; if (!byMonth[m]) byMonth[m] = { entries: [], milestones: 0, waste: 0, earnings: 0 }; byMonth[m].entries.push(e); if (e.milestone_completed) byMonth[m].milestones++; byMonth[m].waste += e.waste_diverted_g || 0; byMonth[m].earnings += e.earnings_cents || 0; }); const maxEntries = Math.max(1, ...Object.values(byMonth).map(m => m.entries.length)); document.getElementById('teacher-modules').innerHTML = MODULES.map(m => { const data = byMonth[m.num] || { entries: [], milestones: 0, waste: 0, earnings: 0 }; const pct = Math.round((data.entries.length / maxEntries) * 100); return `<div class="t-mod-row"><div class="t-mod-num">${m.num}</div><div class="t-mod-info"><div class="t-mod-title">${m.title}</div><div class="t-mod-sub">${m.label}</div><div class="prog-bar-wrap"><div class="prog-bar" style="width:${pct}%"></div></div></div><div class="t-mod-stats"><div class="t-stat"><div class="t-stat-val">${data.entries.length}</div><div class="t-stat-lbl">Logs</div></div><div class="t-stat"><div class="t-stat-val">${data.milestones}</div><div class="t-stat-lbl">Milestones</div></div><div class="t-stat"><div class="t-stat-val">${data.waste >= 1000 ? (data.waste/1000).toFixed(1)+'kg' : data.waste+'g'}</div><div class="t-stat-lbl">Waste</div></div><div class="t-stat"><div class="t-stat-val">$${(data.earnings/100).toFixed(2)}</div><div class="t-stat-lbl">Earned</div></div></div><div class="t-mod-actions"><a class="btn-sm-primary" href="discussion-thread.html?id=${m.threadId}">💬 Discussion</a><a class="btn-sm-outline" href="textbook.html?course=${COURSE_ID}#module-${m.num}">📖 Textbook</a></div></div>` }).join('') }
+renderStudent(); renderTeacher();
+</script>
+</body>
+</html>

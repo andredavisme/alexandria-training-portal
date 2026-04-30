@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title id="page-title">Careers — Demo Company</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --brand:   #1D4ED8;
+    --brand-light: #DBEAFE;
+    --surface: #ffffff;
+    --bg:      #F1F5F9;
+    --border:  #E2E8F0;
+    --text:    #0F172A;
+    --muted:   #64748B;
+    --font:    'Inter', sans-serif;
+    --radius:  10px;
+    --shadow:  0 2px 10px rgba(0,0,0,0.08);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+  a { color: var(--brand); text-decoration: none; }
+  .hidden { display: none !important; }
+
+  /* Demo banner */
+  .demo-bar {
+    background: #7C3AED; color: #fff;
+    text-align: center; padding: 8px 1rem;
+    font-size: 0.75rem; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  }
+  .demo-bar a { color: #DDD6FE; text-decoration: underline; }
+
+  /* Header */
+  .site-header {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 50;
+    box-shadow: var(--shadow);
+  }
+  .company-brand { display: flex; align-items: center; gap: 10px; }
+  .company-logo {
+    width: 36px; height: 36px; border-radius: 9px;
+    background: var(--brand); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1rem;
+  }
+  .company-name { font-weight: 700; font-size: 1rem; color: var(--text); }
+  .company-tagline { font-size: 0.7rem; color: var(--muted); }
+  .header-right { display: flex; align-items: center; gap: 0.75rem; }
+  .positions-count {
+    font-size: 0.75rem; font-weight: 600; color: var(--muted);
+    background: var(--bg); padding: 4px 10px; border-radius: 20px;
+    border: 1px solid var(--border);
+  }
+
+  /* Hero */
+  .careers-hero {
+    background: linear-gradient(135deg, var(--brand) 0%, #1e40af 100%);
+    padding: 3.5rem 1.5rem 3rem; text-align: center; color: #fff;
+  }
+  .careers-hero h1 { font-size: clamp(1.6rem,3vw,2.2rem); font-weight: 800; margin-bottom: 0.5rem; }
+  .careers-hero p  { font-size: 0.95rem; opacity: 0.85; max-width: 480px; margin: 0 auto 1.5rem; line-height: 1.65; }
+  .hero-badges { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+    padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+  }
+
+  /* Filter row */
+  .filter-row {
+    max-width: 860px; margin: -1rem auto 0; padding: 0 1.5rem;
+    position: relative; z-index: 10;
+  }
+  .filter-card {
+    background: var(--surface); border-radius: var(--radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    padding: 1rem 1.25rem;
+    display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
+  }
+  .filter-select {
+    flex: 1; min-width: 130px; padding: 8px 12px; border-radius: 8px;
+    border: 1.5px solid var(--border); font-size: 0.82rem;
+    font-family: var(--font); color: var(--text); background: var(--bg);
+    cursor: pointer;
+  }
+  .filter-select:focus { outline: none; border-color: var(--brand); }
+  .search-field {
+    flex: 2; min-width: 180px; padding: 8px 12px; border-radius: 8px;
+    border: 1.5px solid var(--border); font-size: 0.82rem;
+    font-family: var(--font); color: var(--text); background: var(--bg);
+  }
+  .search-field:focus { outline: none; border-color: var(--brand); background: #fff; }
+
+  /* Job list */
+  .jobs-wrap { max-width: 860px; margin: 2rem auto; padding: 0 1.5rem 4rem; }
+  .jobs-meta { font-size: 0.78rem; color: var(--muted); margin-bottom: 1rem; }
+  .jobs-meta strong { color: var(--text); }
+  .job-list { display: flex; flex-direction: column; gap: 0.85rem; }
+
+  /* Job card */
+  .job-card {
+    background: var(--surface); border-radius: var(--radius);
+    border: 1.5px solid var(--border); overflow: hidden;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+  }
+  .job-card:hover { border-color: #BFDBFE; box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+  .job-card.open   { border-color: var(--brand); }
+
+  .job-header {
+    padding: 1.1rem 1.25rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .job-dept-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--brand-light); color: var(--brand);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; flex-shrink: 0;
+  }
+  .job-info { flex: 1; min-width: 0; }
+  .job-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+  .job-meta-row { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+  .job-meta-item { font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 3px; }
+  .job-right { display: flex; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+  .job-type-pill {
+    font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 3px 8px; border-radius: 20px; white-space: nowrap;
+  }
+  .pill-ft   { background: #D1FAE5; color: #065F46; }
+  .pill-pt   { background: #FEF3C7; color: #92400E; }
+  .pill-contract { background: #EDE9FE; color: #5B21B6; }
+  .pill-remote   { background: #E0F2FE; color: #0369A1; }
+  .job-chevron { color: var(--muted); transition: transform 0.2s; font-size: 0.9rem; }
+  .job-card.open .job-chevron { transform: rotate(180deg); }
+
+  /* Job detail */
+  .job-detail {
+    border-top: 1px solid var(--border);
+    padding: 1.25rem 1.25rem 1.5rem;
+    animation: expandIn 0.18s ease;
+  }
+  @keyframes expandIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .job-detail h4 { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin: 1rem 0 0.4rem; }
+  .job-detail h4:first-child { margin-top: 0; }
+  .job-detail p  { font-size: 0.875rem; line-height: 1.75; color: var(--text); }
+  .job-detail ul { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 4px; }
+  .job-detail ul li { font-size: 0.875rem; line-height: 1.6; color: var(--text); }
+  .job-detail-footer {
+    margin-top: 1.25rem; padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+  }
+  .btn-apply {
+    padding: 9px 22px; border-radius: 8px; font-size: 0.85rem; font-weight: 700;
+    background: var(--brand); color: #fff; border: none; cursor: pointer;
+    font-family: var(--font); transition: opacity 0.15s;
+  }
+  .btn-apply:hover { opacity: 0.85; }
+  .salary-range { font-size: 0.82rem; font-weight: 600; color: var(--muted); }
+
+  /* Empty state */
+  .empty-state { text-align: center; padding: 4rem 2rem; color: var(--muted); }
+  .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+
+  /* Apply Modal */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100; padding: 1rem;
+    animation: fadeIn 0.15s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: var(--surface); border-radius: var(--radius);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+    width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto;
+    animation: slideUp 0.2s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .modal-hd {
+    padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+  }
+  .modal-hd h2 { font-size: 1rem; font-weight: 700; }
+  .modal-hd p  { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  .modal-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--muted); line-height: 1; padding: 2px; flex-shrink: 0; }
+  .modal-close:hover { color: var(--text); }
+  .modal-bd { padding: 1.5rem; }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--muted); margin-bottom: 0.3rem; }
+  .form-group input, .form-group textarea, .form-group select {
+    width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 0.875rem; font-family: var(--font); color: var(--text); background: #F8FAFC;
+    transition: border-color 0.15s;
+  }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--brand); background: #fff; }
+  .form-group textarea { resize: vertical; min-height: 70px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .file-label {
+    display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+    border: 1.5px dashed var(--border); border-radius: 8px;
+    font-size: 0.82rem; color: var(--muted); cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .file-label:hover { border-color: var(--brand); color: var(--brand); }
+  .file-label input { display: none; }
+  .btn-full {
+    width: 100%; padding: 11px; border-radius: 9px; font-size: 0.9rem; font-weight: 700;
+    background: var(--brand); color: #fff; border: none; cursor: pointer;
+    font-family: var(--font); transition: opacity 0.15s; margin-top: 0.25rem;
+  }
+  .btn-full:hover { opacity: 0.85; }
+  .btn-full:disabled { opacity: 0.5; cursor: not-allowed; }
+  .apply-success {
+    text-align: center; padding: 2.5rem 1rem;
+  }
+  .apply-success .s-icon { font-size: 2.5rem; display: block; margin-bottom: 0.75rem; }
+  .apply-success h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .apply-success p  { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+  /* Footer */
+  .site-footer {
+    background: #0F172A; color: #64748B;
+    text-align: center; padding: 1.5rem;
+    font-size: 0.72rem; margin-top: 2rem;
+  }
+  .site-footer a { color: #60A5FA; }
+</style>
+</head>
+<body>
+
+<!-- Demo notice -->
+<div class="demo-bar">
+  👁️ This is a <strong style="color:#fff">live demo</strong> of the 207 Analytix Job Description Portal commodity &mdash;
+  <a href="commodities.html">view full catalog</a>
+</div>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="company-brand">
+    <div class="company-logo" id="logo-initial">W</div>
+    <div>
+      <div class="company-name" id="company-name">Westbrook Supply Co.</div>
+      <div class="company-tagline">We’re hiring — join our team</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="positions-count" id="positions-count">0 open positions</span>
+  </div>
+</header>
+
+<!-- Hero -->
+<div class="careers-hero">
+  <h1>Build Something That Matters</h1>
+  <p>We’re a local business investing in people who show up, think clearly, and take care of each other.</p>
+  <div class="hero-badges">
+    <span class="hero-badge">📍 Westbrook, ME</span>
+    <span class="hero-badge">🏢 Local & Independent</span>
+    <span class="hero-badge">♥️ Employee-First Culture</span>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="filter-row">
+  <div class="filter-card">
+    <input class="search-field" type="text" placeholder="🔍 Search positions…" id="job-search" oninput="renderJobs()"/>
+    <select class="filter-select" id="dept-filter" onchange="renderJobs()">
+      <option value="">All Departments</option>
+    </select>
+    <select class="filter-select" id="type-filter" onchange="renderJobs()">
+      <option value="">All Types</option>
+      <option value="Full-Time">Full-Time</option>
+      <option value="Part-Time">Part-Time</option>
+      <option value="Contract">Contract</option>
+    </select>
+  </div>
+</div>
+
+<!-- Jobs -->
+<div class="jobs-wrap">
+  <div class="jobs-meta" id="jobs-meta"></div>
+  <div class="job-list" id="job-list"></div>
+</div>
+
+<!-- Apply Modal -->
+<div class="overlay hidden" id="overlay" onclick="closeOverlay(event)">
+  <div class="modal">
+    <div class="modal-hd">
+      <div>
+        <h2 id="apply-title">Apply for Position</h2>
+        <p id="apply-sub">Fill out the form below and we’ll be in touch within 2 business days.</p>
+      </div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-bd">
+      <form id="apply-form" onsubmit="submitApp(event)">
+        <div class="form-row">
+          <div class="form-group"><label>First Name *</label><input type="text" id="a-first" required placeholder="Jane"/></div>
+          <div class="form-group"><label>Last Name *</label><input type="text" id="a-last" required placeholder="Smith"/></div>
+        </div>
+        <div class="form-group"><label>Email *</label><input type="email" id="a-email" required placeholder="jane@email.com"/></div>
+        <div class="form-group"><label>Phone</label><input type="tel" id="a-phone" placeholder="(207) 555-0100"/></div>
+        <div class="form-group">
+          <label>Resume / CV</label>
+          <label class="file-label">
+            <span id="file-label-text">📎 Attach resume (PDF, DOC)</span>
+            <input type="file" id="a-resume" accept=".pdf,.doc,.docx" onchange="updateFileLabel(this)"/>
+          </label>
+        </div>
+        <div class="form-group"><label>Cover Note (optional)</label><textarea id="a-cover" placeholder="Tell us a little about yourself…"></textarea></div>
+        <input type="hidden" id="a-position"/>
+        <button type="submit" class="btn-full" id="apply-submit">Submit Application →</button>
+      </form>
+      <div class="apply-success hidden" id="apply-success">
+        <span class="s-icon">🎉</span>
+        <h3>Application Received!</h3>
+        <p>Thanks for applying. Our team will review your application and reach out within 2 business days.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  Powered by <a href="commodities.html">207 Analytix</a> &mdash; Job Description Portal
+</footer>
+
+<script>
+// ── Demo data ───────────────────────────────────────────
+const COMPANY = {
+  name: 'Westbrook Supply Co.',
+  initial: 'W',
+  location: 'Westbrook, ME',
+}
+
+const JOBS = [
+  {
+    id: 1,
+    title: 'Warehouse Associate',
+    department: 'Operations',
+    type: 'Full-Time',
+    location: 'Westbrook, ME — On-site',
+    salary: '$18 – $22 / hr',
+    icon: '📦',
+    posted: '3 days ago',
+    description: 'We’re looking for a reliable, detail-oriented Warehouse Associate to join our operations team. You’ll be responsible for receiving, organizing, and dispatching inventory in a fast-paced but supportive environment.',
+    responsibilities: [
+      'Receive, inspect, and log incoming shipments',
+      'Pick and pack orders accurately and on schedule',
+      'Maintain a clean and organized warehouse floor',
+      'Operate a forklift (training provided)',
+      'Communicate inventory discrepancies to supervisor',
+    ],
+    requirements: [
+      'High school diploma or equivalent',
+      'Ability to lift up to 50 lbs',
+      'Reliable transportation to Westbrook location',
+      'Strong attention to detail',
+      'Forklift certification a plus (not required)',
+    ],
+  },
+  {
+    id: 2,
+    title: 'Customer Service Representative',
+    department: 'Sales & Service',
+    type: 'Full-Time',
+    location: 'Westbrook, ME — On-site',
+    salary: '$17 – $20 / hr',
+    icon: '📞',
+    posted: '5 days ago',
+    description: 'We’re hiring a Customer Service Representative who genuinely enjoys helping people. You’ll be the first voice our customers hear and a key part of making their experience exceptional.',
+    responsibilities: [
+      'Answer inbound calls and respond to email inquiries',
+      'Process orders, returns, and exchanges',
+      'Resolve customer issues quickly and professionally',
+      'Escalate complex issues to the right team member',
+      'Maintain accurate records in the CRM system',
+    ],
+    requirements: [
+      '1+ years customer service experience',
+      'Comfortable with phone-based communication',
+      'Basic computer skills (email, spreadsheets)',
+      'Positive attitude and strong communication',
+      'Bilingual (Spanish/English) a plus',
+    ],
+  },
+  {
+    id: 3,
+    title: 'Delivery Driver',
+    department: 'Logistics',
+    type: 'Part-Time',
+    location: 'Greater Portland, ME — Route-based',
+    salary: '$20 – $24 / hr',
+    icon: '🚚',
+    posted: '1 week ago',
+    description: 'We need a dependable Part-Time Delivery Driver to run local routes throughout Greater Portland. This is a great fit for someone who values independence, punctuality, and being out on the road.',
+    responsibilities: [
+      'Complete assigned local delivery routes on schedule',
+      'Load and unload cargo safely',
+      'Verify delivery accuracy with recipients',
+      'Maintain delivery log and report any issues',
+      'Keep vehicle clean and report maintenance needs',
+    ],
+    requirements: [
+      'Valid Maine driver’s license (clean record)',
+      'Comfortable driving a cargo van',
+      'Able to work mornings (6am–2pm shifts)',
+      'Smartphone for route navigation',
+      'Prior delivery experience preferred',
+    ],
+  },
+  {
+    id: 4,
+    title: 'Administrative Assistant',
+    department: 'Admin & Finance',
+    type: 'Part-Time',
+    location: 'Westbrook, ME — On-site',
+    salary: '$16 – $18 / hr',
+    icon: '📁',
+    posted: '2 weeks ago',
+    description: 'We’re looking for an organized, proactive Administrative Assistant to support our management team. If you thrive on keeping things running smoothly behind the scenes, this role is for you.',
+    responsibilities: [
+      'Manage scheduling and calendar coordination',
+      'Handle incoming mail, calls, and internal communications',
+      'Prepare reports, invoices, and basic bookkeeping support',
+      'Order and track office supplies',
+      'Assist with onboarding new team members',
+    ],
+    requirements: [
+      'Proficiency in Google Workspace or Microsoft Office',
+      'Strong organizational and time-management skills',
+      'Discreet handling of sensitive information',
+      'Prior admin or office experience preferred',
+      '20–25 hours per week availability',
+    ],
+  },
+]
+
+// ── Init ────────────────────────────────────────────
+const params = new URLSearchParams(location.search)
+const bizName = params.get('biz') || COMPANY.name
+document.getElementById('company-name').textContent = bizName
+document.getElementById('logo-initial').textContent = bizName[0].toUpperCase()
+document.getElementById('page-title').textContent   = `Careers — ${bizName}`
+document.getElementById('positions-count').textContent = `${JOBS.length} open positions`
+
+const depts = [...new Set(JOBS.map(j=>j.department))]
+depts.forEach(d => {
+  const o = document.createElement('option')
+  o.value = d; o.textContent = d
+  document.getElementById('dept-filter').appendChild(o)
+})
+
+let openJobId = null
+renderJobs()
+
+function renderJobs() {
+  const q    = document.getElementById('job-search').value.toLowerCase().trim()
+  const dept = document.getElementById('dept-filter').value
+  const type = document.getElementById('type-filter').value
+  let jobs = JOBS
+  if (q)    jobs = jobs.filter(j => j.title.toLowerCase().includes(q) || j.department.toLowerCase().includes(q))
+  if (dept) jobs = jobs.filter(j => j.department === dept)
+  if (type) jobs = jobs.filter(j => j.type === type)
+
+  document.getElementById('jobs-meta').innerHTML =
+    `<strong>${jobs.length}</strong> position${jobs.length!==1?'s':''} found`
+
+  const typePill = { 'Full-Time':'pill-ft', 'Part-Time':'pill-pt', 'Contract':'pill-contract' }
+
+  document.getElementById('job-list').innerHTML = jobs.length ? jobs.map(j => `
+  <div class="job-card ${openJobId===j.id?'open':''}" id="job-${j.id}" onclick="toggleJob(${j.id})">
+    <div class="job-header">
+      <div class="job-dept-icon">${j.icon}</div>
+      <div class="job-info">
+        <div class="job-title">${j.title}</div>
+        <div class="job-meta-row">
+          <span class="job-meta-item">🏢 ${j.department}</span>
+          <span class="job-meta-item">📍 ${j.location}</span>
+          <span class="job-meta-item">📅 Posted ${j.posted}</span>
+        </div>
+      </div>
+      <div class="job-right">
+        <span class="job-type-pill ${typePill[j.type]||'pill-ft'}">${j.type}</span>
+        <span class="job-chevron">▾</span>
+      </div>
+    </div>
+    ${openJobId===j.id ? `
+    <div class="job-detail">
+      <h4>About the Role</h4>
+      <p>${j.description}</p>
+      <h4>Responsibilities</h4>
+      <ul>${j.responsibilities.map(r=>`<li>${r}</li>`).join('')}</ul>
+      <h4>Requirements</h4>
+      <ul>${j.requirements.map(r=>`<li>${r}</li>`).join('')}</ul>
+      <div class="job-detail-footer">
+        <button class="btn-apply" onclick="event.stopPropagation();openApply(${j.id})">Apply Now →</button>
+        <span class="salary-range">💰 ${j.salary}</span>
+      </div>
+    </div>` : ''}
+  </div>`).join('') : `
+  <div class="empty-state">
+    <div class="icon">💭</div>
+    <p>No positions match your filters. Try adjusting your search.</p>
+  </div>`
+}
+
+function toggleJob(id) {
+  openJobId = openJobId === id ? null : id
+  renderJobs()
+  if (openJobId) {
+    setTimeout(()=>{
+      const el = document.getElementById('job-'+id)
+      if (el) el.scrollIntoView({ behavior:'smooth', block:'nearest' })
+    }, 50)
+  }
+}
+
+// ── Modal ───────────────────────────────────────────
+function openApply(jobId) {
+  const job = JOBS.find(j=>j.id===jobId)
+  if (!job) return
+  document.getElementById('apply-title').textContent = `Apply — ${job.title}`
+  document.getElementById('apply-sub').textContent   = `${job.department} · ${job.type} · ${job.location}`
+  document.getElementById('a-position').value        = job.title
+  document.getElementById('apply-form').classList.remove('hidden')
+  document.getElementById('apply-success').classList.add('hidden')
+  document.getElementById('apply-submit').disabled    = false
+  document.getElementById('apply-submit').textContent = 'Submit Application →'
+  document.getElementById('file-label-text').textContent = '📎 Attach resume (PDF, DOC)'
+  document.getElementById('overlay').classList.remove('hidden')
+  document.body.style.overflow = 'hidden'
+}
+function closeModal() {
+  document.getElementById('overlay').classList.add('hidden')
+  document.body.style.overflow = ''
+}
+function closeOverlay(e) { if (e.target===document.getElementById('overlay')) closeModal() }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal() })
+
+function updateFileLabel(input) {
+  const lbl = document.getElementById('file-label-text')
+  lbl.textContent = input.files[0] ? '✅ '+input.files[0].name : '📎 Attach resume (PDF, DOC)'
+}
+
+function submitApp(e) {
+  e.preventDefault()
+  const btn = document.getElementById('apply-submit')
+  btn.disabled = true; btn.textContent = 'Submitting…'
+  // Simulate submission delay
+  setTimeout(()=>{
+    document.getElementById('apply-form').classList.add('hidden')
+    document.getElementById('apply-success').classList.remove('hidden')
+  }, 900)
+}
+</script>
+</body>
+</html>

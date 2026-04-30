@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>207 Analytix — Accountant Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:     #0d1117;
+    --bg2:    #161b22;
+    --bg3:    #1c2333;
+    --gold:   #fbbf24;
+    --teal:   #2dd4bf;
+    --coral:  #fb7185;
+    --green:  #4ade80;
+    --text:   #e6edf3;
+    --text2:  #8b949e;
+    --border: #30363d;
+    --accent: #fbbf24;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+  a { color: var(--gold); text-decoration: none; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,17,23,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+    height: 56px;
+  }
+  .nav-logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 1rem;
+    background: linear-gradient(135deg, var(--gold), #f59e0b);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .nav-badge {
+    font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; background: var(--gold); color: #0d1117;
+    padding: 2px 8px; border-radius: 20px;
+  }
+  .nav-spacer { flex: 1; }
+  .nav-link { font-size: 0.82rem; color: var(--text2); padding: 4px 8px; }
+  .nav-link:hover { color: var(--text); }
+  .role-pill {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 0.75rem; font-weight: 600; color: var(--gold);
+  }
+
+  /* PAGE */
+  .page { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* PAGE HEADER */
+  .page-header { margin-bottom: 2rem; }
+  .page-eyebrow { font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--gold); margin-bottom: 0.4rem; }
+  .page-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.75rem;
+    font-weight: 800; margin-bottom: 0.3rem; }
+  .page-sub { font-size: 0.88rem; color: var(--text2); }
+  .last-updated { font-size: 0.72rem; color: var(--text2); margin-top: 0.4rem; }
+
+  /* STAT GRID */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem; margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.25rem 1.5rem;
+  }
+  .stat-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--text2); margin-bottom: 0.4rem; }
+  .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 2rem;
+    font-weight: 700; color: var(--gold); }
+  .stat-sub { font-size: 0.75rem; color: var(--text2); margin-top: 0.25rem; }
+  .stat-card.green .stat-value { color: var(--green); }
+  .stat-card.coral .stat-value { color: var(--coral); }
+  .stat-card.teal  .stat-value { color: var(--teal); }
+
+  /* SECTION */
+  .section { margin-bottom: 2rem; }
+  .section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text2);
+    margin-bottom: 0.75rem; padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* PROFIT FIRST TABLE */
+  .pf-table { width: 100%; border-collapse: collapse; }
+  .pf-table th {
+    text-align: left; padding: 0.6rem 1rem;
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text2);
+    background: var(--bg3); border-bottom: 1px solid var(--border);
+  }
+  .pf-table td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.875rem; color: var(--text2); }
+  .pf-table tr:hover td { background: var(--bg2); }
+  .pf-table tr:last-child td { border-bottom: none; }
+  .pf-name { font-weight: 600; color: var(--text); }
+  .pf-priority {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 50%;
+    font-weight: 700; font-size: 0.75rem;
+    background: rgba(251,191,36,0.15); color: var(--gold);
+  }
+  .bar-wrap { display: flex; align-items: center; gap: 0.6rem; }
+  .bar-track { flex: 1; height: 5px; background: var(--bg); border-radius: 99px; overflow: hidden; max-width: 120px; }
+  .bar-fill  { height: 100%; border-radius: 99px; background: var(--gold); }
+  .balance {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; color: var(--green);
+  }
+  .balance.zero { color: var(--text2); }
+
+  /* LEADS / PIPELINE TABLE */
+  .pipeline-table { width: 100%; border-collapse: collapse; }
+  .pipeline-table th {
+    text-align: left; padding: 0.6rem 1rem;
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text2);
+    background: var(--bg3); border-bottom: 1px solid var(--border);
+  }
+  .pipeline-table td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; color: var(--text2); }
+  .pipeline-table tr:hover td { background: var(--bg2); }
+  .pipeline-table tr:last-child td { border-bottom: none; }
+
+  /* BADGE */
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 20px;
+    font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .badge-new       { background: rgba(45,212,191,0.15); color: var(--teal); }
+  .badge-reviewed  { background: rgba(251,191,36,0.15); color: var(--gold); }
+  .badge-converted { background: rgba(74,222,128,0.15); color: var(--green); }
+  .badge-archived  { background: rgba(139,148,158,0.15); color: var(--text2); }
+  .badge-submitted { background: rgba(251,113,133,0.15); color: var(--coral); }
+
+  /* CARD */
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+  }
+
+  /* ALLOCATION DONUT TEXT */
+  .alloc-list { display: flex; flex-direction: column; gap: 0.6rem; padding: 1.25rem 1.5rem; }
+  .alloc-row { display: flex; align-items: center; gap: 0.75rem; }
+  .alloc-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .alloc-name { flex: 1; font-size: 0.85rem; color: var(--text); }
+  .alloc-pct  { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+  .alloc-bar-track { flex: 1; height: 4px; background: var(--bg3); border-radius: 99px; overflow: hidden; }
+  .alloc-bar-fill  { height: 100%; border-radius: 99px; }
+
+  /* EMPTY */
+  .empty { text-align: center; padding: 3rem; color: var(--text2); font-size: 0.875rem; }
+
+  /* LOADING */
+  .loading { text-align: center; padding: 2rem; color: var(--text2); font-size: 0.82rem; }
+
+  /* GRID 2 */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* TOAST */
+  #toast {
+    position: fixed; bottom: 1.5rem; right: 1.5rem;
+    background: var(--bg2); border: 1px solid var(--gold);
+    border-radius: 10px; padding: 0.75rem 1.25rem;
+    color: var(--gold); font-weight: 600; font-size: 0.85rem;
+    transform: translateY(60px); opacity: 0;
+    transition: all .35s ease; z-index: 999;
+  }
+  #toast.show { transform: translateY(0); opacity: 1; }
+
+  /* DAY 0 BANNER */
+  .day0-banner {
+    background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(251,113,133,0.08));
+    border: 1px solid rgba(251,191,36,0.3);
+    border-radius: 10px; padding: 0.85rem 1.25rem;
+    font-size: 0.82rem; color: var(--text2);
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .day0-banner strong { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<nav>
+  <span style="font-size:1.1rem;">📊</span>
+  <div class="nav-logo">207 Analytix</div>
+  <span style="color:var(--border);">›</span>
+  <span style="font-size:0.88rem; font-weight:600;">Accountant Dashboard</span>
+  <div class="nav-spacer"></div>
+  <div class="role-pill">📊 Accountant</div>
+  <a href="index.html" class="nav-link" style="margin-left:0.5rem;">← Portal</a>
+</nav>
+
+<div class="page">
+
+  <div class="page-header">
+    <div class="page-eyebrow">207 Analytix · Internal</div>
+    <div class="page-title">📊 Financial Command Center</div>
+    <div class="page-sub">Profit First account health, allocation pipeline, and revenue intake.</div>
+    <div class="last-updated" id="lastUpdated">Loading…</div>
+  </div>
+
+  <div class="day0-banner">
+    🚧 <span><strong>Pre-Day 0 Mode</strong> — All account balances reflect seeded baselines. Revenue will populate as client projects are delivered and allocated.</span>
+  </div>
+
+  <!-- STAT CARDS -->
+  <div class="stat-grid" id="statGrid">
+    <div class="stat-card"><div class="stat-label">Total Allocated</div><div class="stat-value" id="totalAlloc">—</div><div class="stat-sub">Across all Profit First accounts</div></div>
+    <div class="stat-card green"><div class="stat-label">Active Clients</div><div class="stat-value" id="activeClients">—</div><div class="stat-sub">Portals live & billing</div></div>
+    <div class="stat-card teal"><div class="stat-label">Leads in Pipeline</div><div class="stat-value" id="leadCount">—</div><div class="stat-sub">Inbound interest logged</div></div>
+    <div class="stat-card coral"><div class="stat-label">Tax Reserve</div><div class="stat-value" id="taxReserve">—</div><div class="stat-sub">P1 · 15% allocation</div></div>
+  </div>
+
+  <!-- PROFIT FIRST ACCOUNTS -->
+  <div class="section">
+    <div class="section-title">Profit First — Priority Pipeline</div>
+    <div class="card">
+      <table class="pf-table" id="pfTable">
+        <thead>
+          <tr>
+            <th>P#</th>
+            <th>Account</th>
+            <th>Allocation</th>
+            <th>Current Balance</th>
+            <th>Purpose</th>
+            <th>Last Updated</th>
+          </tr>
+        </thead>
+        <tbody id="pfBody"><tr><td colspan="6" class="loading">Loading accounts…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ALLOCATION BREAKDOWN + LEADS -->
+  <div class="grid-2">
+
+    <!-- ALLOCATION VISUAL -->
+    <div class="section">
+      <div class="section-title">Allocation Breakdown</div>
+      <div class="card">
+        <div class="alloc-list" id="allocList"><div class="loading">Loading…</div></div>
+      </div>
+    </div>
+
+    <!-- SKUNKWORKS BUDGET -->
+    <div class="section">
+      <div class="section-title">Skunkworks Budget Tracker</div>
+      <div class="card">
+        <table class="pipeline-table" id="skTable">
+          <thead>
+            <tr><th>Project</th><th>Allocated</th><th>Spent</th><th>Status</th></tr>
+          </thead>
+          <tbody id="skBody"><tr><td colspan="4" class="loading">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RECENT LEADS TABLE -->
+  <div class="section">
+    <div class="section-title">Recent Lead Intake</div>
+    <div class="card">
+      <table class="pipeline-table">
+        <thead>
+          <tr><th>Date</th><th>Name</th><th>City</th><th>Type</th><th>Status</th></tr>
+        </thead>
+        <tbody id="leadsBody"><tr><td colspan="5" class="loading">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const SUPA_URL = 'https://hhyhulqngdkwsxhymmcd.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoeWh1bHFuZ2Rrd3N4aHltbWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzEyMDEsImV4cCI6MjA5MjcwNzIwMX0.dmSy7Q8Je5lEY4XCFzwvfPnkBYLebPE0yZMhy6Y8czI';
+  const { createClient } = supabase;
+  const db = createClient(SUPA_URL, SUPA_KEY);
+
+  const ALLOC_COLORS = ['#ef4444','#2dd4bf','#8b949e','#fbbf24','#a78bfa','#4ade80'];
+
+  function fmt(n) {
+    if (n === null || n === undefined) return '—';
+    return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  async function loadAll() {
+    try {
+      const [{ data: accounts }, { data: leads, count: leadCount }, { data: businesses, count: bizCount }, { data: skunk }] = await Promise.all([
+        db.from('financial_accounts').select('*').order('priority'),
+        db.from('leads').select('*', { count: 'exact' }).order('created_at', { ascending: false }).limit(10),
+        db.from('businesses').select('id', { count: 'exact' }).eq('is_active', true),
+        db.from('skunkworks_projects').select('title, budget_allocated, budget_spent, status').order('created_at', { ascending: false })
+      ]);
+
+      document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleString();
+
+      // Stats
+      const totalBal = (accounts || []).reduce((s, a) => s + parseFloat(a.current_balance || 0), 0);
+      document.getElementById('totalAlloc').textContent = fmt(totalBal);
+      document.getElementById('activeClients').textContent = bizCount || 0;
+      document.getElementById('leadCount').textContent = leadCount || 0;
+      const tax = (accounts || []).find(a => a.priority === 1);
+      document.getElementById('taxReserve').textContent = tax ? fmt(tax.current_balance) : '—';
+
+      // Profit First Table
+      const pfBody = document.getElementById('pfBody');
+      if (!accounts || !accounts.length) {
+        pfBody.innerHTML = '<tr><td colspan="6" class="empty">No accounts found.</td></tr>';
+      } else {
+        pfBody.innerHTML = accounts.map((a, i) => {
+          const bal = parseFloat(a.current_balance || 0);
+          return `<tr>
+            <td><span class="pf-priority">${a.priority}</span></td>
+            <td class="pf-name">${a.name}</td>
+            <td>
+              <div class="bar-wrap">
+                <div class="bar-track"><div class="bar-fill" style="width:${Math.min(a.allocation_pct * 2, 100)}%;background:${ALLOC_COLORS[i]}"></div></div>
+                <span style="font-size:0.82rem;font-weight:700;color:var(--text);">${a.allocation_pct}%</span>
+              </div>
+            </td>
+            <td class="balance ${bal === 0 ? 'zero' : ''}">${fmt(bal)}</td>
+            <td style="font-size:0.8rem;">${a.description}</td>
+            <td style="font-size:0.78rem;">${fmtDate(a.updated_at)}</td>
+          </tr>`;
+        }).join('');
+      }
+
+      // Allocation Breakdown
+      const allocList = document.getElementById('allocList');
+      allocList.innerHTML = (accounts || []).map((a, i) => `
+        <div class="alloc-row">
+          <div class="alloc-dot" style="background:${ALLOC_COLORS[i]}"></div>
+          <span class="alloc-name">${a.name}</span>
+          <div class="alloc-bar-track">
+            <div class="alloc-bar-fill" style="width:${Math.min(a.allocation_pct * 2, 100)}%;background:${ALLOC_COLORS[i]}"></div>
+          </div>
+          <span class="alloc-pct">${a.allocation_pct}%</span>
+        </div>`).join('');
+
+      // Skunkworks
+      const skBody = document.getElementById('skBody');
+      if (!skunk || !skunk.length) {
+        skBody.innerHTML = '<tr><td colspan="4" class="empty">No projects found.</td></tr>';
+      } else {
+        skBody.innerHTML = skunk.map(s => {
+          const alloc = parseFloat(s.budget_allocated || 0);
+          const spent = parseFloat(s.budget_spent || 0);
+          const pct = alloc > 0 ? Math.round((spent / alloc) * 100) : 0;
+          return `<tr>
+            <td style="font-size:0.82rem;font-weight:500;color:var(--text);">${s.title}</td>
+            <td>${fmt(alloc)}</td>
+            <td>${fmt(spent)} <span style="font-size:0.7rem;color:var(--text2)">(${pct}%)</span></td>
+            <td><span class="badge badge-${s.status === 'commoditized' ? 'converted' : 'new'}">${s.status}</span></td>
+          </tr>`;
+        }).join('');
+      }
+
+      // Leads
+      const leadsBody = document.getElementById('leadsBody');
+      if (!leads || !leads.length) {
+        leadsBody.innerHTML = '<tr><td colspan="5" class="empty">No leads yet.</td></tr>';
+      } else {
+        leadsBody.innerHTML = leads.map(l => `<tr>
+          <td>${fmtDate(l.created_at)}</td>
+          <td style="font-weight:500;color:var(--text);">${l.name || '—'}</td>
+          <td>${l.city || '—'}</td>
+          <td style="font-size:0.8rem;">${(l.pitch_type || '—').replace('_',' ')}</td>
+          <td><span class="badge badge-${l.status || 'new'}">${l.status || 'new'}</span></td>
+        </tr>`).join('');
+      }
+
+    } catch(e) {
+      console.error(e);
+      showToast('Error loading data: ' + e.message);
+    }
+  }
+
+  loadAll();
+  setInterval(loadAll, 60000); // refresh every minute
+</script>
+</body>
+</html>

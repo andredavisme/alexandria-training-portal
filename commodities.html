@@ -90,24 +90,11 @@
   .card-tech { padding: 0.75rem 1.25rem 0; display: flex; gap: 5px; flex-wrap: wrap; }
   .tech-pill { font-size: 0.65rem; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: #F1F5F9; border: 1px solid var(--border); color: var(--text-muted); }
 
-  /* Demo strip — sits just above the footer divider */
-  .card-demo-strip {
-    margin: 0.75rem 1.25rem 0;
-    padding: 0.6rem 0.85rem;
-    background: #F0FDF4;
-    border: 1.5px solid #BBF7D0;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
-  }
+  /* Demo strip */
+  .card-demo-strip { margin: 0.75rem 1.25rem 0; padding: 0.6rem 0.85rem; background: #F0FDF4; border: 1.5px solid #BBF7D0; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
   .demo-strip-label { font-size: 0.72rem; font-weight: 600; color: #15803D; display: flex; align-items: center; gap: 5px; }
   .demo-strip-label::before { content: '●'; color: #22C55E; font-size: 0.55rem; }
-  .btn-demo {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 5px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700;
-    border: 1.5px solid #22C55E; color: #15803D; background: #fff;
-    cursor: pointer; font-family: var(--font); text-decoration: none;
-    transition: background 0.15s, color 0.15s; white-space: nowrap;
-  }
+  .btn-demo { display: inline-flex; align-items: center; gap: 4px; padding: 5px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; border: 1.5px solid #22C55E; color: #15803D; background: #fff; cursor: pointer; font-family: var(--font); text-decoration: none; transition: background 0.15s, color 0.15s; white-space: nowrap; }
   .btn-demo:hover { background: #22C55E; color: #fff; }
 
   .card-footer { margin-top: auto; padding: 1rem 1.25rem; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 0.75rem; margin-top: 1rem; }
@@ -335,9 +322,10 @@ function renderGrid(items) {
         </a>
       </div>` : ''
 
+    const cardId = esc(item.id)
     return `
-    <div class="commodity-card ${isActive?'':'coming-soon'}" style="--card-icon-bg:${cc.bg}"
-      onclick="${isActive?`openModal('${esc(item.id)}')`:''}"
+    <div class="commodity-card ${isActive ? '' : 'coming-soon'}" style="--card-icon-bg:${cc.bg}"
+      data-id="${cardId}" onclick="handleCardClick(this)"
     >
       <div class="card-top">
         <div class="card-icon">${esc(item.icon||'📦')}</div>
@@ -346,27 +334,36 @@ function renderGrid(items) {
           <div class="card-name">${esc(item.name)}</div>
           <div class="card-tagline">${esc(item.tagline||'')}</div>
         </div>
-        <span class="card-status-pill ${isActive?'pill-active':'pill-coming-soon'}">${isActive?'Active':'Coming Soon'}</span>
+        <span class="card-status-pill ${isActive ? 'pill-active' : 'pill-coming-soon'}">${isActive ? 'Active' : 'Coming Soon'}</span>
       </div>
       <div class="card-desc">${esc(item.description||'')}</div>
       <div class="card-features">
         ${features.slice(0,4).map(f=>`<div class="feature-item"><span class="feature-check">✓</span><span>${esc(f)}</span></div>`).join('')}
-        ${features.length>4?`<div style="font-size:0.72rem;color:var(--text-muted);padding:2px 0;">+${features.length-4} more…</div>`:''}
+        ${features.length>4 ? `<div style="font-size:0.72rem;color:var(--text-muted);padding:2px 0;">+${features.length-4} more…</div>` : ''}
       </div>
       <div class="card-tech">${techStack.map(t=>`<span class="tech-pill">${esc(t)}</span>`).join('')}</div>
       ${demoStrip}
       <div class="card-footer">
         <div class="price-block">
-          <div class="price-one-time">${item.one_time_price?'$'+item.one_time_price.toLocaleString():'Custom'}</div>
-          <div class="price-monthly">${item.monthly_price?'+$'+item.monthly_price+'/mo maintenance':''}</div>
+          <div class="price-one-time">${item.one_time_price ? '$'+item.one_time_price.toLocaleString() : 'Custom'}</div>
+          <div class="price-monthly">${item.monthly_price ? '+$'+item.monthly_price+'/mo maintenance' : ''}</div>
         </div>
         <span class="delivery-pill">⚡ ${delivery}</span>
-        <button class="btn-request ${isActive?'':'disabled}"
-          onclick="event.stopPropagation();${isActive?`openModal('${esc(item.id)}')`:''}"
-        >${isActive?'Request →':'Notify Me'}</button>
+        <button class="btn-request ${isActive ? '' : 'disabled'}"
+          data-id="${cardId}" onclick="event.stopPropagation(); handleRequestClick(this)"
+        >${isActive ? 'Request →' : 'Notify Me'}</button>
       </div>
     </div>`
   }).join('')
+}
+
+function handleCardClick(el) {
+  const item = allItems.find(i => i.id === el.dataset.id)
+  if (item && item.status === 'active') openModal(item.id)
+}
+function handleRequestClick(el) {
+  const item = allItems.find(i => i.id === el.dataset.id)
+  if (item && item.status === 'active') openModal(item.id)
 }
 
 function openModal(id) {

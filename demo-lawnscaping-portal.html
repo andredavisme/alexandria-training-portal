@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title id="page-title">Green Valley Grounds — Services &amp; Quotes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --brand: #2d6a4f;
+    --brand-light: #d8f3dc;
+    --brand-dark: #1b4332;
+    --accent: #52b788;
+    --surface: #ffffff;
+    --bg: #f4f7f4;
+    --border: #dde8e0;
+    --text: #0f1f15;
+    --muted: #5a7566;
+    --font: 'Inter', sans-serif;
+    --radius: 10px;
+    --shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+  a { color: var(--brand); text-decoration: none; }
+  .hidden { display: none !important; }
+
+  /* Demo banner */
+  .demo-bar {
+    background: #7C3AED; color: #fff;
+    text-align: center; padding: 8px 1rem;
+    font-size: 0.75rem; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  }
+  .demo-bar a { color: #DDD6FE; text-decoration: underline; }
+
+  /* Header */
+  .site-header {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 50;
+    box-shadow: var(--shadow);
+  }
+  .company-brand { display: flex; align-items: center; gap: 10px; }
+  .company-logo {
+    width: 36px; height: 36px; border-radius: 9px;
+    background: var(--brand); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1.1rem;
+  }
+  .company-name { font-weight: 700; font-size: 1rem; color: var(--text); }
+  .company-tagline { font-size: 0.7rem; color: var(--muted); }
+  .header-right { display: flex; align-items: center; gap: 0.75rem; }
+  .service-count {
+    font-size: 0.75rem; font-weight: 600; color: var(--muted);
+    background: var(--bg); padding: 4px 10px; border-radius: 20px;
+    border: 1px solid var(--border);
+  }
+  .nav-btn {
+    padding: 7px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+    background: var(--brand); color: #fff; border: none; cursor: pointer;
+    font-family: var(--font); transition: opacity 0.15s;
+  }
+  .nav-btn:hover { opacity: 0.85; }
+
+  /* Hero */
+  .site-hero {
+    background: linear-gradient(135deg, var(--brand-dark) 0%, var(--brand) 100%);
+    padding: 3.5rem 1.5rem 3rem; text-align: center; color: #fff;
+  }
+  .site-hero h1 { font-size: clamp(1.6rem,3vw,2.2rem); font-weight: 800; margin-bottom: 0.5rem; }
+  .site-hero p  { font-size: 0.95rem; opacity: 0.85; max-width: 480px; margin: 0 auto 1.5rem; line-height: 1.65; }
+  .hero-badges { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+    padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+  }
+
+  /* Services grid */
+  .section-wrap { max-width: 900px; margin: 2.5rem auto; padding: 0 1.5rem; }
+  .section-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+
+  .service-card {
+    background: var(--surface); border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    padding: 1.4rem; cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .service-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(0,0,0,0.09); }
+  .service-card.selected { border-color: var(--brand); background: #f0f9f4; }
+  .svc-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--brand-light); color: var(--brand);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; margin-bottom: 0.9rem;
+  }
+  .svc-name { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .svc-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+  .svc-price { font-size: 0.8rem; font-weight: 600; color: var(--brand); margin-top: 0.7rem; }
+
+  /* Quote flow */
+  .quote-wrap { max-width: 680px; margin: 0 auto 4rem; padding: 0 1.5rem; }
+  .quote-card {
+    background: var(--surface); border-radius: var(--radius);
+    border: 1.5px solid var(--border); box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .quote-card-hd {
+    padding: 1.1rem 1.5rem;
+    background: var(--brand); color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .quote-card-hd h2 { font-size: 0.95rem; font-weight: 700; }
+  .quote-card-hd p  { font-size: 0.72rem; opacity: 0.8; margin-top: 2px; }
+  .step-pills { display: flex; gap: 6px; }
+  .step-pill {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(255,255,255,0.2); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.72rem; font-weight: 700;
+  }
+  .step-pill.active { background: #fff; color: var(--brand); }
+  .step-pill.done { background: var(--accent); }
+  .quote-card-bd { padding: 1.5rem; }
+
+  /* Form elements */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+  .form-full { grid-column: 1 / -1; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group label { font-size: 0.72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .form-group input, .form-group select, .form-group textarea {
+    padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 0.875rem; font-family: var(--font); color: var(--text);
+    background: #f8fbf8; transition: border-color 0.15s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none; border-color: var(--brand); background: #fff;
+  }
+  .form-group textarea { resize: vertical; min-height: 72px; }
+
+  /* Buttons */
+  .btn-row { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
+  .btn-back {
+    padding: 9px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
+    background: transparent; color: var(--muted); border: 1.5px solid var(--border);
+    cursor: pointer; font-family: var(--font);
+  }
+  .btn-back:hover { border-color: var(--brand); color: var(--brand); }
+  .btn-next {
+    flex: 1; padding: 10px 22px; border-radius: 8px; font-size: 0.875rem; font-weight: 700;
+    background: var(--brand); color: #fff; border: none; cursor: pointer;
+    font-family: var(--font); transition: opacity 0.15s;
+  }
+  .btn-next:hover { opacity: 0.85; }
+
+  /* Quote result */
+  .quote-result-box {
+    border: 1.5px solid var(--brand); border-radius: var(--radius);
+    background: #f0f9f4; padding: 1.25rem; margin-bottom: 1rem;
+  }
+  .quote-line {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 0; border-bottom: 1px solid var(--border);
+    font-size: 0.875rem;
+  }
+  .quote-line:last-child { border-bottom: none; font-weight: 700; font-size: 1rem; padding-top: 10px; }
+  .alert {
+    padding: 11px 14px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1rem;
+  }
+  .alert-success { background: #d8f3dc; border-left: 4px solid var(--brand); color: #1b4332; }
+  .alert-info    { background: #e0f0ff; border-left: 4px solid #1d4ed8; color: #1e3a5f; }
+
+  /* Footer */
+  .site-footer {
+    background: #0f1f15; color: #5a7566;
+    text-align: center; padding: 1.5rem;
+    font-size: 0.72rem; margin-top: 2rem;
+  }
+  .site-footer a { color: var(--accent); }
+
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .header-right .nav-btn { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Demo banner -->
+<div class="demo-bar">
+  👁️ This is a <strong style="color:#fff">live demo</strong> of the 207 Analytix Lawnscaping Service Portal commodity &mdash;
+  <a href="commodities.html">view full catalog</a>
+</div>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="company-brand">
+    <div class="company-logo" id="logo-initial">🌿</div>
+    <div>
+      <div class="company-name" id="company-name">Green Valley Grounds</div>
+      <div class="company-tagline">Serving greater Portland, ME</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="service-count" id="service-count">3 services</span>
+    <button class="nav-btn" onclick="scrollToQuote()">Get a Quote</button>
+  </div>
+</header>
+
+<!-- Hero -->
+<div class="site-hero">
+  <h1>Your Property, Taken Care Of</h1>
+  <p>Get an instant quote on lawn care, debris removal, and stump grinding — no phone tag required.</p>
+  <div class="hero-badges">
+    <span class="hero-badge">📍 Portland, ME</span>
+    <span class="hero-badge">✅ Licensed &amp; Insured</span>
+    <span class="hero-badge">⚡ Instant Quotes</span>
+  </div>
+</div>
+
+<!-- Services overview -->
+<div class="section-wrap" id="servicesSection">
+  <div class="section-label">Our Services</div>
+  <div class="services-grid" id="serviceGrid"></div>
+</div>
+
+<!-- Quote flow -->
+<div class="quote-wrap" id="quoteFlow">
+  <div class="quote-card">
+    <div class="quote-card-hd">
+      <div>
+        <h2 id="quoteCardTitle">Request a Quote</h2>
+        <p id="quoteCardSub">Takes about 2 minutes</p>
+      </div>
+      <div class="step-pills">
+        <div class="step-pill active" id="sp1">1</div>
+        <div class="step-pill" id="sp2">2</div>
+        <div class="step-pill" id="sp3">3</div>
+        <div class="step-pill" id="sp4">✓</div>
+      </div>
+    </div>
+    <div class="quote-card-bd">
+
+      <!-- Step 1: Service selection -->
+      <div id="qStep1">
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem;">Select the service you need a quote for:</p>
+        <div class="services-grid" id="quoteServiceGrid"></div>
+        <div class="btn-row"><button class="btn-next" onclick="goStep(2)">Continue →</button></div>
+      </div>
+
+      <!-- Step 2: Job details -->
+      <div id="qStep2" class="hidden">
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem;">Tell us a bit about the job:</p>
+        <div id="intakeFields"></div>
+        <div class="btn-row">
+          <button class="btn-back" onclick="goStep(1)">← Back</button>
+          <button class="btn-next" onclick="goStep(3)">Continue →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Contact info -->
+      <div id="qStep3" class="hidden">
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem;">Where should we send the quote?</p>
+        <div class="form-grid">
+          <div class="form-group"><label>First Name *</label><input type="text" id="cfFirst" placeholder="Jane"/></div>
+          <div class="form-group"><label>Last Name *</label><input type="text" id="cfLast" placeholder="Smith"/></div>
+          <div class="form-group"><label>Email *</label><input type="email" id="cfEmail" placeholder="jane@email.com"/></div>
+          <div class="form-group"><label>Phone</label><input type="tel" id="cfPhone" placeholder="(207) 555-0100"/></div>
+          <div class="form-group form-full"><label>Service Address *</label><input type="text" id="cfAddress" placeholder="123 Elm St, Portland, ME 04101"/></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-back" onclick="goStep(2)">← Back</button>
+          <button class="btn-next" onclick="goStep(4)">Get My Quote →</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Result -->
+      <div id="qStep4" class="hidden">
+        <div id="quoteOutput"></div>
+        <div id="quoteActions"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  Powered by <a href="commodities.html">207 Analytix</a> &mdash; Lawnscaping Service Portal
+</footer>
+
+<script>
+// ── Demo data ─────────────────────────────────────────────
+const COMPANY = { name: 'Green Valley Grounds', location: 'Portland, ME' };
+
+const SERVICES = [
+  {
+    id: 'lawn',
+    icon: '🌿',
+    name: 'Lawn Care & Mowing',
+    desc: 'Regular mowing, edging, and seasonal cleanups for residential and commercial properties.',
+    price: 'Starting at $45 / visit',
+    fields: [
+      { id: 'area', label: 'Approx. Lot Size', type: 'select', options: ['Under ¼ acre', '¼ – ½ acre', '½ – 1 acre', '1–2 acres', 'Over 2 acres'] },
+      { id: 'frequency', label: 'Service Frequency', type: 'select', options: ['One-time', 'Weekly', 'Bi-weekly', 'Monthly'] },
+      { id: 'extras', label: 'Add-ons', type: 'select', options: ['Mowing only', 'Mowing + edging', 'Full cleanup (mow, edge, blow)'] },
+      { id: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Gates, obstacles, or anything we should know.' }
+    ],
+    lines: (d) => [
+      { l: 'Base rate — lawn mowing', v: 45 },
+      { l: 'Lot size adjustment', v: ['Under ¼ acre','¼ – ½ acre','½ – 1 acre','1–2 acres','Over 2 acres'].indexOf(d.area) * 15 },
+      { l: d.extras === 'Full cleanup (mow, edge, blow)' ? 'Full cleanup add-on' : d.extras === 'Mowing + edging' ? 'Edging add-on' : null, v: d.extras === 'Full cleanup (mow, edge, blow)' ? 25 : d.extras === 'Mowing + edging' ? 10 : 0 }
+    ]
+  },
+  {
+    id: 'dump',
+    icon: '🚛',
+    name: 'Dump Trailer Removal',
+    desc: 'Yard waste, debris, old furniture, dirt, and junk hauled away. We bring the trailer, you load it.',
+    price: 'Starting at $175 / load',
+    fields: [
+      { id: 'loads', label: 'Number of Loads', type: 'select', options: ['1 load', '2 loads', '3 loads', '4+ loads'] },
+      { id: 'material', label: 'Material Type', type: 'select', options: ['Yard waste', 'General debris', 'Dirt / soil', 'Furniture & appliances', 'Mixed materials'] },
+      { id: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Access details, hazardous materials, special instructions.' }
+    ],
+    lines: (d) => [
+      { l: 'Base haul rate (1 load)', v: 175 },
+      { l: d.loads !== '1 load' ? 'Additional loads' : null, v: (['2 loads','3 loads','4+ loads'].indexOf(d.loads)+1) * 150 }
+    ]
+  },
+  {
+    id: 'stump',
+    icon: '🌳',
+    name: 'Stump Grinding',
+    desc: 'Professional stump removal down to grade. No mess left behind.',
+    price: 'Starting at $95 / stump',
+    fields: [
+      { id: 'count', label: 'Number of Stumps', type: 'select', options: ['1', '2', '3', '4', '5+'] },
+      { id: 'size', label: 'Avg. Diameter', type: 'select', options: ['Under 10"', '10–18"', '18–24"', 'Over 24"'] },
+      { id: 'access', label: 'Site Access', type: 'select', options: ['Open / easy', 'Some obstacles', 'Tight / fenced', 'Unknown'] },
+      { id: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Tree species, root complexity, nearby structures.' }
+    ],
+    lines: (d) => [
+      { l: 'Base rate per stump', v: parseInt(d.count) * 95 || 95 },
+      { l: d.size === 'Over 24"' ? 'Oversized stump surcharge' : d.size === '18–24"' ? 'Large stump surcharge' : null, v: d.size === 'Over 24"' ? 60 : d.size === '18–24"' ? 30 : 0 }
+    ]
+  }
+];
+
+// ── State ─────────────────────────────────────────────────
+let selectedSvc = null;
+let intakeData  = {};
+let currentStep = 1;
+
+// ── Init ──────────────────────────────────────────────────
+const params = new URLSearchParams(location.search);
+const bizName = params.get('biz') || COMPANY.name;
+document.getElementById('company-name').textContent = bizName;
+document.getElementById('page-title').textContent   = `${bizName} — Services & Quotes`;
+document.getElementById('service-count').textContent = `${SERVICES.length} services`;
+
+renderServiceCards('serviceGrid', false);
+renderServiceCards('quoteServiceGrid', true);
+
+function renderServiceCards(targetId, selectable) {
+  document.getElementById(targetId).innerHTML = SERVICES.map(s => `
+    <div class="service-card${selectable && selectedSvc?.id===s.id ? ' selected' : ''}"
+      id="${targetId}-${s.id}" onclick="${selectable ? `selectSvc('${s.id}','${targetId}')` : `scrollToQuote(); selectSvc('${s.id}','quoteServiceGrid')`}">
+      <div class="svc-icon">${s.icon}</div>
+      <div class="svc-name">${s.name}</div>
+      <div class="svc-desc">${s.desc}</div>
+      <div class="svc-price">${s.price}</div>
+    </div>
+  `).join('');
+}
+
+function selectSvc(id, gridId) {
+  selectedSvc = SERVICES.find(s => s.id === id);
+  document.querySelectorAll(`#${gridId} .service-card`).forEach(c => c.classList.remove('selected'));
+  const card = document.getElementById(`${gridId}-${id}`);
+  if (card) card.classList.add('selected');
+  renderIntakeFields();
+}
+
+function renderIntakeFields() {
+  if (!selectedSvc) return;
+  document.getElementById('intakeFields').innerHTML = `<div class="form-grid">
+    ${selectedSvc.fields.map(f => {
+      if (f.type === 'textarea') return `<div class="form-group form-full"><label>${f.label}</label><textarea id="f_${f.id}" placeholder="${f.placeholder||''}"></textarea></div>`;
+      if (f.type === 'select') return `<div class="form-group"><label>${f.label}</label><select id="f_${f.id}"><option value="">Select…</option>${f.options.map(o=>`<option>${o}</option>`).join('')}</select></div>`;
+      return `<div class="form-group"><label>${f.label}</label><input type="${f.type}" id="f_${f.id}" placeholder="${f.placeholder||''}"/></div>`;
+    }).join('')}
+  </div>`;
+}
+
+function collectIntake() {
+  if (!selectedSvc) return;
+  selectedSvc.fields.forEach(f => {
+    const el = document.getElementById('f_' + f.id);
+    if (el) intakeData[f.id] = el.value;
+  });
+}
+
+function scrollToQuote() {
+  setTimeout(() => document.getElementById('quoteFlow').scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+}
+
+// ── Step nav ──────────────────────────────────────────────
+function goStep(n) {
+  if (n === 2 && !selectedSvc) { alert('Please select a service first.'); return; }
+  if (n === 2) renderIntakeFields();
+  if (n === 4) { collectIntake(); renderResult(); }
+  currentStep = n;
+  [1,2,3,4].forEach(i => {
+    document.getElementById('qStep' + i).classList.toggle('hidden', i !== n);
+    const p = document.getElementById('sp' + i);
+    p.classList.toggle('active', i === n);
+    p.classList.toggle('done', i < n);
+  });
+  document.getElementById('quoteCardTitle').textContent =
+    ['Select Service','Job Details','Contact Info','Your Quote'][n-1];
+  document.getElementById('quoteCardSub').textContent =
+    ['Pick what you need','Tell us about the job','Where to send results','Estimate ready'][n-1];
+  document.getElementById('quoteFlow').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Quote result ──────────────────────────────────────────
+function renderResult() {
+  const firstName = document.getElementById('cfFirst').value.trim() || 'there';
+  const lines = selectedSvc.lines(intakeData).filter(l => l.l && l.v > 0);
+  const total = lines.reduce((s, l) => s + l.v, 0);
+  const isConsult = lines.length === 0 || total === 0;
+
+  const out = document.getElementById('quoteOutput');
+  const act = document.getElementById('quoteActions');
+
+  if (isConsult) {
+    out.innerHTML = `
+      <div class="alert alert-info">📞 <strong>We'll reach out, ${firstName}!</strong> This job needs an on-site visit for an accurate quote. We'll contact you within 1 business day.</div>
+      <div class="quote-result-box">
+        <p style="font-size:0.875rem;"><strong>Service:</strong> ${selectedSvc.name}</p>
+        <p style="font-size:0.8rem;color:var(--muted);margin-top:0.5rem;">A team member will contact you at the email provided to schedule a free estimate.</p>
+      </div>`;
+  } else {
+    out.innerHTML = `
+      <div class="alert alert-success">✅ Instant estimate ready for <strong>${firstName}</strong>!</div>
+      <div class="quote-result-box">
+        <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.75rem;">${selectedSvc.name}</div>
+        ${lines.map(l => `<div class="quote-line"><span>${l.l}</span><span>$${l.v.toFixed(2)}</span></div>`).join('')}
+        <div class="quote-line"><span>Estimated Total</span><span>$${total.toFixed(2)}</span></div>
+        <p style="font-size:0.75rem;color:var(--muted);margin-top:0.75rem;">This estimate is based on the details you provided. Final pricing confirmed on-site before work begins.</p>
+      </div>`;
+  }
+
+  act.innerHTML = `<button class="btn-next" style="width:100%;" onclick="resetQuote()">Submit Another Request</button>`;
+}
+
+function resetQuote() {
+  selectedSvc = null;
+  intakeData  = {};
+  renderServiceCards('quoteServiceGrid', true);
+  goStep(1);
+  ['cfFirst','cfLast','cfEmail','cfPhone','cfAddress'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+}
+</script>
+</body>
+</html>

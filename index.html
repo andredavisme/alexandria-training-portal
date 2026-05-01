@@ -74,7 +74,20 @@
     color: #fff;
   }
 
-  .footer { font-size: 0.78rem; color: var(--text-muted); text-align: center; margin-top: 0.5rem; }
+  .footer {
+    font-size: 0.78rem; color: var(--text-muted);
+    text-align: center; margin-top: 0.5rem;
+    display: flex; flex-direction: column; gap: 0.4rem; align-items: center;
+  }
+  .footer-links { display: flex; gap: 1.25rem; flex-wrap: wrap; justify-content: center; }
+  .footer-links a { color: var(--text-muted); font-size: 0.78rem; transition: color 0.15s; }
+  .footer-links a:hover { color: var(--accent); }
+  .footer-marketing {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #2dd4bf, #fb7185);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
 </style>
 </head>
 <body>
@@ -246,7 +259,15 @@
     </div>
   </div>
 
-  <p class="footer">Alexandria &mdash; invite-only &middot; <a href="request-access.html">Request access</a></p>
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="request-access.html">Request access</a>
+      <a href="intake.html">Business intake</a>
+      <a href="https://andredavisme.github.io/207analytix/" target="_blank" class="footer-marketing">↗ 207analytix.com</a>
+    </div>
+    <div>Alexandria &mdash; invite-only &middot; &copy; 2026 207 Analytix</div>
+  </footer>
+
 </div>
 </body>
 </html>

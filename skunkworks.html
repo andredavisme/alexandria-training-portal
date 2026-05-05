@@ -18,6 +18,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 a{color:var(--accent);text-decoration:none;}
 .hidden{display:none!important;}
 
+/* Nav */
 .nav{background:#0B1120;border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;gap:.75rem;height:56px;position:sticky;top:0;z-index:100;}
 .logo-sw{width:32px;height:32px;background:#6366F1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
 .brand-name{font-weight:700;font-size:.95rem;}
@@ -26,4 +27,1338 @@ a{color:var(--accent);text-decoration:none;}
 .nav-spacer{flex:1;}
 .btn-ghost-nav{background:transparent;color:var(--muted);border:none;padding:6px 10px;font-size:.82rem;cursor:pointer;font-family:var(--font);text-decoration:none;white-space:nowrap;}
 .btn-ghost-nav:hover{color:var(--text);}
-.btn-primary-nav{background:var(--accent);color:#fff;border:none;padding:7px 14px;border-radius:7px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:var(--font);white-space:now
+.btn-primary-nav{background:var(--accent);color:#fff;border:none;padding:7px 14px;border-radius:7px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;display:flex;align-items:center;gap:5px;transition:opacity .15s;}
+.btn-primary-nav:hover{opacity:.85;}
+.btn-sales-nav{background:#0f766e;color:#fff;border:none;padding:7px 14px;border-radius:7px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;display:flex;align-items:center;gap:5px;transition:opacity .15s;}
+.btn-sales-nav:hover{opacity:.85;}
+
+/* Page header */
+.page-header{padding:2rem 1.5rem 1.5rem;max-width:1400px;margin:0 auto;}
+.page-header h1{font-size:1.6rem;font-weight:800;display:flex;align-items:center;gap:.6rem;}
+.page-header p{font-size:.875rem;color:var(--muted);margin-top:.4rem;max-width:560px;line-height:1.6;}
+
+/* Stats row */
+.stats-row{display:flex;gap:1rem;padding:0 1.5rem 1.5rem;max-width:1400px;margin:0 auto;flex-wrap:wrap;}
+.stat-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;min-width:140px;flex:1;}
+.stat-card .num{font-size:1.5rem;font-weight:800;}
+.stat-card .lbl{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-top:2px;}
+.stat-card.purple .num{color:#A78BFA;}
+.stat-card.yellow .num{color:#FCD34D;}
+.stat-card.green  .num{color:var(--green);}
+.stat-card.blue   .num{color:#60A5FA;}
+
+/* Board */
+.board-wrap{padding:0 1.5rem 3rem;max-width:1400px;margin:0 auto;overflow-x:auto;}
+.board{display:flex;gap:1rem;min-width:900px;align-items:flex-start;}
+.lane{flex:1;min-width:220px;}
+.lane-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;padding:0 2px;}
+.lane-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:6px;}
+.lane-count{font-size:.7rem;font-weight:600;background:var(--border);color:var(--muted);padding:1px 7px;border-radius:10px;}
+.lane-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dot-pitched{background:#94A3B8;}.dot-approved{background:#60A5FA;}.dot-inprogress{background:#F59E0B;}
+.dot-qa{background:#A78BFA;}.dot-delivered{background:#34D399;}.dot-commodity{background:#22C55E;}
+.lane-body{display:flex;flex-direction:column;gap:.75rem;min-height:120px;}
+
+/* Project card */
+.proj-card{background:var(--card-bg);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem;cursor:pointer;transition:border-color .15s,box-shadow .15s;}
+.proj-card:hover{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);}
+.proj-card.commoditized{border-color:#166534;}
+.proj-title{font-size:.875rem;font-weight:700;line-height:1.3;margin-bottom:4px;}
+.proj-sponsor{font-size:.7rem;color:var(--muted);margin-bottom:.5rem;}
+.proj-desc{font-size:.75rem;color:#CBD5E1;line-height:1.5;margin-bottom:.75rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.budget-bar-wrap{margin-bottom:.6rem;}
+.budget-labels{display:flex;justify-content:space-between;font-size:.65rem;color:var(--muted);margin-bottom:3px;}
+.budget-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.budget-fill{height:100%;border-radius:2px;transition:width .3s;}
+.fill-ok{background:var(--green);}.fill-warn{background:var(--yellow);}.fill-over{background:var(--red);}
+.proj-footer{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-top:.5rem;}
+.proj-date{font-size:.65rem;color:var(--muted);}
+.btn-advance{font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:5px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;font-family:var(--font);transition:all .15s;white-space:nowrap;}
+.btn-advance:hover{border-color:var(--accent);color:var(--accent);}
+.btn-comm-card{background:#14532D;border-color:#166534;color:#86EFAC;}
+.btn-comm-card:hover{background:#166534;color:#fff;border-color:#22C55E;}
+.commodity-badge{font-size:.65rem;font-weight:700;color:#86EFAC;background:#14532D;padding:2px 7px;border-radius:5px;}
+.empty-lane{border:1.5px dashed var(--border);border-radius:var(--radius);padding:1.5rem 1rem;text-align:center;color:var(--muted);font-size:.75rem;}
+
+/* ── Sales Agent Pitch Modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem;animation:fadeIn .18s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* Sales pitch — wide, scrollable, tabbed sections */
+.sales-modal{background:#1E293B;border:1px solid #0f766e;border-radius:14px;box-shadow:var(--shadow);width:100%;max-width:760px;max-height:92vh;display:flex;flex-direction:column;animation:slideUp .2s ease;}
+@keyframes slideUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+.sales-modal-header{padding:1.1rem 1.5rem;border-bottom:1px solid #0f766e;display:flex;align-items:center;justify-content:space-between;background:rgba(15,118,110,.08);border-radius:14px 14px 0 0;flex-shrink:0;}
+.sales-modal-header h2{font-size:1rem;font-weight:700;color:#5eead4;}
+.sales-modal-header p{font-size:.72rem;color:var(--muted);margin-top:2px;}
+.modal-close{background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;padding:2px 6px;}
+.modal-close:hover{color:var(--text);}
+
+/* Section strips inside sales modal */
+.sales-body{flex:1;overflow-y:auto;padding:0;}
+.sales-section{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);}
+.sales-section:last-child{border-bottom:none;}
+.sales-section-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#5eead4;margin-bottom:.9rem;display:flex;align-items:center;gap:6px;}
+.sales-field{margin-bottom:.85rem;}
+.sales-field label{display:block;font-size:.72rem;font-weight:600;color:var(--muted);margin-bottom:.3rem;}
+.sales-field input,.sales-field textarea,.sales-field select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.875rem;font-family:var(--font);color:var(--text);background:#0F172A;transition:border-color .15s;}
+.sales-field input:focus,.sales-field textarea:focus,.sales-field select:focus{outline:none;border-color:#0f766e;}
+.sales-field textarea{resize:vertical;}
+.sales-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.sales-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;}
+.field-hint{font-size:.67rem;color:#475569;margin-top:.2rem;}
+
+/* Deliverables checklist */
+.deliverables-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem .75rem;margin-top:.35rem;}
+.deliv-check{display:flex;align-items:center;gap:.4rem;font-size:.8rem;cursor:pointer;}
+.deliv-check input[type=checkbox]{accent-color:#0f766e;width:14px;height:14px;flex-shrink:0;cursor:pointer;}
+
+/* Timeline weeks */
+.weeks-list{display:flex;flex-direction:column;gap:.4rem;}
+.week-row{display:grid;grid-template-columns:70px 1fr;gap:.5rem;align-items:start;}
+.week-label{font-size:.72rem;font-weight:700;color:#5eead4;padding-top:9px;}
+.week-input{width:100%;padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:.8rem;font-family:var(--font);color:var(--text);background:#0F172A;transition:border-color .15s;}
+.week-input:focus{outline:none;border-color:#0f766e;}
+
+/* Branding color swatches */
+.color-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.35rem;}
+.color-swatch-wrap{display:flex;align-items:center;gap:.35rem;font-size:.75rem;}
+.color-dot{width:20px;height:20px;border-radius:4px;border:1px solid rgba(255,255,255,.15);flex-shrink:0;}
+
+/* Placeholder tag */
+.placeholder-tag{display:inline-block;background:#292524;color:#FCD34D;font-size:.62rem;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:5px;vertical-align:middle;}
+
+/* Action footer */
+.sales-footer{padding:1.1rem 1.5rem;border-top:1px solid #0f766e;display:flex;gap:.75rem;justify-content:flex-end;background:rgba(15,118,110,.05);border-radius:0 0 14px 14px;flex-shrink:0;}
+.btn-sales-submit{padding:10px 22px;border-radius:8px;font-size:.9rem;font-weight:700;background:#0f766e;color:#fff;border:none;cursor:pointer;font-family:var(--font);transition:opacity .15s;}
+.btn-sales-submit:hover{opacity:.85;}
+.btn-sales-submit:disabled{opacity:.45;cursor:not-allowed;}
+.btn-outline{padding:8px 14px;border-radius:8px;font-size:.78rem;font-weight:600;background:none;color:var(--muted);border:1.5px solid var(--border);cursor:pointer;font-family:var(--font);transition:border-color .15s,color .15s;}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+
+/* Generic pitch modal */
+.modal{background:#1E293B;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);width:100%;max-width:520px;max-height:90vh;overflow-y:auto;animation:slideUp .2s ease;}
+.modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-header h2{font-size:1rem;font-weight:700;}
+.modal-body{padding:1.5rem;}
+.form-group{margin-bottom:1rem;}
+.form-group label{display:block;font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:.3rem;}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.875rem;font-family:var(--font);color:var(--text);background:#0F172A;transition:border-color .15s;}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--accent);}
+.form-group textarea{resize:vertical;min-height:72px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.btn-submit{width:100%;padding:11px;border-radius:9px;font-size:.9rem;font-weight:700;background:var(--accent);color:#fff;border:none;cursor:pointer;font-family:var(--font);transition:opacity .15s;margin-top:.25rem;}
+.btn-submit:hover{opacity:.85;}
+.btn-submit:disabled{opacity:.45;cursor:not-allowed;}
+
+/* Detail modal */
+.detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem;animation:fadeIn .18s ease;}
+.detail-panel{background:#1E293B;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);width:100%;max-width:780px;max-height:92vh;display:flex;flex-direction:column;animation:slideUp .2s ease;}
+.detail-head{padding:1.1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-shrink:0;}
+.detail-head-title{font-size:1rem;font-weight:700;line-height:1.4;flex:1;}
+.detail-head-meta{font-size:.7rem;color:var(--muted);margin-top:3px;}
+.detail-close{background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;padding:2px 6px;flex-shrink:0;}
+.detail-close:hover{color:var(--text);}
+
+/* Tab bar */
+.tab-bar{display:flex;gap:2px;padding:.75rem 1.5rem 0;border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto;}
+.tab-btn{background:none;border:none;color:var(--muted);font-size:.78rem;font-weight:600;padding:.5rem .75rem;cursor:pointer;font-family:var(--font);white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s;display:flex;align-items:center;gap:5px;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-count{background:var(--border);color:var(--muted);font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:8px;}
+.tab-btn.active .tab-count{background:rgba(99,102,241,.2);color:var(--accent);}
+.tab-body{flex:1;overflow-y:auto;padding:1.25rem 1.5rem;}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+
+/* Shared form styles */
+.field-label{font-size:.72rem;font-weight:600;color:var(--muted);margin-bottom:.3rem;display:block;}
+.field-input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.875rem;font-family:var(--font);color:var(--text);background:#0F172A;transition:border-color .15s;}
+.field-input:focus{outline:none;border-color:var(--accent);}
+textarea.field-input{resize:vertical;}
+.field-group{margin-bottom:1rem;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;}
+.btn-save{padding:9px 18px;border-radius:8px;font-size:.82rem;font-weight:700;background:var(--accent);color:#fff;border:none;cursor:pointer;font-family:var(--font);transition:opacity .15s;}
+.btn-save:hover{opacity:.85;}
+.btn-save:disabled{opacity:.45;cursor:not-allowed;}
+.btn-danger-sm{padding:6px 10px;border-radius:6px;font-size:.7rem;font-weight:600;background:none;color:#FCA5A5;border:1px solid #991B1B;cursor:pointer;font-family:var(--font);}
+.btn-danger-sm:hover{background:#7F1D1D;}
+.btn-rollback{padding:9px 18px;border-radius:8px;font-size:.82rem;font-weight:700;background:none;color:#FCD34D;border:1.5px solid #78350F;cursor:pointer;font-family:var(--font);transition:all .15s;}
+.btn-rollback:hover{background:#78350F;color:#fff;}
+.btn-rollback:disabled{opacity:.35;cursor:not-allowed;}
+.section-actions{display:flex;justify-content:flex-end;margin-bottom:1rem;}
+
+/* List items */
+.item-list{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.25rem;}
+.item-card{background:#0F172A;border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;display:flex;gap:.75rem;align-items:flex-start;}
+.item-main{flex:1;min-width:0;}
+.item-title{font-size:.82rem;font-weight:700;margin-bottom:2px;}
+.item-sub{font-size:.72rem;color:var(--muted);line-height:1.5;}
+.item-sub-body{font-size:.72rem;color:#94A3B8;line-height:1.5;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.item-badge{font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.badge-human{background:#1e3a5f;color:#93C5FD;}
+.badge-agent{background:#2e1065;color:#C4B5FD;}
+.badge-external{background:#1c2f1c;color:#86EFAC;}
+.badge-research{background:#1e3a5f;color:#93C5FD;}
+.badge-spec{background:#292524;color:#FCD34D;}
+.badge-build{background:#1c2f1c;color:#86EFAC;}
+.badge-qa{background:#2e1065;color:#C4B5FD;}
+.badge-review{background:#1e293b;color:#94A3B8;}
+.badge-doc{background:#1e3a5f;color:#93C5FD;}
+.badge-link{background:#292524;color:#FCD34D;}
+.badge-code{background:#1c2f1c;color:#86EFAC;}
+.badge-artifact{background:#2e1065;color:#C4B5FD;}
+.badge-report{background:#3b1f1f;color:#FCA5A5;}
+.badge-other{background:#1e293b;color:#94A3B8;}
+.item-date{font-size:.62rem;color:#475569;margin-top:4px;}
+.add-form{background:#0F172A;border:1.5px dashed var(--border);border-radius:8px;padding:1rem;margin-bottom:1rem;}
+.add-form-title{font-size:.75rem;font-weight:700;color:var(--muted);margin-bottom:.75rem;}
+.add-form-actions{display:flex;gap:.5rem;margin-top:.75rem;}
+
+/* Approval */
+.approval-approved{background:#14532D;border:1px solid #166534;border-radius:10px;padding:1.25rem;text-align:center;margin-bottom:1rem;}
+.approval-approved .icon{font-size:1.5rem;margin-bottom:.4rem;}
+.approval-approved .label{font-size:.9rem;font-weight:700;color:#86EFAC;}
+.approval-approved .meta{font-size:.75rem;color:#4ADE80;margin-top:.3rem;}
+.btn-approve{width:100%;padding:12px;border-radius:9px;font-size:.95rem;font-weight:800;background:var(--green);color:#0B1120;border:none;cursor:pointer;font-family:var(--font);transition:opacity .15s;margin-top:.5rem;}
+.btn-approve:hover{opacity:.85;}
+.btn-reject{width:100%;padding:10px;border-radius:9px;font-size:.82rem;font-weight:600;background:#7F1D1D;color:#FCA5A5;border:1px solid #991B1B;cursor:pointer;font-family:var(--font);margin-top:.5rem;}
+.btn-reject:hover{background:#991B1B;}
+.btn-commoditize-big{width:100%;padding:11px;border-radius:9px;font-size:.9rem;font-weight:700;background:#14532D;color:#86EFAC;border:1.5px solid #166534;cursor:pointer;font-family:var(--font);transition:background .15s;margin-top:.5rem;}
+.btn-commoditize-big:hover{background:#166534;color:#fff;}
+.already-comm{text-align:center;padding:.75rem;color:#86EFAC;font-size:.85rem;font-weight:600;}
+
+/* Spinner */
+.spinner-ring{display:inline-block;width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.state-wrap{text-align:center;padding:4rem 2rem;color:var(--muted);}
+.mini-spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;}
+.empty-tab{text-align:center;padding:2rem 1rem;color:var(--muted);font-size:.8rem;border:1.5px dashed var(--border);border-radius:8px;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="logo-sw">🦨</div>
+  <div><div class="brand-name">Skunk Works</div><div class="brand-sub">207 Analytix R&D Pipeline</div></div>
+  <span class="nav-sep">|</span>
+  <div class="nav-spacer"></div>
+  <a href="golden-prompts.html" class="btn-ghost-nav">✨ Golden Prompts</a>
+  <a href="commodities.html"    class="btn-ghost-nav">📦 Commodities</a>
+  <a href="index.html"          class="btn-ghost-nav">← Portal</a>
+  <button class="btn-sales-nav" onclick="openSalesModal()">📋 Submit Pitch</button>
+  <button class="btn-primary-nav" onclick="openNewModal()">+ Pitch Project</button>
+</nav>
+
+<div class="page-header">
+  <h1>🦨 Skunk Works Pipeline</h1>
+  <p>Internal R&D lab for 207 Analytix. Every commodity starts here — pitched, built, proven, then deployed to the catalog.</p>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card purple"><div class="num" id="stat-total">—</div><div class="lbl">Total Projects</div></div>
+  <div class="stat-card yellow"><div class="num" id="stat-active">—</div><div class="lbl">In Flight</div></div>
+  <div class="stat-card green" ><div class="num" id="stat-comm">—</div><div class="lbl">Commoditized</div></div>
+  <div class="stat-card blue"  ><div class="num" id="stat-budget">—</div><div class="lbl">Budget Deployed</div></div>
+</div>
+
+<div class="board-wrap">
+  <div class="board" id="board">
+    <div class="state-wrap" style="width:100%"><div class="spinner-ring"></div><p style="margin-top:1rem">Loading pipeline…</p></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SALES AGENT PITCH SUBMISSION MODAL
+     ══════════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="sales-modal" onclick="closeOnBackdrop(event,'sales-modal')">
+  <div class="sales-modal">
+
+    <div class="sales-modal-header">
+      <div>
+        <h2>📋 Sales Agent — Client Pitch Submission</h2>
+        <p>Fill out the intake form below. Your submission will enter the moderation queue as a Pitched project.</p>
+      </div>
+      <button class="modal-close" onclick="closeModal('sales-modal')">×</button>
+    </div>
+
+    <div class="sales-body">
+
+      <!-- § 1 — SALES REP + CLIENT -->
+      <div class="sales-section">
+        <div class="sales-section-label">👤 Sales Rep &amp; Client</div>
+        <div class="sales-row">
+          <div class="sales-field">
+            <label>Your Name *</label>
+            <input type="text" id="sa-agent-name" placeholder="Sales agent name"/>
+          </div>
+          <div class="sales-field">
+            <label>Your Email</label>
+            <input type="email" id="sa-agent-email" placeholder="agent@207analytix.com"/>
+          </div>
+        </div>
+        <div class="sales-row">
+          <div class="sales-field">
+            <label>Client / Organization Name *</label>
+            <input type="text" id="sa-client-name" placeholder="e.g. Westbrook City Band"/>
+          </div>
+          <div class="sales-field">
+            <label>Client Contact Name</label>
+            <input type="text" id="sa-client-contact" placeholder="Primary point of contact"/>
+          </div>
+        </div>
+        <div class="sales-row">
+          <div class="sales-field">
+            <label>Client Email</label>
+            <input type="email" id="sa-client-email" placeholder="client@example.com"/>
+          </div>
+          <div class="sales-field">
+            <label>Client Phone</label>
+            <input type="tel" id="sa-client-phone" placeholder="(207) 555-0100"/>
+          </div>
+        </div>
+        <div class="sales-field">
+          <label>Project Type / Category</label>
+          <select id="sa-project-type">
+            <option value="">— Select a category —</option>
+            <option>Nonprofit Web Presence</option>
+            <option>Business Web Presence</option>
+            <option>Member / Community Portal</option>
+            <option>Event &amp; Calendar System</option>
+            <option>Fundraising &amp; Donations Platform</option>
+            <option>E-Commerce</option>
+            <option>Analytics &amp; Reporting Dashboard</option>
+            <option>Training / LMS Platform</option>
+            <option>Automation Tool</option>
+            <option>Custom Application</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- § 2 — MISSION & WRITTEN CONTENT -->
+      <div class="sales-section">
+        <div class="sales-section-label">📜 Mission &amp; Content</div>
+        <div class="sales-field">
+          <label>Organization Mission Statement</label>
+          <textarea id="sa-mission" rows="4" placeholder="Paste the client's mission statement or org description here…"></textarea>
+        </div>
+        <div class="sales-field">
+          <label>Additional Written Content <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+          <textarea id="sa-content-extra" rows="3" placeholder="Secondary messaging, about-us text, student/youth outreach copy, etc."></textarea>
+        </div>
+      </div>
+
+      <!-- § 3 — BRANDING -->
+      <div class="sales-section">
+        <div class="sales-section-label">🎨 Branding</div>
+        <div class="sales-field">
+          <label>Logo File / Description</label>
+          <input type="text" id="sa-logo" placeholder="e.g. WCB-logo.jpg — navy treble clef badge, attached"/>
+          <div class="field-hint">Upload the logo separately and note the filename here.</div>
+        </div>
+        <div class="sales-row">
+          <div class="sales-field">
+            <label>Primary Color (hex or name)</label>
+            <input type="text" id="sa-color1" placeholder="#1B3A6B — Navy Blue"/>
+          </div>
+          <div class="sales-field">
+            <label>Secondary Color</label>
+            <input type="text" id="sa-color2" placeholder="#FFFFFF — White"/>
+          </div>
+        </div>
+        <div class="sales-field" style="max-width:320px">
+          <label>Accent Color <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+          <input type="text" id="sa-color3" placeholder="#2563EB — Accent Blue"/>
+        </div>
+      </div>
+
+      <!-- § 4 — LINKS -->
+      <div class="sales-section">
+        <div class="sales-section-label">🔗 Client Links</div>
+        <div class="sales-row">
+          <div class="sales-field">
+            <label>Current Website</label>
+            <input type="url" id="sa-website" placeholder="https://…"/>
+          </div>
+          <div class="sales-field">
+            <label>Facebook Page</label>
+            <input type="url" id="sa-facebook" placeholder="https://facebook.com/…"/>
+          </div>
+        </div>
+        <div class="sales-row">
+          <div class="sales-field">
+            <label>YouTube / Video Playlist</label>
+            <input type="url" id="sa-youtube" placeholder="https://youtube.com/playlist?list=…"/>
+          </div>
+          <div class="sales-field">
+            <label>Other Link <span style="font-weight:400;color:var(--muted)">(Instagram, LinkedIn, etc.)</span></label>
+            <input type="url" id="sa-other-link" placeholder="https://…"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- § 5 — DELIVERABLES (checkboxes) -->
+      <div class="sales-section">
+        <div class="sales-section-label">📦 Agreed Deliverables</div>
+        <div class="sales-field">
+          <label>Check all that apply for this client</label>
+          <div class="deliverables-grid">
+            <label class="deliv-check"><input type="checkbox" id="dc-public-site" checked/> Public Website (homepage, about, contact)</label>
+            <label class="deliv-check"><input type="checkbox" id="dc-gallery"/> Media Gallery (photos / YouTube playlist)</label>
+            <label class="deliv-check"><input type="checkbox" id="dc-member-portal"/> Private Member Portal (login, docs, schedules)</label>
+            <label class="deliv-check"><input type="checkbox" id="dc-calendar"/> Event &amp; Calendar System</label>
+            <label class="deliv-check"><input type="checkbox" id="dc-fundraising"/> Fundraising / Donation Page</label>
+            <label class="deliv-check"><input type="checkbox" id="dc-admin-training"/> Admin Training Portal</label>
+            <label class="deliv-check"><input type="checkbox" id="dc-ecommerce"/> E-Commerce / Store</label>
+            <label class="deliv-check"><input type="checkbox" id="dc-analytics"/> Analytics Dashboard</label>
+          </div>
+        </div>
+        <div class="sales-field">
+          <label>Additional Deliverables / Scope Notes <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+          <textarea id="sa-scope-notes" rows="2" placeholder="Any out-of-scope items, special features, or caveats agreed with client…"></textarea>
+        </div>
+      </div>
+
+      <!-- § 6 — TIMELINE -->
+      <div class="sales-section">
+        <div class="sales-section-label">📅 Project Timeline</div>
+        <div class="sales-field">
+          <label>Total Estimated Duration</label>
+          <input type="text" id="sa-duration" placeholder="e.g. 7 weeks"/>
+        </div>
+        <div class="sales-field">
+          <label>Milestone Breakdown <span style="font-weight:400;color:var(--muted)">(fill in as many weeks as needed)</span></label>
+          <div class="weeks-list">
+            <div class="week-row"><span class="week-label">Week 1</span><input class="week-input" id="wk1" placeholder="e.g. Planning, design, wireframing"/></div>
+            <div class="week-row"><span class="week-label">Wks 2–3</span><input class="week-input" id="wk2" placeholder="e.g. Public site, calendar, fundraising"/></div>
+            <div class="week-row"><span class="week-label">Wks 4–5</span><input class="week-input" id="wk3" placeholder="e.g. Member portal, admin dashboard"/></div>
+            <div class="week-row"><span class="week-label">Week 6</span><input class="week-input" id="wk4" placeholder="e.g. QA, revisions, training portal"/></div>
+            <div class="week-row"><span class="week-label">Week 7</span><input class="week-input" id="wk5" placeholder="e.g. Deployment, launch, handover"/></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- § 7 — INVESTMENT -->
+      <div class="sales-section">
+        <div class="sales-section-label">💰 Investment &amp; Subsidization</div>
+        <div class="sales-row-3">
+          <div class="sales-field">
+            <label>Market Value ($)</label>
+            <input type="number" id="sa-market-value" min="0" step="100" placeholder="15000"/>
+            <div class="field-hint">Standard market rate for this scope.</div>
+          </div>
+          <div class="sales-field">
+            <label>Client Budget ($) *</label>
+            <input type="number" id="sa-client-budget" min="0" step="100" placeholder="5000"/>
+            <div class="field-hint">What the client will pay.</div>
+          </div>
+          <div class="sales-field">
+            <label>Subsidy Amount ($)</label>
+            <input type="number" id="sa-subsidy" min="0" step="100" placeholder="10000" readonly style="opacity:.6;cursor:not-allowed"/>
+            <div class="field-hint">Auto-calculated.</div>
+          </div>
+        </div>
+        <div class="sales-field">
+          <label>Subsidy Justification</label>
+          <textarea id="sa-subsidy-reason" rows="2" placeholder="e.g. Aligns with founders' mission to empower local community organizations."></textarea>
+        </div>
+      </div>
+
+      <!-- § 8 — PAYMENT / DONATIONS -->
+      <div class="sales-section">
+        <div class="sales-section-label">💳 Payment &amp; Donation Info</div>
+        <div class="sales-row">
+          <div class="sales-field">
+            <label>Client PayPal / Payment Email <span class="placeholder-tag">PLACEHOLDER if unknown</span></label>
+            <input type="text" id="sa-paypal" placeholder="e.g. donate@org.org  —  or 'PENDING'"/>
+          </div>
+          <div class="sales-field">
+            <label>Payment Notes</label>
+            <input type="text" id="sa-payment-notes" placeholder="e.g. One-time payment, net-30, check, etc."/>
+          </div>
+        </div>
+      </div>
+
+      <!-- § 9 — PROPOSAL EMAIL BODY -->
+      <div class="sales-section">
+        <div class="sales-section-label">✉️ Proposal Email Sent to Client</div>
+        <div class="sales-field">
+          <label>Paste the full proposal email you sent <span style="font-weight:400;color:var(--muted)">(or a summary)</span></label>
+          <textarea id="sa-proposal-email" rows="10" placeholder="Paste the body of the email you sent to the client outlining deliverables, timeline, and investment…"></textarea>
+        </div>
+      </div>
+
+    </div><!-- /sales-body -->
+
+    <div class="sales-footer">
+      <button class="btn-outline" onclick="closeModal('sales-modal')">Cancel</button>
+      <button class="btn-sales-submit" id="sales-submit-btn" onclick="submitSalesPitch()">🚀 Submit to Pipeline →</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Generic Pitch Modal -->
+<div class="modal-overlay hidden" id="new-modal" onclick="closeOnBackdrop(event,'new-modal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>🚀 Pitch a Project</h2>
+      <button class="modal-close" onclick="closeModal('new-modal')">×</button>
+    </div>
+    <div class="modal-body">
+      <form onsubmit="submitNew(event)">
+        <div class="form-group"><label>Project Title *</label><input type="text" id="new-title" required placeholder="e.g. Local Business Review Aggregator"/></div>
+        <div class="form-group"><label>Description</label><textarea id="new-desc" placeholder="What problem does this solve?"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label>Sponsor</label><input type="text" id="new-sponsor" placeholder="Who's backing this?"/></div>
+          <div class="form-group"><label>Budget Allocated ($)</label><input type="number" id="new-budget" min="0" step="1" placeholder="0"/></div>
+        </div>
+        <button type="submit" class="btn-submit" id="new-submit-btn">Pitch It →</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Panel -->
+<div class="detail-overlay hidden" id="detail-overlay" onclick="closeOnBackdrop(event,'detail-overlay')">
+  <div class="detail-panel">
+
+    <div class="detail-head">
+      <div>
+        <div class="detail-head-title" id="dh-title">—</div>
+        <div class="detail-head-meta" id="dh-meta">—</div>
+      </div>
+      <button class="detail-close" onclick="closeDetail()">×</button>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="overview" onclick="switchTab('overview')">Overview</button>
+      <button class="tab-btn" data-tab="spec" onclick="switchTab('spec')">Spec</button>
+      <button class="tab-btn" data-tab="sessions" onclick="switchTab('sessions')">Sessions<span class="tab-count" id="tc-sessions"></span></button>
+      <button class="tab-btn" data-tab="deliverables" onclick="switchTab('deliverables')">Deliverables<span class="tab-count" id="tc-deliverables"></span></button>
+      <button class="tab-btn" data-tab="contributors" onclick="switchTab('contributors')">Contributors<span class="tab-count" id="tc-contributors"></span></button>
+      <button class="tab-btn" data-tab="approval" onclick="switchTab('approval')">Approval</button>
+    </div>
+
+    <div class="tab-body">
+
+      <!-- OVERVIEW -->
+      <div class="tab-pane active" id="tab-overview">
+        <div class="field-row">
+          <div class="field-group"><label class="field-label">Title</label><input class="field-input" type="text" id="ov-title"/></div>
+          <div class="field-group"><label class="field-label">Sponsor</label><input class="field-input" type="text" id="ov-sponsor"/></div>
+        </div>
+        <div class="field-group"><label class="field-label">Description</label><textarea class="field-input" id="ov-desc" rows="3"></textarea></div>
+        <div class="field-row">
+          <div class="field-group"><label class="field-label">Budget Allocated ($)</label><input class="field-input" type="number" id="ov-alloc" min="0"/></div>
+          <div class="field-group"><label class="field-label">Budget Spent ($)</label><input class="field-input" type="number" id="ov-spent" min="0"/></div>
+        </div>
+        <div class="field-row" style="align-items:end">
+          <div class="field-group">
+            <label class="field-label">Pipeline Stage</label>
+            <select class="field-input" id="ov-status">
+              <option value="pitched">🎯 Pitched</option>
+              <option value="approved">✅ Approved</option>
+              <option value="in_progress">⚙️ In Progress</option>
+              <option value="qa_review">🔍 QA Review</option>
+              <option value="delivered">📬 Delivered</option>
+            </select>
+          </div>
+          <div class="field-group" style="margin-bottom:1rem">
+            <button class="btn-save" style="width:100%" onclick="saveOverview()">Save Overview</button>
+          </div>
+        </div>
+        <!-- Roll Back Stage -->
+        <div id="ov-rollback-wrap" style="margin-bottom:1rem">
+          <button class="btn-rollback" id="ov-rollback-btn" onclick="rollbackStage()" title="Move project back one stage">↩ Roll Back Stage</button>
+          <span id="ov-rollback-label" style="font-size:.72rem;color:var(--muted);margin-left:.6rem;"></span>
+        </div>
+        <div id="ov-commoditize-wrap">
+          <button class="btn-commoditize-big" onclick="commoditizeProject()">🏭 Commoditize → Add to Catalog</button>
+        </div>
+        <div id="ov-already-comm" class="already-comm hidden">✅ Already commoditized and live in the catalog.</div>
+      </div>
+
+      <!-- SPEC -->
+      <div class="tab-pane" id="tab-spec">
+        <div class="field-group">
+          <label class="field-label">Target Commodity Type</label>
+          <input class="field-input" type="text" id="sp-type" placeholder="e.g. Analytics Report, Automation Tool, Training Module"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Spec Document</label>
+          <textarea class="field-input" id="sp-doc" rows="14"
+            placeholder="## Problem Statement&#10;What problem does this solve?&#10;&#10;## Success Criteria&#10;How do we know when it's done?&#10;&#10;## Scope&#10;What is in / out of scope?&#10;&#10;## Notes"></textarea>
+        </div>
+        <div style="display:flex;justify-content:flex-end">
+          <button class="btn-save" onclick="saveSpec()">Save Spec</button>
+        </div>
+      </div>
+
+      <!-- SESSIONS -->
+      <div class="tab-pane" id="tab-sessions">
+        <div class="section-actions">
+          <button class="btn-outline" onclick="toggleAddForm('session-form')">+ Log Session</button>
+        </div>
+        <div class="add-form hidden" id="session-form">
+          <div class="add-form-title">📝 Log Prompting Session</div>
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label">Session Type</label>
+              <select class="field-input" id="sf-type">
+                <option value="research">Research</option>
+                <option value="spec">Spec Writing</option>
+                <option value="build">Build</option>
+                <option value="qa">QA</option>
+                <option value="review">Review</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Agent / Operator</label>
+              <input class="field-input" type="text" id="sf-agent" placeholder="e.g. GPT-4o, Claude, Andre"/>
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Golden Prompt Used</label>
+            <select class="field-input" id="sf-golden" onchange="autofillPrompt()">
+              <option value="">Select a golden prompt (optional)</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Prompt Used <span style="font-weight:400;color:var(--muted)">(auto-filled or custom)</span></label>
+            <textarea class="field-input" id="sf-prompt" rows="4" placeholder="Paste or edit the prompt that was run…"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Output Summary</label>
+            <textarea class="field-input" id="sf-summary" rows="3" placeholder="Key findings, decisions, or outputs from this session…"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Full Output <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+            <textarea class="field-input" id="sf-full" rows="4" placeholder="Paste full output if needed…"></textarea>
+          </div>
+          <div class="add-form-actions">
+            <button class="btn-outline" onclick="toggleAddForm('session-form')">Cancel</button>
+            <button class="btn-save" onclick="addSession()">Save Session</button>
+          </div>
+        </div>
+        <div class="item-list" id="sessions-list"><div class="mini-spinner"></div></div>
+      </div>
+
+      <!-- DELIVERABLES -->
+      <div class="tab-pane" id="tab-deliverables">
+        <div class="section-actions">
+          <button class="btn-outline" onclick="toggleAddForm('deliv-form')">+ Add Deliverable</button>
+        </div>
+        <div class="add-form hidden" id="deliv-form">
+          <div class="add-form-title">📦 Add Deliverable</div>
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label">Title *</label>
+              <input class="field-input" type="text" id="df-title" placeholder="e.g. Initial Research Doc"/>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Type</label>
+              <select class="field-input" id="df-type">
+                <option value="doc">Doc</option>
+                <option value="link">Link</option>
+                <option value="code">Code</option>
+                <option value="artifact">Artifact</option>
+                <option value="report">Report</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">URL <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+            <input class="field-input" type="url" id="df-url" placeholder="https://…"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Body / Notes <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+            <textarea class="field-input" id="df-body" rows="3" placeholder="Description or content…"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Submitted By</label>
+            <input class="field-input" type="text" id="df-by" placeholder="Name or handle"/>
+          </div>
+          <div class="add-form-actions">
+            <button class="btn-outline" onclick="toggleAddForm('deliv-form')">Cancel</button>
+            <button class="btn-save" onclick="addDeliverable()">Add Deliverable</button>
+          </div>
+        </div>
+        <div class="item-list" id="deliverables-list"><div class="mini-spinner"></div></div>
+      </div>
+
+      <!-- CONTRIBUTORS -->
+      <div class="tab-pane" id="tab-contributors">
+        <div class="section-actions">
+          <button class="btn-outline" onclick="toggleAddForm('contrib-form')">+ Add Contributor</button>
+        </div>
+        <div class="add-form hidden" id="contrib-form">
+          <div class="add-form-title">👤 Add Contributor</div>
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label">Name *</label>
+              <input class="field-input" type="text" id="cf-name" placeholder="Name or agent identifier"/>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Type</label>
+              <select class="field-input" id="cf-type">
+                <option value="human">Human</option>
+                <option value="agent">Agent</option>
+                <option value="external">External</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label">Role</label>
+              <input class="field-input" type="text" id="cf-role" placeholder="e.g. Lead Researcher, QA Agent"/>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Contribution Note</label>
+              <input class="field-input" type="text" id="cf-note" placeholder="Brief description…"/>
+            </div>
+          </div>
+          <div class="add-form-actions">
+            <button class="btn-outline" onclick="toggleAddForm('contrib-form')">Cancel</button>
+            <button class="btn-save" onclick="addContributor()">Add Contributor</button>
+          </div>
+        </div>
+        <div class="item-list" id="contributors-list"><div class="mini-spinner"></div></div>
+      </div>
+
+      <!-- APPROVAL -->
+      <div class="tab-pane" id="tab-approval">
+        <div id="approval-approved-block" class="hidden">
+          <div class="approval-approved">
+            <div class="icon">✅</div>
+            <div class="label">Approved</div>
+            <div class="meta" id="ap-approved-meta">—</div>
+          </div>
+        </div>
+        <div id="approval-form-block">
+          <div class="field-group"><label class="field-label">Approver Name</label><input class="field-input" type="text" id="ap-name" placeholder="Who is signing off?"/></div>
+          <div class="field-group"><label class="field-label">Approval Notes</label><textarea class="field-input" id="ap-notes" rows="4" placeholder="Why is this approved? Any conditions or caveats?"></textarea></div>
+          <button class="btn-approve" onclick="approveProject()">✅ Approve Project</button>
+          <button class="btn-reject" onclick="rejectProject()">❌ Return to Pitched</button>
+        </div>
+        <div id="approval-comm-wrap" style="margin-top:1rem">
+          <button class="btn-commoditize-big" id="ap-comm-btn" onclick="commoditizeProject()">🏭 Commoditize → Add to Catalog</button>
+        </div>
+        <div id="approval-already-comm" class="already-comm hidden">✅ Already commoditized and live in the catalog.</div>
+      </div>
+
+    </div><!-- /tab-body -->
+  </div><!-- /detail-panel -->
+</div><!-- /detail-overlay -->
+
+<script>
+const SUPA_URL = 'https://hhyhulqngdkwsxhymmcd.supabase.co'
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoeWh1bHFuZ2Rrd3N4aHltbWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzEyMDEsImV4cCI6MjA5MjcwNzIwMX0.dmSy7Q8Je5lEY4XCFzwvfPnkBYLebPE0yZMhy6Y8czI'
+
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+async function supa(path,opts={}){
+  const{headers:extraHeaders,...restOpts}=opts
+  const r=await fetch(SUPA_URL+path,{
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json',...(extraHeaders||{})},
+    ...restOpts
+  })
+  if(!r.ok) throw new Error(await r.text())
+  const txt=await r.text()
+  return txt?JSON.parse(txt):null
+}
+
+const STAGES=[
+  {key:'pitched',    label:'Pitched',     dot:'dot-pitched'},
+  {key:'approved',   label:'Approved',    dot:'dot-approved'},
+  {key:'in_progress',label:'In Progress', dot:'dot-inprogress'},
+  {key:'qa_review',  label:'QA Review',   dot:'dot-qa'},
+  {key:'delivered',  label:'Delivered',   dot:'dot-delivered'},
+  {key:'commoditized',label:'Commoditized',dot:'dot-commodity'},
+]
+const ADVANCE={
+  'pitched':'Approve →','approved':'Start →','in_progress':'QA →',
+  'qa_review':'Deliver →','delivered':'🏭 Commoditize',
+}
+const PREV_STAGE={
+  'approved':'pitched',
+  'in_progress':'approved',
+  'qa_review':'in_progress',
+  'delivered':'qa_review',
+}
+
+let allProjects=[]
+let goldenPrompts=[]
+let activeId=null
+let activeSessions=[]
+let activeDeliverables=[]
+let activeContributors=[]
+
+async function load(){
+  try{
+    [allProjects,goldenPrompts]=await Promise.all([
+      supa('/rest/v1/skunkworks_projects?select=*&order=created_at.desc'),
+      supa('/rest/v1/golden_prompts?select=id,title,prompt_body&active=eq.true&order=title')
+    ])
+    populateGoldenSelect()
+    renderStats()
+    renderBoard()
+  }catch(e){
+    document.getElementById('board').innerHTML=`<div class="state-wrap" style="width:100%">⚠️ ${esc(e.message)}</div>`
+  }
+}
+
+function populateGoldenSelect(){
+  const sel=document.getElementById('sf-golden')
+  sel.innerHTML='<option value="">Select a golden prompt (optional)</option>'+
+    goldenPrompts.map(p=>`<option value="${esc(p.id)}">${esc(p.title)}</option>`).join('')
+}
+
+function autofillPrompt(){
+  const id=document.getElementById('sf-golden').value
+  const p=goldenPrompts.find(x=>x.id===id)
+  document.getElementById('sf-prompt').value=p?p.prompt_body:''
+}
+
+function renderStats(){
+  const inFlight=allProjects.filter(p=>!['pitched','commoditized'].includes(p.status)).length
+  const comm=allProjects.filter(p=>p.commoditized).length
+  const budget=allProjects.reduce((s,p)=>s+(p.budget_spent||0),0)
+  document.getElementById('stat-total').textContent=allProjects.length
+  document.getElementById('stat-active').textContent=inFlight
+  document.getElementById('stat-comm').textContent=comm
+  document.getElementById('stat-budget').textContent='$'+budget.toLocaleString()
+}
+
+function renderBoard(){
+  const board=document.getElementById('board')
+  board.innerHTML=STAGES.map(stage=>{
+    const items=allProjects.filter(p=>p.status===stage.key)
+    return`<div class="lane">
+      <div class="lane-header">
+        <div class="lane-title"><span class="lane-dot ${stage.dot}"></span>${esc(stage.label)}</div>
+        <span class="lane-count">${items.length}</span>
+      </div>
+      <div class="lane-body">${items.length?items.map(renderCard).join(''):'<div class="empty-lane">No projects here</div>'}</div>
+    </div>`
+  }).join('')
+}
+
+function renderCard(p){
+  const alloc=p.budget_allocated||0,spent=p.budget_spent||0
+  const pct=alloc>0?Math.min(Math.round((spent/alloc)*100),100):0
+  const fillCls=pct>=100?'fill-over':pct>=80?'fill-warn':'fill-ok'
+  const nextLabel=ADVANCE[p.status]
+  const footerRight=p.commoditized
+    ?`<span class="commodity-badge">✅ Live</span>`
+    :(nextLabel?`<button class="btn-advance${p.status==='delivered'?' btn-comm-card':''}" onclick="event.stopPropagation();quickAdvance('${esc(p.id)}')">` +esc(nextLabel)+`</button>`:'')
+  return`<div class="proj-card${p.commoditized?' commoditized':''}" onclick="openDetail('${esc(p.id)}')">
+    <div class="proj-title">${esc(p.title)}</div>
+    ${p.sponsor?`<div class="proj-sponsor">👤 ${esc(p.sponsor)}</div>`:''}
+    ${p.description?`<div class="proj-desc">${esc(p.description)}</div>`:''}
+    ${alloc>0?`<div class="budget-bar-wrap"><div class="budget-labels"><span>Budget</span><span>$${spent.toLocaleString()} / $${alloc.toLocaleString()}</span></div><div class="budget-bar"><div class="budget-fill ${fillCls}" style="width:${pct}%"></div></div></div>`:''}
+    <div class="proj-footer"><span class="proj-date">${new Date(p.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>${footerRight}</div>
+  </div>`
+}
+
+async function quickAdvance(id){
+  const p=allProjects.find(x=>x.id===id);if(!p)return
+  const order=STAGES.map(s=>s.key)
+  const next=order[order.indexOf(p.status)+1]
+  if(!next||next==='commoditized'){openDetail(id);return}
+  await patch(id,{status:next})
+  await load()
+}
+
+async function patch(id,data){
+  data.updated_at=new Date().toISOString()
+  await supa(`/rest/v1/skunkworks_projects?id=eq.${id}`,{
+    method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify(data)
+  })
+}
+
+async function rollbackStage(){
+  if(!activeId)return
+  const p=allProjects.find(x=>x.id===activeId);if(!p)return
+  const prev=PREV_STAGE[p.status]
+  if(!prev){alert('This project is already at the first stage (Pitched) and cannot be rolled back further.');return}
+  const prevLabel=STAGES.find(s=>s.key===prev)?.label||prev
+  const curLabel=STAGES.find(s=>s.key===p.status)?.label||p.status
+  if(!confirm(`Roll back "${p.title}" from ${curLabel} → ${prevLabel}?`))return
+  try{
+    const extra=p.status==='approved'?{approver:null,approval_notes:null,approved_at:null}:{}
+    await patch(activeId,{status:prev,...extra})
+    await load()
+    const updated=allProjects.find(x=>x.id===activeId)
+    if(updated){
+      document.getElementById('ov-status').value=updated.status
+      renderRollbackUI(updated)
+      renderApprovalTab(updated)
+    }
+  }catch(e){alert('Error: '+e.message)}
+}
+
+function renderRollbackUI(p){
+  const wrap=document.getElementById('ov-rollback-wrap')
+  const btn=document.getElementById('ov-rollback-btn')
+  const lbl=document.getElementById('ov-rollback-label')
+  const prev=PREV_STAGE[p.status]
+  const isComm=p.commoditized||p.status==='commoditized'
+  if(!prev||isComm){
+    wrap.classList.add('hidden')
+    return
+  }
+  wrap.classList.remove('hidden')
+  const prevLabel=STAGES.find(s=>s.key===prev)?.label||prev
+  lbl.textContent=`← back to ${prevLabel}`
+  btn.disabled=false
+}
+
+function openSalesModal(){
+  const mv=document.getElementById('sa-market-value')
+  const cb=document.getElementById('sa-client-budget')
+  const sub=document.getElementById('sa-subsidy')
+  function calcSubsidy(){
+    const diff=(parseFloat(mv.value)||0)-(parseFloat(cb.value)||0)
+    sub.value=diff>0?diff:''
+  }
+  mv.oninput=calcSubsidy
+  cb.oninput=calcSubsidy
+  document.getElementById('sales-modal').classList.remove('hidden')
+}
+
+function buildSalesSpec(){
+  const g=id=>document.getElementById(id).value.trim()
+  const checked=ids=>ids.filter(id=>document.getElementById(id).checked).map(id=>({
+    'dc-public-site':'Public Website (homepage, about, contact)',
+    'dc-gallery':'Media Gallery (YouTube playlist / photos)',
+    'dc-member-portal':'Private Member Portal (login, docs, schedules)',
+    'dc-calendar':'Event & Calendar System',
+    'dc-fundraising':'Fundraising / Donation Page',
+    'dc-admin-training':'Admin Training Portal',
+    'dc-ecommerce':'E-Commerce / Store',
+    'dc-analytics':'Analytics Dashboard',
+  }[id])).join('\n- ')
+
+  const delivList=checked(['dc-public-site','dc-gallery','dc-member-portal','dc-calendar','dc-fundraising','dc-admin-training','dc-ecommerce','dc-analytics'])
+
+  const timeline=[
+    g('sa-duration')?`Total Duration: ${g('sa-duration')}`:'',
+    g('wk1')?`Week 1: ${g('wk1')}`:'',
+    g('wk2')?`Weeks 2–3: ${g('wk2')}`:'',
+    g('wk3')?`Weeks 4–5: ${g('wk3')}`:'',
+    g('wk4')?`Week 6: ${g('wk4')}`:'',
+    g('wk5')?`Week 7: ${g('wk5')}`:'',
+  ].filter(Boolean).join('\n')
+
+  const mv=parseFloat(document.getElementById('sa-market-value').value)||0
+  const cb=parseFloat(document.getElementById('sa-client-budget').value)||0
+  const sub=mv-cb
+
+  return `## Client
+${g('sa-client-name')}${g('sa-client-contact')?' — '+g('sa-client-contact'):''}${g('sa-client-email')?' | '+g('sa-client-email'):''}${g('sa-client-phone')?' | '+g('sa-client-phone'):''}
+
+## Submitted By
+${g('sa-agent-name')}${g('sa-agent-email')?' ('+g('sa-agent-email')+')':''}
+
+## Mission Statement
+${g('sa-mission')||'(not provided)'}
+${g('sa-content-extra')?'\n## Additional Content\n'+g('sa-content-extra'):''}
+
+## Branding
+- Logo: ${g('sa-logo')||'(not provided)'}
+- Primary Color: ${g('sa-color1')||'—'}
+- Secondary Color: ${g('sa-color2')||'—'}${g('sa-color3')?'\n- Accent Color: '+g('sa-color3'):''}
+
+## Links
+- Website: ${g('sa-website')||'—'}
+- Facebook: ${g('sa-facebook')||'—'}
+- YouTube Playlist: ${g('sa-youtube')||'—'}${g('sa-other-link')?'\n- Other: '+g('sa-other-link'):''}
+
+## Agreed Deliverables
+${delivList?'- '+delivList:'(none selected)'}
+${g('sa-scope-notes')?'\nScope Notes: '+g('sa-scope-notes'):''}
+
+## Timeline
+${timeline||'(not specified)'}
+
+## Investment
+- Market Value: $${mv.toLocaleString()}
+- Client Budget: $${cb.toLocaleString()}
+- Subsidy: $${sub>0?sub.toLocaleString():'0'}
+- Justification: ${g('sa-subsidy-reason')||'—'}
+
+## Payment / Donations
+- PayPal / Payment: ${g('sa-paypal')||'PENDING'}
+- Notes: ${g('sa-payment-notes')||'—'}
+
+## Proposal Email Sent to Client
+${g('sa-proposal-email')||'(not provided)'}
+`
+}
+
+async function submitSalesPitch(){
+  const clientName=document.getElementById('sa-client-name').value.trim()
+  const agentName=document.getElementById('sa-agent-name').value.trim()
+  const clientBudget=parseFloat(document.getElementById('sa-client-budget').value)||0
+  if(!clientName){alert('Client / Organization Name is required.');return}
+  if(!agentName){alert('Your Name (sales agent) is required.');return}
+
+  const btn=document.getElementById('sales-submit-btn')
+  btn.disabled=true;btn.textContent='Submitting…'
+
+  const projectType=document.getElementById('sa-project-type').value||'Custom Application'
+  const title=`${clientName} — ${projectType} Build`
+  const description=`Sales intake submitted by ${agentName}. Client: ${clientName}. Budget: $${clientBudget.toLocaleString()}. Type: ${projectType}.`
+
+  try{
+    const res=await supa('/rest/v1/skunkworks_projects',{
+      method:'POST',
+      headers:{'Prefer':'return=representation'},
+      body:JSON.stringify({
+        title,
+        description,
+        sponsor:            clientName,
+        budget_allocated:   clientBudget,
+        budget_spent:       0,
+        status:             'pitched',
+        commoditized:       false,
+        target_commodity_type: projectType,
+        spec_document:      buildSalesSpec(),
+      })
+    })
+    await load()
+    closeModal('sales-modal')
+    if(res&&res[0]) openDetail(res[0].id)
+    else alert(`✅ "${title}" has been submitted to the Pitched queue.`)
+  }catch(e){
+    alert('Submission error: '+e.message)
+  }finally{
+    btn.disabled=false;btn.textContent='🚀 Submit to Pipeline →'
+  }
+}
+
+async function openDetail(id){
+  activeId=id
+  const p=allProjects.find(x=>x.id===id);if(!p)return
+  document.getElementById('dh-title').textContent=p.title
+  document.getElementById('dh-meta').textContent=
+    `👤 ${p.sponsor||'No sponsor'} · Created ${new Date(p.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}`
+  document.getElementById('ov-title').value=p.title
+  document.getElementById('ov-sponsor').value=p.sponsor||''
+  document.getElementById('ov-desc').value=p.description||''
+  document.getElementById('ov-alloc').value=p.budget_allocated||0
+  document.getElementById('ov-spent').value=p.budget_spent||0
+  const validSt=['pitched','approved','in_progress','qa_review','delivered']
+  document.getElementById('ov-status').value=validSt.includes(p.status)?p.status:'pitched'
+  const isComm=p.commoditized
+  document.getElementById('ov-commoditize-wrap').classList.toggle('hidden',isComm)
+  document.getElementById('ov-already-comm').classList.toggle('hidden',!isComm)
+  document.getElementById('sp-type').value=p.target_commodity_type||''
+  document.getElementById('sp-doc').value=p.spec_document||''
+  renderRollbackUI(p)
+  renderApprovalTab(p)
+  switchTab('overview')
+  document.getElementById('detail-overlay').classList.remove('hidden')
+  loadRelated(id)
+}
+
+async function loadRelated(id){
+  document.getElementById('sessions-list').innerHTML='<div class="mini-spinner"></div>'
+  document.getElementById('deliverables-list').innerHTML='<div class="mini-spinner"></div>'
+  document.getElementById('contributors-list').innerHTML='<div class="mini-spinner"></div>'
+  try{
+    [activeSessions,activeDeliverables,activeContributors]=await Promise.all([
+      supa(`/rest/v1/skunkworks_sessions?project_id=eq.${id}&select=*&order=created_at.desc`),
+      supa(`/rest/v1/skunkworks_deliverables?project_id=eq.${id}&select=*&order=created_at.desc`),
+      supa(`/rest/v1/skunkworks_contributors?project_id=eq.${id}&select=*&order=added_at.desc`),
+    ])
+    renderSessions();renderDeliverables();renderContributors()
+    updateTabCounts()
+  }catch(e){console.error(e)}
+}
+
+function updateTabCounts(){
+  const tc=id=>document.getElementById('tc-'+id)
+  const fmt=(n,el)=>{ el.textContent=n>0?n:''; el.style.display=n>0?'':'none' }
+  fmt(activeSessions.length,    tc('sessions'))
+  fmt(activeDeliverables.length,tc('deliverables'))
+  fmt(activeContributors.length,tc('contributors'))
+}
+
+function switchTab(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===name))
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.toggle('active',p.id==='tab-'+name))
+}
+function toggleAddForm(id){
+  const el=document.getElementById(id)
+  el.classList.toggle('hidden')
+}
+
+async function saveOverview(){
+  if(!activeId)return
+  try{
+    await patch(activeId,{
+      title:       document.getElementById('ov-title').value.trim(),
+      sponsor:     document.getElementById('ov-sponsor').value.trim()||null,
+      description: document.getElementById('ov-desc').value.trim()||null,
+      budget_allocated:parseFloat(document.getElementById('ov-alloc').value)||0,
+      budget_spent:    parseFloat(document.getElementById('ov-spent').value)||0,
+      status:      document.getElementById('ov-status').value,
+    })
+    await load()
+    const p=allProjects.find(x=>x.id===activeId)
+    if(p){
+      document.getElementById('dh-title').textContent=p.title
+      renderRollbackUI(p)
+      renderApprovalTab(p)
+    }
+  }catch(e){alert('Error: '+e.message)}
+}
+
+async function saveSpec(){
+  if(!activeId)return
+  try{
+    await patch(activeId,{
+      target_commodity_type:document.getElementById('sp-type').value.trim()||null,
+      spec_document:        document.getElementById('sp-doc').value.trim()||null,
+    })
+    alert('✅ Spec saved.')
+  }catch(e){alert('Error: '+e.message)}
+}
+
+function renderSessions(){
+  const el=document.getElementById('sessions-list')
+  if(!activeSessions.length){el.innerHTML='<div class="empty-tab">No sessions logged yet. Hit "+ Log Session" to record a prompting run.</div>';return}
+  const typeColors={'research':'badge-research','spec':'badge-spec','build':'badge-build','qa':'badge-qa','review':'badge-review'}
+  el.innerHTML=activeSessions.map(s=>{
+    const gp=goldenPrompts.find(x=>x.id===s.golden_prompt_id)
+    return`<div class="item-card">
+      <div class="item-main">
+        <div class="item-title">${esc(s.agent_name||'Unknown agent')}</div>
+        <div class="item-sub">${gp?`✨ ${esc(gp.title)} · `:''}<span class="item-badge ${typeColors[s.session_type]||'badge-review'}">${esc(s.session_type||'session')}</span>${s.ran_by?` · by ${esc(s.ran_by)}`:''}</div>
+        ${s.output_summary?`<div class="item-sub-body">${esc(s.output_summary)}</div>`:''}
+        <div class="item-date">${new Date(s.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+      </div>
+      <button class="btn-danger-sm" onclick="deleteSession('${esc(s.id)}')">Remove</button>
+    </div>`
+  }).join('')
+}
+async function addSession(){
+  const agent=document.getElementById('sf-agent').value.trim()
+  const summary=document.getElementById('sf-summary').value.trim()
+  if(!agent){alert('Agent / operator name is required.');return}
+  try{
+    const gpId=document.getElementById('sf-golden').value||null
+    await supa('/rest/v1/skunkworks_sessions',{
+      method:'POST',headers:{'Prefer':'return=minimal'},
+      body:JSON.stringify({
+        project_id:      activeId,
+        golden_prompt_id:gpId||null,
+        agent_name:      agent,
+        prompt_used:     document.getElementById('sf-prompt').value.trim()||null,
+        output_summary:  summary||null,
+        full_output:     document.getElementById('sf-full').value.trim()||null,
+        session_type:    document.getElementById('sf-type').value,
+        ran_by:          null,
+      })
+    })
+    ;['sf-agent','sf-prompt','sf-summary','sf-full'].forEach(id=>document.getElementById(id).value='')
+    document.getElementById('sf-golden').value=''
+    toggleAddForm('session-form')
+    await loadRelated(activeId)
+  }catch(e){alert('Error: '+e.message)}
+}
+async function deleteSession(id){
+  if(!confirm('Remove this session?'))return
+  try{
+    await supa(`/rest/v1/skunkworks_sessions?id=eq.${id}`,{method:'DELETE',headers:{'Prefer':'return=minimal'}})
+    await loadRelated(activeId)
+  }catch(e){alert('Error: '+e.message)}
+}
+
+function renderDeliverables(){
+  const el=document.getElementById('deliverables-list')
+  if(!activeDeliverables.length){el.innerHTML='<div class="empty-tab">No deliverables yet. Add docs, links, code, or artifacts.</div>';return}
+  const typeColors={'doc':'badge-doc','link':'badge-link','code':'badge-code','artifact':'badge-artifact','report':'badge-report','other':'badge-other'}
+  el.innerHTML=activeDeliverables.map(d=>`
+    <div class="item-card">
+      <div class="item-main">
+        <div class="item-title">${esc(d.title)}</div>
+        <div class="item-sub"><span class="item-badge ${typeColors[d.deliverable_type]||'badge-other'}">${esc(d.deliverable_type)}</span>${d.submitted_by?` · by ${esc(d.submitted_by)}`:''
+          }${d.url?` · <a href="${esc(d.url)}" target="_blank" style="color:var(--accent)">🔗 Open</a>`:''}</div>
+        ${d.body?`<div class="item-sub-body">${esc(d.body)}</div>`:''}
+        <div class="item-date">${new Date(d.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+      </div>
+      <button class="btn-danger-sm" onclick="deleteDeliverable('${esc(d.id)}')">Remove</button>
+    </div>`).join('')
+}
+async function addDeliverable(){
+  const title=document.getElementById('df-title').value.trim()
+  if(!title){alert('Title is required.');return}
+  try{
+    await supa('/rest/v1/skunkworks_deliverables',{
+      method:'POST',headers:{'Prefer':'return=minimal'},
+      body:JSON.stringify({
+        project_id:       activeId,
+        title,
+        deliverable_type: document.getElementById('df-type').value,
+        url:              document.getElementById('df-url').value.trim()||null,
+        body:             document.getElementById('df-body').value.trim()||null,
+        submitted_by:     document.getElementById('df-by').value.trim()||null,
+      })
+    })
+    ;['df-title','df-url','df-body','df-by'].forEach(id=>document.getElementById(id).value='')
+    toggleAddForm('deliv-form')
+    await loadRelated(activeId)
+  }catch(e){alert('Error: '+e.message)}
+}
+async function deleteDeliverable(id){
+  if(!confirm('Remove this deliverable?'))return
+  try{
+    await supa(`/rest/v1/skunkworks_deliverables?id=eq.${id}`,{method:'DELETE',headers:{'Prefer':'return=minimal'}})
+    await loadRelated(activeId)
+  }catch(e){alert('Error: '+e.message)}
+}
+
+function renderContributors(){
+  const el=document.getElementById('contributors-list')
+  if(!activeContributors.length){el.innerHTML='<div class="empty-tab">No contributors yet. Add humans, agents, or external collaborators.</div>';return}
+  const typeColors={'human':'badge-human','agent':'badge-agent','external':'badge-external'}
+  el.innerHTML=activeContributors.map(c=>`
+    <div class="item-card">
+      <div class="item-main">
+        <div class="item-title">${esc(c.contributor_name)} <span class="item-badge ${typeColors[c.contributor_type]||'badge-human'}">${esc(c.contributor_type)}</span></div>
+        <div class="item-sub">${c.role?`<strong>${esc(c.role)}</strong>`:''} ${c.contribution_note?` · ${esc(c.contribution_note)}`:''}</div>
+        <div class="item-date">${new Date(c.added_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+      </div>
+      <button class="btn-danger-sm" onclick="deleteContributor('${esc(c.id)}')">Remove</button>
+    </div>`).join('')
+}
+async function addContributor(){
+  const name=document.getElementById('cf-name').value.trim()
+  if(!name){alert('Name is required.');return}
+  try{
+    await supa('/rest/v1/skunkworks_contributors',{
+      method:'POST',headers:{'Prefer':'return=minimal'},
+      body:JSON.stringify({
+        project_id:        activeId,
+        contributor_name:  name,
+        contributor_type:  document.getElementById('cf-type').value,
+        role:              document.getElementById('cf-role').value.trim()||null,
+        contribution_note: document.getElementById('cf-note').value.trim()||null,
+      })
+    })
+    ;['cf-name','cf-role','cf-note'].forEach(id=>document.getElementById(id).value='')
+    toggleAddForm('contrib-form')
+    await loadRelated(activeId)
+  }catch(e){alert('Error: '+e.message)}
+}
+async function deleteContributor(id){
+  if(!confirm('Remove this contributor?'))return
+  try{
+    await supa(`/rest/v1/skunkworks_contributors?id=eq.${id}`,{method:'DELETE',headers:{'Prefer':'return=minimal'}})
+    await loadRelated(activeId)
+  }catch(e){alert('Error: '+e.message)}
+}
+
+function renderApprovalTab(p){
+  const isApproved=p.status==='approved'||p.status==='in_progress'||p.status==='qa_review'||p.status==='delivered'||p.status==='commoditized'
+  document.getElementById('approval-approved-block').classList.toggle('hidden',!isApproved)
+  document.getElementById('approval-form-block').classList.toggle('hidden',isApproved)
+  if(isApproved){
+    document.getElementById('ap-approved-meta').textContent=
+      `${p.approver?'By '+p.approver:''} ${p.approved_at?'· '+new Date(p.approved_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):''}`
+      .trim()||'—'
+  }else{
+    document.getElementById('ap-name').value=p.approver||''
+    document.getElementById('ap-notes').value=p.approval_notes||''
+  }
+  const isComm=p.commoditized
+  document.getElementById('approval-comm-wrap').classList.toggle('hidden',!isApproved||isComm)
+  document.getElementById('approval-already-comm').classList.toggle('hidden',!isComm)
+}
+async function approveProject(){
+  if(!activeId)return
+  const approver=document.getElementById('ap-name').value.trim()
+  const notes=document.getElementById('ap-notes').value.trim()
+  if(!approver){alert('Approver name is required.');return}
+  try{
+    await patch(activeId,{
+      status:'approved',approver,approval_notes:notes||null,
+      approved_at:new Date().toISOString()
+    })
+    await load()
+    const p=allProjects.find(x=>x.id===activeId)
+    if(p){renderApprovalTab(p);renderRollbackUI(p)}
+  }catch(e){alert('Error: '+e.message)}
+}
+async function rejectProject(){
+  if(!activeId)return
+  if(!confirm('Return this project to Pitched status?'))return
+  try{
+    await patch(activeId,{status:'pitched',approver:null,approval_notes:null,approved_at:null})
+    await load()
+    const p=allProjects.find(x=>x.id===activeId)
+    if(p){renderApprovalTab(p);renderRollbackUI(p)}
+  }catch(e){alert('Error: '+e.message)}
+}
+
+async function commoditizeProject(){
+  if(!activeId)return
+  const p=allProjects.find(x=>x.id===activeId)
+  if(!p||p.commoditized)return
+  if(!confirm(`Mark "${p.title}" as commoditized and seed into the catalog?`))return
+  try{
+    await patch(activeId,{status:'commoditized',commoditized:true,commoditized_at:new Date().toISOString()})
+    await supa('/rest/v1/commodities',{
+      method:'POST',headers:{'Prefer':'return=minimal'},
+      body:JSON.stringify({
+        name:p.title,
+        slug:p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''),
+        description:p.description||null,status:'coming_soon',
+        category:p.target_commodity_type||'Operations',icon:'🏭',sort_order:999,
+      })
+    })
+    await load()
+    closeDetail()
+    alert(`✅ "${p.title}" seeded in the catalog as Coming Soon.`)
+  }catch(e){alert('Error: '+e.message)}
+}
+
+function openNewModal(){
+  ;['new-title','new-desc','new-sponsor'].forEach(id=>document.getElementById(id).value='')
+  document.getElementById('new-budget').value=''
+  document.getElementById('new-modal').classList.remove('hidden')
+}
+async function submitNew(e){
+  e.preventDefault()
+  const btn=document.getElementById('new-submit-btn')
+  btn.disabled=true;btn.textContent='Pitching…'
+  try{
+    await supa('/rest/v1/skunkworks_projects',{
+      method:'POST',headers:{'Prefer':'return=minimal'},
+      body:JSON.stringify({
+        title:           document.getElementById('new-title').value.trim(),
+        description:     document.getElementById('new-desc').value.trim()||null,
+        sponsor:         document.getElementById('new-sponsor').value.trim()||null,
+        budget_allocated:parseFloat(document.getElementById('new-budget').value)||0,
+        status:'pitched',commoditized:false,
+      })
+    })
+    closeModal('new-modal')
+    await load()
+  }catch(err){alert('Error: '+err.message)
+  }finally{btn.disabled=false;btn.textContent='Pitch It →'}
+}
+
+function closeDetail(){document.getElementById('detail-overlay').classList.add('hidden');activeId=null}
+function closeModal(id){document.getElementById(id).classList.add('hidden')}
+function closeOnBackdrop(e,id){if(e.target===document.getElementById(id)){id==='detail-overlay'?closeDetail():closeModal(id)}}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();closeModal('new-modal');closeModal('sales-modal')}})
+
+load()
+</script>
+</body>
+</html>

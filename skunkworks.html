@@ -182,6 +182,9 @@ textarea.field-input{resize:vertical;}
 .btn-save:disabled{opacity:.45;cursor:not-allowed;}
 .btn-danger-sm{padding:6px 10px;border-radius:6px;font-size:.7rem;font-weight:600;background:none;color:#FCA5A5;border:1px solid #991B1B;cursor:pointer;font-family:var(--font);}
 .btn-danger-sm:hover{background:#7F1D1D;}
+.btn-rollback{padding:9px 18px;border-radius:8px;font-size:.82rem;font-weight:700;background:none;color:#FCD34D;border:1.5px solid #78350F;cursor:pointer;font-family:var(--font);transition:all .15s;}
+.btn-rollback:hover{background:#78350F;color:#fff;}
+.btn-rollback:disabled{opacity:.35;cursor:not-allowed;}
 .section-actions{display:flex;justify-content:flex-end;margin-bottom:1rem;}
 
 /* List items */
@@ -565,6 +568,11 @@ textarea.field-input{resize:vertical;}
             <button class="btn-save" style="width:100%" onclick="saveOverview()">Save Overview</button>
           </div>
         </div>
+        <!-- Roll Back Stage -->
+        <div id="ov-rollback-wrap" style="margin-bottom:1rem">
+          <button class="btn-rollback" id="ov-rollback-btn" onclick="rollbackStage()" title="Move project back one stage">↩ Roll Back Stage</button>
+          <span id="ov-rollback-label" style="font-size:.72rem;color:var(--muted);margin-left:.6rem;"></span>
+        </div>
         <div id="ov-commoditize-wrap">
           <button class="btn-commoditize-big" onclick="commoditizeProject()">🏭 Commoditize → Add to Catalog</button>
         </div>
@@ -773,6 +781,13 @@ const ADVANCE={
   'pitched':'Approve →','approved':'Start →','in_progress':'QA →',
   'qa_review':'Deliver →','delivered':'🏭 Commoditize',
 }
+// Map each stage to its predecessor (for rollback)
+const PREV_STAGE={
+  'approved':'pitched',
+  'in_progress':'approved',
+  'qa_review':'in_progress',
+  'delivered':'qa_review',
+}
 
 let allProjects=[]
 let goldenPrompts=[]
@@ -862,6 +877,45 @@ async function patch(id,data){
   await supa(`/rest/v1/skunkworks_projects?id=eq.${id}`,{
     method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify(data)
   })
+}
+
+// ── Roll Back Stage ──
+async function rollbackStage(){
+  if(!activeId)return
+  const p=allProjects.find(x=>x.id===activeId);if(!p)return
+  const prev=PREV_STAGE[p.status]
+  if(!prev){alert('This project is already at the first stage (Pitched) and cannot be rolled back further.');return}
+  const prevLabel=STAGES.find(s=>s.key===prev)?.label||prev
+  const curLabel=STAGES.find(s=>s.key===p.status)?.label||p.status
+  if(!confirm(`Roll back "${p.title}" from ${curLabel} → ${prevLabel}?`))return
+  try{
+    // If rolling back from approved, clear approval fields
+    const extra=p.status==='approved'?{approver:null,approval_notes:null,approved_at:null}:{}
+    await patch(activeId,{status:prev,...extra})
+    await load()
+    const updated=allProjects.find(x=>x.id===activeId)
+    if(updated){
+      document.getElementById('ov-status').value=updated.status
+      renderRollbackUI(updated)
+      renderApprovalTab(updated)
+    }
+  }catch(e){alert('Error: '+e.message)}
+}
+
+function renderRollbackUI(p){
+  const wrap=document.getElementById('ov-rollback-wrap')
+  const btn=document.getElementById('ov-rollback-btn')
+  const lbl=document.getElementById('ov-rollback-label')
+  const prev=PREV_STAGE[p.status]
+  const isComm=p.commoditized||p.status==='commoditized'
+  if(!prev||isComm){
+    wrap.classList.add('hidden')
+    return
+  }
+  wrap.classList.remove('hidden')
+  const prevLabel=STAGES.find(s=>s.key===prev)?.label||prev
+  lbl.textContent=`← back to ${prevLabel}`
+  btn.disabled=false
 }
 
 // ── Sales Agent Pitch Modal ──
@@ -1009,6 +1063,7 @@ async function openDetail(id){
   document.getElementById('ov-already-comm').classList.toggle('hidden',!isComm)
   document.getElementById('sp-type').value=p.target_commodity_type||''
   document.getElementById('sp-doc').value=p.spec_document||''
+  renderRollbackUI(p)
   renderApprovalTab(p)
   switchTab('overview')
   document.getElementById('detail-overlay').classList.remove('hidden')
@@ -1060,7 +1115,11 @@ async function saveOverview(){
     })
     await load()
     const p=allProjects.find(x=>x.id===activeId)
-    if(p) document.getElementById('dh-title').textContent=p.title
+    if(p){
+      document.getElementById('dh-title').textContent=p.title
+      renderRollbackUI(p)
+      renderApprovalTab(p)
+    }
   }catch(e){alert('Error: '+e.message)}
 }
 
@@ -1238,7 +1297,7 @@ async function approveProject(){
     })
     await load()
     const p=allProjects.find(x=>x.id===activeId)
-    if(p) renderApprovalTab(p)
+    if(p){renderApprovalTab(p);renderRollbackUI(p)}
   }catch(e){alert('Error: '+e.message)}
 }
 async function rejectProject(){
@@ -1248,7 +1307,7 @@ async function rejectProject(){
     await patch(activeId,{status:'pitched',approver:null,approval_notes:null,approved_at:null})
     await load()
     const p=allProjects.find(x=>x.id===activeId)
-    if(p) renderApprovalTab(p)
+    if(p){renderApprovalTab(p);renderRollbackUI(p)}
   }catch(e){alert('Error: '+e.message)}
 }
 

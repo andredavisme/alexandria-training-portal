@@ -29,6 +29,8 @@ a{color:var(--accent);text-decoration:none;}
 .btn-ghost-nav:hover{color:var(--text);}
 .btn-primary-nav{background:var(--accent);color:#fff;border:none;padding:7px 14px;border-radius:7px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;display:flex;align-items:center;gap:5px;transition:opacity .15s;}
 .btn-primary-nav:hover{opacity:.85;}
+.btn-intake-nav{background:#0e7490;color:#fff;border:none;padding:7px 14px;border-radius:7px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;display:flex;align-items:center;gap:5px;transition:opacity .15s;}
+.btn-intake-nav:hover{opacity:.85;}
 
 /* Page header */
 .page-header{padding:2rem 1.5rem 1.5rem;max-width:1400px;margin:0 auto;}
@@ -98,6 +100,30 @@ a{color:var(--accent);text-decoration:none;}
 .btn-submit:hover{opacity:.85;}
 .btn-submit:disabled{opacity:.45;cursor:not-allowed;}
 
+/* WCB Intake Modal */
+.wcb-modal{background:#1E293B;border:1px solid #0e7490;border-radius:14px;box-shadow:var(--shadow);width:100%;max-width:680px;max-height:92vh;overflow-y:auto;animation:slideUp .2s ease;}
+.wcb-modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid #0e7490;display:flex;align-items:center;gap:1rem;justify-content:space-between;background:rgba(14,116,144,.1);border-radius:14px 14px 0 0;}
+.wcb-logo-wrap{width:56px;height:56px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+.wcb-logo-wrap img{width:100%;height:100%;object-fit:contain;}
+.wcb-header-text h2{font-size:1rem;font-weight:700;color:#67e8f9;}
+.wcb-header-text p{font-size:.72rem;color:var(--muted);margin-top:2px;}
+.wcb-section{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);}
+.wcb-section:last-child{border-bottom:none;}
+.wcb-section-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#67e8f9;margin-bottom:.75rem;display:flex;align-items:center;gap:6px;}
+.wcb-field{margin-bottom:.85rem;}
+.wcb-field label{display:block;font-size:.72rem;font-weight:600;color:var(--muted);margin-bottom:.25rem;}
+.wcb-field .val{font-size:.85rem;color:var(--text);background:#0F172A;padding:8px 12px;border-radius:7px;border:1px solid var(--border);line-height:1.6;}
+.wcb-field .val a{color:#67e8f9;}
+.wcb-colors{display:flex;gap:.6rem;margin-top:.4rem;flex-wrap:wrap;}
+.color-swatch{display:flex;align-items:center;gap:.4rem;font-size:.75rem;}
+.color-dot{width:20px;height:20px;border-radius:4px;border:1px solid rgba(255,255,255,.15);flex-shrink:0;}
+.wcb-field-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.placeholder-tag{display:inline-block;background:#292524;color:#FCD34D;font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:4px;margin-left:6px;vertical-align:middle;}
+.wcb-actions{padding:1.25rem 1.5rem;display:flex;gap:.75rem;justify-content:flex-end;background:rgba(14,116,144,.05);border-top:1px solid #0e7490;border-radius:0 0 14px 14px;}
+.btn-wcb-pitch{padding:10px 20px;border-radius:8px;font-size:.875rem;font-weight:700;background:#0e7490;color:#fff;border:none;cursor:pointer;font-family:var(--font);transition:opacity .15s;}
+.btn-wcb-pitch:hover{opacity:.85;}
+.btn-wcb-pitch:disabled{opacity:.45;cursor:not-allowed;}
+
 /* Detail modal — wide tabbed */
 .detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem;animation:fadeIn .18s ease;}
 .detail-panel{background:#1E293B;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);width:100%;max-width:780px;max-height:92vh;display:flex;flex-direction:column;animation:slideUp .2s ease;}
@@ -136,7 +162,7 @@ textarea.field-input{resize:vertical;}
 .btn-danger-sm:hover{background:#7F1D1D;}
 .section-actions{display:flex;justify-content:flex-end;margin-bottom:1rem;}
 
-/* List items (sessions, deliverables, contributors) */
+/* List items */
 .item-list{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.25rem;}
 .item-card{background:#0F172A;border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;display:flex;gap:.75rem;align-items:flex-start;}
 .item-main{flex:1;min-width:0;}
@@ -196,6 +222,7 @@ textarea.field-input{resize:vertical;}
   <a href="golden-prompts.html" class="btn-ghost-nav">✨ Golden Prompts</a>
   <a href="commodities.html"    class="btn-ghost-nav">📦 Commodities</a>
   <a href="index.html"          class="btn-ghost-nav">← Portal</a>
+  <button class="btn-intake-nav" onclick="openWCBIntake()">🎼 WCB Intake</button>
   <button class="btn-primary-nav" onclick="openNewModal()">+ Pitch Project</button>
 </nav>
 
@@ -235,6 +262,89 @@ textarea.field-input{resize:vertical;}
         <button type="submit" class="btn-submit" id="new-submit-btn">Pitch It →</button>
       </form>
     </div>
+  </div>
+</div>
+
+<!-- WCB Client Intake Modal -->
+<div class="modal-overlay hidden" id="wcb-modal" onclick="closeOnBackdrop(event,'wcb-modal')">
+  <div class="wcb-modal">
+
+    <div class="wcb-modal-header">
+      <div class="wcb-logo-wrap">
+        <!-- Replace src with hosted WCB logo URL once uploaded -->
+        <img src="WCB-logo.jpg" alt="Westbrook City Band Logo" onerror="this.style.display='none';this.parentElement.textContent='🎼'"/>
+      </div>
+      <div class="wcb-header-text" style="flex:1">
+        <h2>Westbrook City Band — Client Intake</h2>
+        <p>Community concert band · Westbrook, ME · Received May 2026</p>
+      </div>
+      <button class="modal-close" onclick="closeModal('wcb-modal')">×</button>
+    </div>
+
+    <!-- BRANDING -->
+    <div class="wcb-section">
+      <div class="wcb-section-title">🎨 Branding</div>
+      <div class="wcb-field">
+        <label>Logo</label>
+        <div class="val">WCB-logo.jpg — attached (blue treble clef mark, navy + white, rectangular badge style)</div>
+      </div>
+      <div class="wcb-field">
+        <label>Brand Colors (extracted from logo)</label>
+        <div class="wcb-colors">
+          <div class="color-swatch"><div class="color-dot" style="background:#1B3A6B"></div><span>#1B3A6B — Navy Blue</span></div>
+          <div class="color-swatch"><div class="color-dot" style="background:#FFFFFF;border-color:#555"></div><span>#FFFFFF — White</span></div>
+          <div class="color-swatch"><div class="color-dot" style="background:#2563EB"></div><span>#2563EB — Accent Blue (clef)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MISSION -->
+    <div class="wcb-section">
+      <div class="wcb-section-title">📜 Mission &amp; Written Content</div>
+      <div class="wcb-field">
+        <label>Mission Statement</label>
+        <div class="val">The Westbrook City Band is a community based concert band, offering adults and students opportunities to stay connected to their musical experience in a fun setting. Our members range in age from 16 to 96 — and everywhere in between. Many adult members may have played in high school or college, and may have been redirected for a time while LIFE happened, and are at a point to continue their talents in a band setting.</div>
+      </div>
+      <div class="wcb-field">
+        <label>Student / Youth Outreach Statement</label>
+        <div class="val">We also offer high school and college students opportunities for some extra rehearsal time and the experience of playing beyond their school band. Many of our adult players began their playing experience in this manner and found it to be a valuable experience.</div>
+      </div>
+    </div>
+
+    <!-- LINKS -->
+    <div class="wcb-section">
+      <div class="wcb-section-title">🔗 Links</div>
+      <div class="wcb-field-row">
+        <div class="wcb-field">
+          <label>Website</label>
+          <div class="val"><a href="https://jrknox50.wixsite.com/westbrookcityband" target="_blank">jrknox50.wixsite.com/westbrookcityband</a></div>
+        </div>
+        <div class="wcb-field">
+          <label>Facebook</label>
+          <div class="val"><a href="https://www.facebook.com/westbrookcityband" target="_blank">facebook.com/westbrookcityband</a></div>
+        </div>
+      </div>
+      <div class="wcb-field">
+        <label>YouTube — Public Gallery Playlist</label>
+        <div class="val"><a href="https://www.youtube.com/playlist?list=PLNcy2saXCtKx7K1LSsyfmRB6FlH8bdocA" target="_blank">youtube.com/playlist?list=PLNcy2saXCtKx7K1LSsyfmRB6FlH8bdocA</a></div>
+      </div>
+    </div>
+
+    <!-- DONATIONS -->
+    <div class="wcb-section">
+      <div class="wcb-section-title">💳 Donations / PayPal</div>
+      <div class="wcb-field">
+        <label>PayPal Info <span class="placeholder-tag">PLACEHOLDER</span></label>
+        <div class="val" style="color:var(--muted);font-style:italic">PayPal account info not yet provided by client. Use placeholder donate button until received. Suggested placeholder: <code>donate@westbrookcityband.org</code> — confirm with client before going live.</div>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="wcb-actions">
+      <button class="btn-outline" onclick="closeModal('wcb-modal')">Close</button>
+      <button class="btn-wcb-pitch" id="wcb-pitch-btn" onclick="pitchWCB()">🚀 Pitch as Project →</button>
+    </div>
+
   </div>
 </div>
 
@@ -503,6 +613,49 @@ let activeSessions=[]
 let activeDeliverables=[]
 let activeContributors=[]
 
+// ── WCB Intake Data ──
+const WCB_DATA = {
+  title: 'Westbrook City Band — Web Presence Build',
+  sponsor: 'Westbrook City Band',
+  description: 'Community concert band website build. Client: Westbrook City Band (Westbrook, ME). Members age 16–96. Mission: connect adults and students to musical community. Assets received: logo (navy/white treble clef badge), mission statement, Facebook + Wix website links, YouTube playlist. PayPal donation info PENDING — use placeholder. Deliverables: public site with mission, gallery (YouTube playlist embed), donate section (placeholder), social links.',
+  budget: 0,
+  spec: `## Client
+Westbrook City Band — community concert band, Westbrook, ME
+
+## Mission Statement
+The Westbrook City Band is a community based concert band, offering adults and students opportunities to stay connected to their musical experience in a fun setting. Our members range in age from 16 to 96 — and everywhere in between. Many adult members may have played in high school or college, and may have been redirected for a time while LIFE happened, and are at a point to continue their talents in a band setting.
+
+We also offer high school and college students opportunities for some extra rehearsal time and the experience of playing beyond their school band. Many of our adult players began their playing experience in this manner and found it to be a valuable experience.
+
+## Brand Assets
+- Logo: WCB-logo.jpg (navy blue + white, treble clef badge)
+- Colors: #1B3A6B (Navy), #FFFFFF (White), #2563EB (Accent Blue)
+
+## Links Provided
+- Website: https://jrknox50.wixsite.com/westbrookcityband
+- Facebook: https://www.facebook.com/westbrookcityband
+- YouTube Playlist (gallery): https://www.youtube.com/playlist?list=PLNcy2saXCtKx7K1LSsyfmRB6FlH8bdocA
+
+## Donations
+- PayPal info NOT yet provided — use placeholder button until received
+- Suggested placeholder email: donate@westbrookcityband.org (confirm with client)
+
+## Success Criteria
+- Public-facing site live with mission, gallery, social links, and donate CTA
+- YouTube playlist embedded or linked in gallery section
+- Donate button wired to PayPal once client provides credentials
+- Mobile responsive, brand-accurate colors
+
+## Scope
+- IN: Landing page, mission/about, gallery (YouTube playlist), social links, donation placeholder
+- OUT: Ticketing, membership portal, backend admin (future phase)
+
+## Notes
+- Logo image file attached and available in repo as WCB-logo.jpg
+- Client contact to confirm PayPal info before go-live`,
+  type: 'Nonprofit Web Presence'
+}
+
 async function load(){
   try{
     [allProjects,goldenPrompts]=await Promise.all([
@@ -586,15 +739,56 @@ async function patch(id,data){
   })
 }
 
+// ── WCB Intake ──
+function openWCBIntake(){
+  document.getElementById('wcb-modal').classList.remove('hidden')
+}
+
+async function pitchWCB(){
+  const btn=document.getElementById('wcb-pitch-btn')
+  // check if already pitched
+  const exists=allProjects.find(p=>p.title===WCB_DATA.title)
+  if(exists){
+    if(!confirm('A WCB project already exists in the pipeline. Open it instead?'))return
+    closeModal('wcb-modal')
+    openDetail(exists.id)
+    return
+  }
+  btn.disabled=true;btn.textContent='Pitching…'
+  try{
+    const res=await supa('/rest/v1/skunkworks_projects',{
+      method:'POST',
+      headers:{'Prefer':'return=representation'},
+      body:JSON.stringify({
+        title:            WCB_DATA.title,
+        description:      WCB_DATA.description,
+        sponsor:          WCB_DATA.sponsor,
+        budget_allocated: WCB_DATA.budget,
+        budget_spent:     0,
+        status:           'pitched',
+        commoditized:     false,
+        target_commodity_type: WCB_DATA.type,
+        spec_document:    WCB_DATA.spec,
+      })
+    })
+    await load()
+    closeModal('wcb-modal')
+    if(res&&res[0]) openDetail(res[0].id)
+    else alert('✅ WCB project pitched! Find it in the Pitched column.')
+  }catch(e){
+    alert('Error pitching WCB project: '+e.message)
+  }finally{
+    btn.disabled=false;btn.textContent='🚀 Pitch as Project →'
+  }
+}
+
 // ── Open Detail ──
 async function openDetail(id){
   activeId=id
   const p=allProjects.find(x=>x.id===id);if(!p)return
-  // populate header
   document.getElementById('dh-title').textContent=p.title
   document.getElementById('dh-meta').textContent=
     `👤 ${p.sponsor||'No sponsor'} · Created ${new Date(p.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}`
-  // overview
   document.getElementById('ov-title').value=p.title
   document.getElementById('ov-sponsor').value=p.sponsor||''
   document.getElementById('ov-desc').value=p.description||''
@@ -605,15 +799,11 @@ async function openDetail(id){
   const isComm=p.commoditized
   document.getElementById('ov-commoditize-wrap').classList.toggle('hidden',isComm)
   document.getElementById('ov-already-comm').classList.toggle('hidden',!isComm)
-  // spec
   document.getElementById('sp-type').value=p.target_commodity_type||''
   document.getElementById('sp-doc').value=p.spec_document||''
-  // approval
   renderApprovalTab(p)
-  // show overlay
   switchTab('overview')
   document.getElementById('detail-overlay').classList.remove('hidden')
-  // load related async
   loadRelated(id)
 }
 
@@ -640,7 +830,6 @@ function updateTabCounts(){
   fmt(activeContributors.length,tc('contributors'))
 }
 
-// ── Tabs ──
 function switchTab(name){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===name))
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.toggle('active',p.id==='tab-'+name))
@@ -650,7 +839,6 @@ function toggleAddForm(id){
   el.classList.toggle('hidden')
 }
 
-// ── Overview save ──
 async function saveOverview(){
   if(!activeId)return
   try{
@@ -663,13 +851,11 @@ async function saveOverview(){
       status:      document.getElementById('ov-status').value,
     })
     await load()
-    // refresh header
     const p=allProjects.find(x=>x.id===activeId)
     if(p) document.getElementById('dh-title').textContent=p.title
   }catch(e){alert('Error: '+e.message)}
 }
 
-// ── Spec save ──
 async function saveSpec(){
   if(!activeId)return
   try{
@@ -681,10 +867,9 @@ async function saveSpec(){
   }catch(e){alert('Error: '+e.message)}
 }
 
-// ── Sessions ──
 function renderSessions(){
   const el=document.getElementById('sessions-list')
-  if(!activeSessions.length){el.innerHTML='<div class="empty-tab">No sessions logged yet. Hit “+ Log Session” to record a prompting run.</div>';return}
+  if(!activeSessions.length){el.innerHTML='<div class="empty-tab">No sessions logged yet. Hit "+ Log Session" to record a prompting run.</div>';return}
   const typeColors={'research':'badge-research','spec':'badge-spec','build':'badge-build','qa':'badge-qa','review':'badge-review'}
   el.innerHTML=activeSessions.map(s=>{
     const gp=goldenPrompts.find(x=>x.id===s.golden_prompt_id)
@@ -718,7 +903,6 @@ async function addSession(){
         ran_by:          null,
       })
     })
-    // reset
     ;['sf-agent','sf-prompt','sf-summary','sf-full'].forEach(id=>document.getElementById(id).value='')
     document.getElementById('sf-golden').value=''
     toggleAddForm('session-form')
@@ -733,7 +917,6 @@ async function deleteSession(id){
   }catch(e){alert('Error: '+e.message)}
 }
 
-// ── Deliverables ──
 function renderDeliverables(){
   const el=document.getElementById('deliverables-list')
   if(!activeDeliverables.length){el.innerHTML='<div class="empty-tab">No deliverables yet. Add docs, links, code, or artifacts.</div>';return}
@@ -778,7 +961,6 @@ async function deleteDeliverable(id){
   }catch(e){alert('Error: '+e.message)}
 }
 
-// ── Contributors ──
 function renderContributors(){
   const el=document.getElementById('contributors-list')
   if(!activeContributors.length){el.innerHTML='<div class="empty-tab">No contributors yet. Add humans, agents, or external collaborators.</div>';return}
@@ -820,7 +1002,6 @@ async function deleteContributor(id){
   }catch(e){alert('Error: '+e.message)}
 }
 
-// ── Approval ──
 function renderApprovalTab(p){
   const isApproved=p.status==='approved'||p.status==='in_progress'||p.status==='qa_review'||p.status==='delivered'||p.status==='commoditized'
   document.getElementById('approval-approved-block').classList.toggle('hidden',!isApproved)
@@ -863,12 +1044,11 @@ async function rejectProject(){
   }catch(e){alert('Error: '+e.message)}
 }
 
-// ── Commoditize ──
 async function commoditizeProject(){
   if(!activeId)return
   const p=allProjects.find(x=>x.id===activeId)
   if(!p||p.commoditized)return
-  if(!confirm(`Mark “${p.title}” as commoditized and seed into the catalog?`))return
+  if(!confirm(`Mark "${p.title}" as commoditized and seed into the catalog?`))return
   try{
     await patch(activeId,{status:'commoditized',commoditized:true,commoditized_at:new Date().toISOString()})
     await supa('/rest/v1/commodities',{
@@ -882,11 +1062,10 @@ async function commoditizeProject(){
     })
     await load()
     closeDetail()
-    alert(`✅ “${p.title}” seeded in the catalog as Coming Soon.`)
+    alert(`✅ "${p.title}" seeded in the catalog as Coming Soon.`)
   }catch(e){alert('Error: '+e.message)}
 }
 
-// ── Pitch new ──
 function openNewModal(){
   ;['new-title','new-desc','new-sponsor'].forEach(id=>document.getElementById(id).value='')
   document.getElementById('new-budget').value=''
@@ -913,11 +1092,10 @@ async function submitNew(e){
   }finally{btn.disabled=false;btn.textContent='Pitch It →'}
 }
 
-// ── Modal utils ──
 function closeDetail(){document.getElementById('detail-overlay').classList.add('hidden');activeId=null}
 function closeModal(id){document.getElementById(id).classList.add('hidden')}
 function closeOnBackdrop(e,id){if(e.target===document.getElementById(id)){id==='detail-overlay'?closeDetail():closeModal(id)}}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();closeModal('new-modal')}})
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();closeModal('new-modal');closeModal('wcb-modal')}})
 
 load()
 </script>
